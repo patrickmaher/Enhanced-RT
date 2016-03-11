@@ -1,0 +1,24 @@
+{
+    "manifest_version": 2,
+    "content_scripts": [ {
+        "exclude_globs":    [  ],
+        "include_globs":    [ "*" ],
+        "js":               [ "Enhanced RT.user.js" ],
+        "matches":          [   "*://roosterteeth.com/episode/recently-added*",
+								"*://roosterteeth.com/EnhancedRT/settings",
+                                "*://achievementhunter.com/episode/recently-added*",
+								"*://achievementhunter.com/EnhancedRT/settings",
+								"*://theknow.tv/episode/recently-added*",
+								"*://theknow.tv/EnhancedRT/settings",
+								"*://fun.haus/episode/recently-added*",
+								"*://fun.haus/EnhancedRT/settings",
+								"*://www.screwattack.com/episode/recently-added*",
+								"*://www.screwattack.com/EnhancedRT/settings"
+                            ],
+        "run_at": "document_end"
+    } ],
+    "converted_from_user_script": true,
+    "description":  "Enhancments for the Rooster Teeth family of websites.",
+    "name":         "Enhanced RT",
+    "version":      "0.0.1"
+}
