@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name       Enhanced RT
-// @version    0.0.2
+// @version    0.0.3
 // @description  Enhancments for the Rooster Teeth family of websites
 // @include    http*://roosterteeth.com/*
 // @include    http*://achievementhunter.com/*
@@ -25,7 +25,6 @@ Filter videos on Recently Added page by:
     Sponsor Content.
     Video Length.
     Date Uploaded.
-Previous/Next button for navigation of Recently Added page.
 Endless scrolling of videos on Recently Added page.
 Enhanced Rooster Teeth menu with toggles: hide watched videos, filter settings, endless scrolling, pages that filters are active on, completely disable all features.
 
@@ -121,7 +120,7 @@ else if(window.location.href.search("theknow.tv/") > 0) // The Know
     // favicon
     //var favIcon = "";
 }
-/*
+
 else if(window.location.href.search("screwattack.com/") > 0) // ScrewAttack
 {
     currentSite = "SA";
@@ -130,7 +129,7 @@ else if(window.location.href.search("screwattack.com/") > 0) // ScrewAttack
     // favicon
     //var favIcon = "";
 }
-*/
+
 //alert(currentSite);
 
 // Change favicon
