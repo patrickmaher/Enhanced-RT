@@ -1,17 +1,12 @@
 // ==UserScript==
 // @name       Enhanced RT
-// @version    0.0.1
+// @version    0.0.2
 // @description  Enhancments for the Rooster Teeth family of websites
-// @include    http*://roosterteeth.com/episode/recently-added*
-// @include    http*://roosterteeth.com/EnhancedRT/settings
-// @include    http*://achievementhunter.com/episode/recently-added*
-// @include    http*://achievementhunter.com/EnhancedRT/settings
-// @include    http*://theknow.tv/episode/recently-added*
-// @include    http*://theknow.tv/EnhancedRT/settings
-// @include    http*://fun.haus/episode/recently-added*
-// @include    http*://fun.haus/EnhancedRT/settings
-// @include    http*://www.screwattack.com/episode/recently-added*
-// @include    http*://www.screwattack.com/EnhancedRT/settings
+// @include    http*://roosterteeth.com/*
+// @include    http*://achievementhunter.com/*
+// @include    http*://theknow.tv/*
+// @include    http*://fun.haus/*
+// @include    http*://screwattack.com/*
 // @run-at document-end
 // ==/UserScript==
 
@@ -48,16 +43,7 @@ To be fixed
 
 */
 
-// Store Settings
-//localStorage.setItem("hideWatched", "1");
 // Load Settings
-//var hideWatched = localStorage.getItem("hideWatched");
-//var hideRT = localStorage.getItem("hideRT");
-//var hideAH = localStorage.getItem("hideAH");
-//var hideFH = localStorage.getItem("hideFH");
-//var hideTK = localStorage.getItem("hideTK");
-//var hideSA = localStorage.getItem("hideSA");
-
 var hideWatched = 0;
 var hideRT = 1;
 var hideAH = 2;
@@ -159,8 +145,12 @@ if(currentSite != "RT")
 
 // Settings Link in Profile Menu
 var settingsLink = document.getElementById("profile-menu");
-var settingsLinkHTML = "<li><a href=\"http://" + currentSiteDomain + "/EnhancedRT/settings\">Enhanced RT</a></li>";
-settingsLink.children[0].children[3].outerHTML = settingsLink.children[0].children[3].outerHTML.concat(settingsLinkHTML);
+if(settingsLink != null)
+{
+	var settingsLinkHTML = "<li><a href=\"http://" + currentSiteDomain + "/EnhancedRT/settings\">Enhanced RT</a></li>";
+	settingsLink.children[0].children[3].outerHTML = settingsLink.children[0].children[3].outerHTML.concat(settingsLinkHTML);
+}
+
 
 // Settings Page
 if(window.location.pathname=="/EnhancedRT/settings")
@@ -169,7 +159,7 @@ if(window.location.pathname=="/EnhancedRT/settings")
 	var settingsHTML = "<center>Enhanced RT Settings<br>Filters - ";
 	for ( i = 0; i < hide.length; i++)
 	{
-		settingsHTML = settingsHTML.concat(""+hide[i][hideName]+": <input type=checkbox id="+hide[i][hideText]+" "+((hide[i][hideValue] == 0) ? "checked" : "")+"> ");
+		settingsHTML = settingsHTML.concat("<label style=\"color:#666;font-size:12px;\"><input style=\"margin:0 0 0 1em;\" type=checkbox id="+hide[i][hideText]+" "+((hide[i][hideValue] == 0) ? "checked" : "")+">"+hide[i][hideName]+"</label>");
 	}
 	settingsHTML = settingsHTML.concat("</center>");
 	settings.innerHTML = settingsHTML;
@@ -190,7 +180,8 @@ if(window.location.pathname=="/EnhancedRT/settings")
 		};
 	}
 }
-else // All other pages
+// Recently Added Page
+if(window.location.pathname=="/episode/recently-added")
 {
 
 	var filters = document.getElementsByClassName("episode-blocks");
@@ -199,7 +190,7 @@ else // All other pages
 	var filtersHTML = "<center>Enhanced RT Filters<br>";
 	for ( i = 0; i < hide.length; i++)
 	{
-		filtersHTML = filtersHTML.concat(""+hide[i][hideName]+": <input type=checkbox id="+hide[i][hideText]+" "+((hide[i][hideValue] == 0) ? "checked" : "")+"> ");
+		filtersHTML = filtersHTML.concat("<label style=\"color:#666;font-size:12px;\"><input style=\"margin:0 0 0 1em;\" type=checkbox id="+hide[i][hideText]+" "+((hide[i][hideValue] == 0) ? "checked" : "")+">"+hide[i][hideName]+"</label>");
 	}
 	filtersHTML = filtersHTML.concat("</center>");
 	filters[0].parentNode.children[1].outerHTML = filtersHTML.concat(filters[0].parentNode.children[1].outerHTML);
@@ -239,11 +230,11 @@ else // All other pages
 			childLI[i].style.marginRight = "1%";
 			
 			video = childLI[i].children[0].href;
-			if(hide[hideSA][hideValue] == 1 && video.search("episode/(.*the-1-show.*|the-best-ever|sidescrollers|five-fun-facts|top-10-|desk-of-death-battle|.*evil-craig|available-now-podcast|reasons-we-hate|.*-sidescrollers-.*|.*-reasons-we-love-.*|is-.*-good?|announcing-g1-|.*-screwattack-royal-rumble|one-minute-melee-|screwattacks-top-10-|samus-nutty-)") > 0){
+			if(hide[hideSA][hideValue] == 1 && video.search("episode/(.*the-1-show.*|the-best-ever|sidescrollers|five-fun-facts|top-10-|desk-of-death-battle|.*evil-craig|available-now-podcast|.*reasons-we-hate.*|.*-sidescrollers-.*|.*-reasons-we-love-.*|is-.*-good?|announcing-g1-|.*-screwattack-royal-rumble|one-minute-melee-|screwattacks-top-10-|samus-nutty-|.*death-battle.*|fairly-odd-relatives|pokemon-vs-digimon|.*top-5-|five-more-fun-facts-|.*the-best-.*ever|community-project-|batman-dual-|how-much-would-it-cost|the-worst-kept-secret)") > 0){
 				 video = video.replace("roosterteeth.com", "screwattack.com");
 				 childLI[i].style.display = "none";
 			}
-			if(hide[hideAH][hideValue] == 1 && video.search("episode/(lets-play|ahwu|things-to-do-in|play-pals|achievement-unlocked|behind-the-scenes|achievement-hunter|fails-of-the-weak|easter-eggs|achievement-hunt|five-facts)") > 0){
+			if(hide[hideAH][hideValue] == 1 && video.search("episode/(lets-play|ahwu|things-to-do-in|play-pals|achievement-unlocked|behind-the-scenes|achievement-hunter|fails-of-the-weak|easter-eggs|achievement-hunt|five-facts|off-topic-|how-to-|vs-|go-|rage-quit-|countdown-|achievement-horse-)") > 0){
 				video = video.replace("roosterteeth.com", "achievementhunter.com");
 				childLI[i].style.display = "none";
 			}
@@ -251,11 +242,11 @@ else // All other pages
 				video = video.replace("roosterteeth.com", "theknow.tv");
 				childLI[i].style.display = "none";
 			}
-			if(hide[hideFH][hideValue] == 1 && video.search("episode/(gameplay|dude-soup|fan-show|funhaus|fullhaus|open-haus)") > 0){
+			if(hide[hideFH][hideValue] == 1 && video.search("episode/(gameplay|dude-soup|fan-show|funhaus|fullhaus|open-haus|demo-disk-|rest-of-)") > 0){
 				video = video.replace("roosterteeth.com", "fun.haus");
 				childLI[i].style.display = "none";
 			}
-			if(hide[hideRT][hideValue] == 1 && video.search("episode/(rt-sponsor-cut|happy-hour|free-play|lazer-team|million-dollars-but|rt-podcast|the-slow-mo-guys|rt-animated-adventures|rt-shorts|immersion-|red-vs-blue-)") > 0){
+			if(hide[hideRT][hideValue] == 1 && video.search("episode/(rt-sponsor-cut|happy-hour|free-play|lazer-team|million-dollars-but|rt-podcast|the-slow-mo-guys|rt-animated-adventures|rt-shorts|immersion-|red-vs-blue-|rt-anime-podcast-|on-the-spot-|buff-buddies-|sponsor-vlog-|rt-life-|sportsball-|rt-specials-|rwby-|x-ray-and-vav-|trailers-|social-disorder-|rooster-teeth-entertainment-system-|chad-)") > 0){
 				video = video.replace("roosterteeth.com", "fun.haus");
 				childLI[i].style.display = "none";
 			}
