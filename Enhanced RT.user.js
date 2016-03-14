@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name       Enhanced RT
-// @version    0.0.4
+// @version    0.0.5
 // @description  Enhancments for the Rooster Teeth family of websites
 // @include    http*://roosterteeth.com/*
 // @include    http*://achievementhunter.com/*
@@ -42,6 +42,10 @@ To be fixed
 
 Versions
 ========
+0.0.5
+Updated filters to correctly identify new videos that were not being filtered.
+Optimizations for filtering.
+
 0.0.4
 Added favorite icons for Achievement Hunter, ScrewAttack, and The Know.
 
@@ -242,24 +246,29 @@ if(window.location.pathname=="/episode/recently-added")
 			childLI[i].style.marginRight = "1%";
 			
 			video = childLI[i].children[0].href;
-			if(hide[hideSA][hideValue] == 1 && video.search("episode/(.*the-1-show.*|the-best-ever|sidescrollers|five-fun-facts|top-10-|desk-of-death-battle|.*evil-craig|available-now-podcast|.*reasons-we-hate.*|.*-sidescrollers-.*|.*-reasons-we-love-.*|is-.*-good?|announcing-g1-|.*-screwattack-royal-rumble|one-minute-melee-|screwattacks-top-10-|samus-nutty-|.*death-battle.*|fairly-odd-relatives|pokemon-vs-digimon|.*top-5-|five-more-fun-facts-|.*the-best-.*ever|community-project-|batman-dual-|how-much-would-it-cost|the-worst-kept-secret)") > 0){
+			if(hide[hideSA][hideValue] == 1 && video.search("episode/(.*the-1-show.*|the-best-ever|sidescrollers|five-fun-facts|top-10-|desk-of-death-battle|.*evil-craig|available-now-podcast|.*reasons-we-hate.*|.*-sidescrollers-.*|.*-reasons-we-love-.*|is-.*-good|announcing-g1-|.*-screwattack-royal-rumble|one-minute-melee-|screwattacks-top-10-|samus-nutty-|.*death-battle.*|fairly-odd-relatives|pokemon-vs-digimon|.*top-5-|five-more-fun-facts-|.*the-best-.*ever|community-project-|batman-dual-|how-much-would-it-cost|the-worst-kept-secret|clip-of-the-week|dbx|top-10s|who-is|chad-|.*great-moments-in-|hard-news|metal-gear-ben|.*nerdtastic|newsroom|[advantage]-newsroom|.*out-of-the-box|reboot-or-retro|.*the-armory-|.*-the-industry|.*video-game-vault)") > 0)
+			{
 				 video = video.replace("roosterteeth.com", "screwattack.com");
 				 childLI[i].style.display = "none";
 			}
-			if(hide[hideAH][hideValue] == 1 && video.search("episode/(lets-play|ahwu|things-to-do-in|play-pals|achievement-unlocked|behind-the-scenes|achievement-hunter|fails-of-the-weak|easter-eggs|achievement-hunt|five-facts|off-topic-|how-to-|vs-|go-|rage-quit-|countdown-|achievement-horse-)") > 0){
+			else if(hide[hideAH][hideValue] == 1 && video.search("episode/(lets-play|ahwu|things-to-do-in|play-pals|achievement-unlocked|behind-the-scenes|achievement-hunter|fails-of-the-weak|easter-eggs|achievement-hunt|five-facts|off-topic-|how-to-|vs-|go-|rage-quit-|countdown-|achievement-horse-|forced-enjoyment-)") > 0)
+			{
 				video = video.replace("roosterteeth.com", "achievementhunter.com");
 				childLI[i].style.display = "none";
 			}
-			if(hide[hideTK][hideValue] == 1 && video.search("episode/(the-know|the-patch|in-review|news-roundups)") > 0){
+			else if(hide[hideTK][hideValue] == 1 && video.search("episode/(the-know|the-patch|in-review|news-roundups)") > 0)
+			{
 				video = video.replace("roosterteeth.com", "theknow.tv");
 				childLI[i].style.display = "none";
 			}
-			if(hide[hideFH][hideValue] == 1 && video.search("episode/(gameplay|dude-soup|fan-show|funhaus|fullhaus|open-haus|demo-disk-|rest-of-)") > 0){
+			else if(hide[hideFH][hideValue] == 1 && video.search("episode/(gameplay|dude-soup|fan-show|funhaus|fullhaus|open-haus|demo-disk-|rest-of-)") > 0)
+			{
 				video = video.replace("roosterteeth.com", "fun.haus");
 				childLI[i].style.display = "none";
 			}
-			if(hide[hideRT][hideValue] == 1 && video.search("episode/(rt-sponsor-cut|happy-hour|free-play|lazer-team|million-dollars-but|rt-podcast|the-slow-mo-guys|rt-animated-adventures|rt-shorts|immersion-|red-vs-blue-|rt-anime-podcast-|on-the-spot-|buff-buddies-|sponsor-vlog-|rt-life-|sportsball-|rt-specials-|rwby-|x-ray-and-vav-|trailers-|social-disorder-|rooster-teeth-entertainment-system-|chad-)") > 0){
-				video = video.replace("roosterteeth.com", "fun.haus");
+			else if(hide[hideRT][hideValue] == 1 && video.search("episode/(rt-sponsor-cut|happy-hour|free-play|lazer-team|million-dollars-but|rt-podcast|the-slow-mo-guys|rt-animated-adventures|rt-shorts|immersion-|red-vs-blue-|rt-anime-podcast-|on-the-spot-|buff-buddies-|sponsor-vlog-|rt-life-|sportsball-|rt-specials-|rwby-|x-ray-and-vav-|trailers-|social-disorder-|rooster-teeth-entertainment-system-|the-strangerhood-|panics-|1-800-magic-)") > 0)
+			{
+				video = video.replace("roosterteeth.com", "roosterteeth.com");
 				childLI[i].style.display = "none";
 			}
 		}
