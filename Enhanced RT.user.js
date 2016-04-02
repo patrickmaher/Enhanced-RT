@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name       Enhanced RT
-// @version    0.1.0
+// @version    0.2.0
 // @description  Enhancments for the Rooster Teeth family of websites
 // @include    *://roosterteeth.com/*
 // @include    *://achievementhunter.com/*
@@ -17,10 +17,11 @@ Features
 -Works on all sites in the Rooster Teeth family.
 -Video filters that allow you to hide videos that you don't want to see on the Recently Added page.
 -Endless loading of videos on the Recently Added page.
--Align videos to browser window on video pages.
--Favorite icons for Funhaus, Achievement Hunter, ScrewAttack, and The Know.
+-Converts video time stamps in comments into click-able links.
+-Align videos to browser window on video and live stream pages.
+-Pauses video when video page loaded using comments button.
 -Settings page which can be accessed from the profile menu at the top right of the page.
-
+-Legacy favorite icons for Funhaus, Achievement Hunter, ScrewAttack, and The Know.
 
 The Known Issues
 ================
@@ -42,7 +43,9 @@ Possible Future Features
 -Mouse over users for more info card.
 -Profile cover photo tester.
 -Hide comments marked as flamebait.
-
+-Clicking on video timestamps in comments sets video player to that time.
+-bit.ly link dump reverse lookup
+-comment permalinks
 
 To be fixed
 ===========
@@ -51,6 +54,13 @@ To be fixed
 
 Versions
 ========
+0.2.0
+-Added feature that converts video time stamps posted in video comments into links that play the video starting from the specified time when clicked.
+-Added option to pause video when loading a video page using the comments button. If you are not a sponsor this will not work because the video will not pause due to the video advertisement.
+-Changed video alignment feature so that it will not do alignment when loading a video page using the comments button.
+-Added option to enable old favorite icons. This is off by default. Rooster Teeth added unique favorite icons for each website so they don't all have the same teeth logo any more.
+-Added option to align videos to browser window on live stream pages.
+
 0.1.0
 -Added option to endlessly load videos on the Recently Added page.
 -Added option to align videos to browser window on video pages.
@@ -64,16 +74,42 @@ Versions
 -Added favorite icons for Achievement Hunter, ScrewAttack, and The Know.
 
 0.0.3
--Fixed bug detecting newly migrated screwattack.com site.
+-Fixed bug in detecting newly migrated screwattack.com site.
 
 0.0.2
 -Public Release
 
 */
 
+
 // *********
 // All Pages
 // *********
+
+
+// *********
+// Functions
+// *********
+function exec(fn) {
+    var script = document.createElement('script');
+    script.setAttribute("type", "application/javascript");
+    script.textContent = '(' + fn + ')();';
+    document.body.appendChild(script); // run the script
+    document.body.removeChild(script); // clean up
+}
+
+// 2D Array Creation function
+function createArray(length) {
+    var arr = new Array(length || 0),
+        i = length;
+
+    if (arguments.length > 1) {
+        var args = Array.prototype.slice.call(arguments, 1);
+        while(i--) arr[length-1 - i] = createArray.apply(this, args);
+    }
+
+    return arr;
+}
 
 // ********************************
 // Load Settings from Local Storage
@@ -90,18 +126,6 @@ hideValue = 0;
 hideText = 1;
 hideName = 3;
 
-// 2D Array Creation function
-function createArray(length) {
-    var arr = new Array(length || 0),
-        i = length;
-
-    if (arguments.length > 1) {
-        var args = Array.prototype.slice.call(arguments, 1);
-        while(i--) arr[length-1 - i] = createArray.apply(this, args);
-    }
-
-    return arr;
-}
 
 // Load Filter Settings
 var hide = createArray(6, 3);
@@ -130,16 +154,28 @@ endlessVideos = ((localStorage.getItem("endlessVideos") == null) ? 1 : localStor
 // Load Video Alignment Setting
 videoAlign = ((localStorage.getItem("videoAlign") == null) ? 1 : localStorage.getItem("videoAlign"));
 
+// Load Live Stream Alignment Setting
+liveStreamAlign = ((localStorage.getItem("liveStreamAlign") == null) ? 1 : localStorage.getItem("liveStreamAlign"));
+
+// Load Comments Stop Playback Setting
+commentsStopPlayback = ((localStorage.getItem("commentsStopPlayback") == null) ? 1 : localStorage.getItem("commentsStopPlayback"));
+
+// Load Favicon Setting
+replaceFavicon = ((localStorage.getItem("replaceFavicon") == null) ? 0 : localStorage.getItem("replaceFavicon"));
+
 
 // *************
 // Detect Domain
 // *************
-if(window.location.href.search("roosterteeth.com/") > 0) // Rooster Teeth
+if(window.location.href.search("roosterteeth.com/") >= 0) // Rooster Teeth
 {
     currentSite = "RT";
     currentSiteDomain = "roosterteeth.com";
+	
+	// favicon
+	var favIcon = "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA09pVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoMTMuMCAyMDEyMDMwNS5tLjQxNSAyMDEyLzAzLzA1OjIxOjAwOjAwKSAgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6NjlEOTMzRjJGNEEzMTFFMkI4QUFCRjlDMDVBNERFQjMiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NjlEOTMzRjNGNEEzMTFFMkI4QUFCRjlDMDVBNERFQjMiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo2OUQ5MzNGMEY0QTMxMUUyQjhBQUJGOUMwNUE0REVCMyIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo2OUQ5MzNGMUY0QTMxMUUyQjhBQUJGOUMwNUE0REVCMyIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PlKJMEUAAAKgSURBVHjalFNtSFNhFD5392P3uu1uTnfnamattDSiLBQjLEwJLaLv0AUlWUSRIwttKf4oFYmgsjRKsC/oT0H0gUb0a34E/nJm4mgaNCMp2dKlm7vTe7qTCku0euD8ec/znOccznkBZBAEAXPBFKfN3Jab0hhv1hc1XLGiUknnziLNV6Agf1MTogOHP9ZLONWKSUmWipl5Cv6CfrfH6+x8Dbpojmiqrff7fF8c/9UB/MidLMnz6o38Og5gvZak8uftgFUotsiktOGw2KomKcI/GVaNv/eKVsH4MEttsjjFYLBq0NMsU7/NtFbEM8pTGbzGnqOLNigVCnCOjYGBpiGGYYAZ8cIKgwmQoSEkhqCgz3X8M0o3yYhSRVLWQ4LQYRWE7ekaXiUhwDhKsGwyBLETI6AL+ICJMUOUAmBKAuB0ehhgWdU7n/cepaWZEpsgXF5MSBAeG4URQAiERkEpisBZVoN2XR4syc4GXUYGNO3aDY96uyF1eQpwHJsleydThCR5EjkOGNlR5FmIoijYeLACdCnJQK9aCUSMHhzOLrhYfAI63naDQJBwOBiApCkGXBr+2PTwR/btb0cZQ243dvW8QffQJ7z7ogULCgvRaDbLA8F07C23Y3vleexPEPC6ZWnkbcd0gbiERZvLqqsc91+99DeX2jGd5X6JfkZN462IB/bmbsUHcQLKm6r5c3va2+WVE3aj4TehiufxeY8TpVE/dqWuxXo1hTzL1s3afWJ62obHpWdRMUNsq76AX2XXcFsHti2MxQolgTTD2Oa6OfJc0dGhS3VXsfJGA3a6+lAKBNFjO4ONKsAcmhmQr3LNvHevW2Da8+HJMxSftuBg8Wm8Y+DxAAWooaha+FdEA5TtJCGcSRIuNUFci/zo+fjfBRgAU8wMakurlqkAAAAASUVORK5CYII=";
 }
-else if(window.location.href.search("fun.haus/") > 0) // Funhaus
+else if(window.location.href.search("fun.haus/") >= 0) // Funhaus
 {
     currentSite = "FH";
     currentSiteDomain = "fun.haus";
@@ -147,7 +183,7 @@ else if(window.location.href.search("fun.haus/") > 0) // Funhaus
     // favicon
     var favIcon = "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAABSlBMVEUAAAABAAECAQA3GgYrEgkXCwIUCgIVCgIZDAQcDgMVCgIEAgEDAQADAQADAQEEAgIKBQEDAgACAQAFAgECAQAAAAAAAAEIBAABAAACAQADAQABAAAAAAABAAABAAABAQABAQIHBAADAgAJBQIDAgEAAAAAAAADAQEIBAEHAwEGAwEIBAMGAwEBAAAGAwEJBQECAQEAAAADAgEFAwAHBAEMBgMGAwEEAgEAAAABAAAHAwACAQAGAwIBAAAAAAADAgEGAwAIBAEGAwEFAgEBAAAJBAIDAgEAAAADAQEJBQEYEQMWCwIIBAEFAwEBAAAGAwEHAwIDAQABAAACAQAVCwEIBgACAQABAQEBAQATCwAHBgABAQAAAAAFAgECAQADAQADAQAEAgAXDAELBwIDAgADAQADAQEcDgIaDQEcDgIbDgIbDgIAAAD///+/K5A+AAAAbHRSTlMAAAAAAAkKCgMCCarCwb44KLjCqOH7SjXz3szx/u3o5EM1yh9r/PNSICUnCDj9bh5Q94dnQAROjPj8U58LwvZ+XDtEgfcmcfRZGwEBG1v1dCfR9KUEA6PUsgQDr+SiuLe6gAMCfrikBQYEBAbomQOXAAAAAWJLR0RtuwYArQAAAAd0SU1FB+ACHQEvODn/h8QAAAC6SURBVBjTY2BAB6xsEMDOwckFpFgZuHl4wYCPX0CQl1dImEEkBwJExcQlgJQkg5R0To6MrJycvIIiUEBaiUFZRTVHTV1DU0tbRyJHV0+fgdFANMfQyNjE1MzcIsfSigksAATWNrZAEqeAnb2Do6mTswtYwNVNNcfdw9PL28fXL0fXP4AhMAhorV9wSGiYn0xOjl841GERkVHRYEYMQ2xcfHx8QmJSckoCkJGaxpCeAQKZzCxZYEY2hu8B+5s3RDPiTSQAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTYtMDItMjlUMDE6NDc6NTYrMDE6MDBpZHDiAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE2LTAyLTI5VDAxOjQ3OjU2KzAxOjAwGDnIXgAAAFd6VFh0UmF3IHByb2ZpbGUgdHlwZSBpcHRjAAB4nOPyDAhxVigoyk/LzEnlUgADIwsuYwsTIxNLkxQDEyBEgDTDZAMjs1Qgy9jUyMTMxBzEB8uASKBKLgDqFxF08kI1lQAAAABJRU5ErkJggg==";
 }
-else if(window.location.href.search("achievementhunter.com/") > 0) // Achievement Hunter
+else if(window.location.href.search("achievementhunter.com/") >= 0) // Achievement Hunter
 {
     currentSite = "AH";
     currentSiteDomain = "achievementhunter.com";
@@ -155,7 +191,7 @@ else if(window.location.href.search("achievementhunter.com/") > 0) // Achievemen
     // favicon
 	var favIcon = "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JQAAgIMAAPn/AACA6QAAdTAAAOpgAAA6mAAAF2+SX8VGAAACE1BMVEUnQxsqRx43VitunmA6XC0AAABwtlI7Xi9TeUUpRx0+YS0mRRssTh8tUB9vr1FzwFFyvFFvrlEsUB8rTh4mRBo9Xy05XSo4XilxtVFxtFI2WSU2WSdxt1EFHABur1FzvFFyu1FurlFwtFFwsE5xu1NxulJwsFBtrFFyulFxulFsqlFxtlFvq1FxuVFup1EAAAE7Wy1ws1F0xFFusVFvsVJ40k44WCtAYDFvtVFynlpuoFhvtFE6WytwtlFwtlJxt1Fxt1FxtVFxuFFxuFFxtFJxtlFxuFFxuFFxtlFxt1Fxt1FvtVFvtVFvtFFutFButFBvtVBxt1Fxt1FvtFBvtVFwt1Fxt1Fxt1Fxt1FxuVFoqEppq0xxuFFxt1Fwt1FwtVFxt1FxuFFxuFFxt1FwtVBvslJxt1FxuFFxuFFxtlFvsVJwtlFyuVJyuVJwtlF0vFNzvFNwtFFxuFFRhDtxuFFws1FwtlFxuFFzu1J0vFN0vFNzu1JxuFFwtlFxt1FxuFFxt1Fxs1Fxs1Fxt1FxuFFxt1Fxt1Fxt1FwtlFwtlFxt1Fxt1Fws1JvtVFwtlFwtVFwtVFwtlFwtFJyulJyuVJin0djoEcZKBIbLBRxuFFxuVFssE4mPhwpQh5tsk9zvFNIdDRKeDZkokgwTyMbLBMcLRQyUCRlpElbk0EIDAYBAgEJDwddl0Nrr01UiDxUiT3///+yFwYrAAAAk3RSTlMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPTmIgRDLxA098+83gHgZFxYWFSDEvh0amtXY1tn5+NnUlReD8O5+FANM0MxIAyKsph93bwq6/rMHMevxjpLz5yxx2FYEBVrbarOwKi20rQcichIVcx8RzCN3AAAAAWJLR0SwQ2SuxAAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB+ADDAkKMAQBl+MAAAELSURBVBjTY2BgZGJmYWWztWNjZedg4mRg4OLm4WXl47d3EBBkFRIWEWUQE2dlZZVwdHJ2kQQypKQZWEFAxtXN3UMGyJCVBQvIyXtOnuKloAhiM3j7+Pr5BwROnRYU7O/n6xPCEBoWHhEWGTV9RnRMWER4bBxDfELizJmzZs+ZO2/WzJlJySkMSqlp6TNnzl+wcP7MmRmZWUoMrMoq2TmLFi9Zumx5bp6qGivQFnWN/BUrV61avaZAU4sVJKBUWLR2XXHx+tklpUpgAZmy8lkVlVXVs2pqtUECOpp1M+sbGpuaW2a26urpMxgYFra1dxgZm5h2dnX3GJoxmFv09vVrW7KyWslMmDjJ2gYAM+ZK57lPUXIAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTYtMDMtMTJUMDk6MTA6NDgrMDE6MDDi2p8WAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE2LTAzLTEyVDA5OjEwOjQ4KzAxOjAwk4cnqgAAAFd6VFh0UmF3IHByb2ZpbGUgdHlwZSBpcHRjAAB4nOPyDAhxVigoyk/LzEnlUgADIwsuYwsTIxNLkxQDEyBEgDTDZAMjs1Qgy9jUyMTMxBzEB8uASKBKLgDqFxF08kI1lQAAAABJRU5ErkJggg==";
 }
-else if(window.location.href.search("theknow.tv/") > 0) // The Know
+else if(window.location.href.search("theknow.tv/") >= 0) // The Know
 {
     currentSite = "TK";
     currentSiteDomain = "theknow.tv";
@@ -163,7 +199,7 @@ else if(window.location.href.search("theknow.tv/") > 0) // The Know
     // favicon
 	var favIcon = "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JQAAgIMAAPn/AACA6QAAdTAAAOpgAAA6mAAAF2+SX8VGAAABv1BMVEUAAAABAQEAZJ8AY50AY54CAgIADRUAXZMBITQAYpwAHCwAIzcAY5wDAwMAYZoAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEAAAAAAAAAAAAAAAAAAAAAAAABAQEAY50AY50AY50AZqIABAYAAAAAAAAAAAABAQEAY50AY50AY50AY50AY50AYJgAAAAAAAAAAAAAAAAAAAAAAAAAY50AY50AY50AY50AZJ4AT30AAAAAAAAAAAAAAAADAwMAY50AY50AY50AaKUCGSYAAAAAAAABAQEAYpsAYpwAY50AY50AZJ4AAQEAAAABAQEAY50AY50AY50HBwcAAAABAQEAY50AY50AY50AY54BAQEAAAAAAAAAAAABAQEAY50AY50AY54BAQEAAAAAAAAAAAAAY50AY50AY50AAAAAAAAAAAAAAAAAY50AY50AY50AY50AZqIAAAAAAAAAAAABAQEAY50AY50AY50BX5YCAQAAAAAAAAAAY5wAZJ8ASXQAAAAAAAAAAAAAAAAAYZoAZqEAL0oAAAAAAAAAAAAAAAAAAAAAAAAAY53////U6D+TAAAAknRSTlMAAAAAAAAAAAAAAAAAAAAMlrtBRLeqJuX7SinO+HdO+vE1FLaZCgECNW6EMJfKHwdseBqWoLDbkvnrRhXO/N7wfdX3/HkBA6SoTE/yrQ9khOWMCWzaLPHdIgGeB2HWvggQy/3fIZPPES7A9k9P9lJZ71aJe/Do2EKKFZsMFC3Ik7Wa6QSof9xfHmAEYFWxKASBZzt/MQ8AAAABYktHRJR/Z0oVAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4AMMCCEX1rm11gAAAPRJREFUGNNjYIAAfgFBIQYGYRFRKJ9RTFxCkkFKWkYWwmdikJNXUFRSnqSiysDArKbOoqGpNUlcW2eSrh6Qr29gaGRsYjrJzNzC0oqBlYHZ2sbWzt7BcZKTk7OLKyNQhZu7rYenl/ekSZN8fIF8Bj//gMAgtmAgPySUASQQNjk8gj0yCiggEg3iM8TExsVzJCROSpqUnAIW4ExNS+fKsEzKzJLPBrspJzw3jzs/qaDQcVIR0FIGhuKS0rLyiknSlVWTMqtBemo0auvqGyY1MhQ6N4WC9fA0t7S2TWpn6AiZ1MnACxTg6+ru6e3tY+ifkDkRaAgA/ss77+z5UvcAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTYtMDMtMTJUMDg6MzM6MjMrMDE6MDBIfxksAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE2LTAzLTEyVDA4OjMzOjIzKzAxOjAwOSKhkAAAAFd6VFh0UmF3IHByb2ZpbGUgdHlwZSBpcHRjAAB4nOPyDAhxVigoyk/LzEnlUgADIwsuYwsTIxNLkxQDEyBEgDTDZAMjs1Qgy9jUyMTMxBzEB8uASKBKLgDqFxF08kI1lQAAAABJRU5ErkJggg==";
 }
-else if(window.location.href.search("screwattack.com/") > 0) // ScrewAttack
+else if(window.location.href.search("screwattack.com/") >= 0) // ScrewAttack
 {
     currentSite = "SA";
     currentSiteDomain = "screwattack.com";
@@ -178,7 +214,7 @@ else if(window.location.href.search("screwattack.com/") > 0) // ScrewAttack
 // **************
 // Change favicon
 // **************
-if(currentSite != "RT")
+if(replaceFavicon == 1)
 {
 	var docHead = document.getElementsByTagName('head')[0];       
 	var newLink = document.createElement('link');
@@ -204,13 +240,15 @@ if(settingsLink != null)
 if(window.location.pathname=="/EnhancedRT/settings")
 {
     var settings = document.getElementById("body-block");
-	var settingsHTML = "<center><div style=\"display: inline-block;padding: 10px;\"><h1>Enhanced RT Settings</h1><div style=\"border:1px solid black;display: inline-block;padding: 10px;\"><h3>Recently Added Settings</h3>\n\
+	var settingsHTML = "<center><div style=\"display: inline-block;padding: 10px;\"><h1>Enhanced RT Settings</h1><div style=\"border:1px solid black;display: inline-block;padding: 10px;\"><h3>Recently Added Page Settings</h3>\n\
 	<label style=\"color:#666;font-size:12px;\"><input style=\"margin:0 0 0 1em;\" type=checkbox id=\"endlessVideos\" "+((endlessVideos == 1) ? "checked" : "")+">Endless Videos</label>";
 	for ( i = 0; i < hide.length; i++)
 	{
 		settingsHTML = settingsHTML.concat("<label style=\"color:#666;font-size:12px;\"><input style=\"margin:0 0 0 1em;\" type=checkbox id="+hide[i][hideText]+" "+((hide[i][hideValue] == 0) ? "checked" : "")+">"+hide[i][hideName]+"</label>");
 	}
-	settingsHTML = settingsHTML.concat("</div><br><br><div style=\"border:1px solid black;padding: 10px;\"><h3>Video Settings</h3><label style=\"color:#666;font-size:12px;\"><input style=\"margin:0 0 0 1em;\" type=checkbox id=\"videoAlign\" "+((videoAlign == 1) ? "checked" : "")+">Align Video Player with Browser Window</label></div>\n\
+	settingsHTML = settingsHTML.concat("</div><br><br><div style=\"border:1px solid black;padding: 10px;\"><h3>Video Page Settings</h3><label style=\"color:#666;font-size:12px;\"><input style=\"margin:0 0 0 1em;\" type=checkbox id=\"videoAlign\" "+((videoAlign == 1) ? "checked" : "")+">Align Video Player with Browser Window</label> <label style=\"color:#666;font-size:12px;\"><input style=\"margin:0 0 0 1em;\" type=checkbox id=\"commentsStopPlayback\" "+((commentsStopPlayback == 1) ? "checked" : "")+">Pause Video Loaded Using Comment Button</label></div>\n\
+	<br><br><div style=\"border:1px solid black;padding: 10px;\"><h3>Live Stream Page Settings</h3><label style=\"color:#666;font-size:12px;\"><input style=\"margin:0 0 0 1em;\" type=checkbox id=\"liveStreamAlign\" "+((liveStreamAlign == 1) ? "checked" : "")+">Align Video Player with Browser Window</label></div>\n\
+	<br><br><div style=\"border:1px solid black;padding: 10px;\"><h3>Site Wide Settings</h3><label style=\"color:#666;font-size:12px;\"><input style=\"margin:0 0 0 1em;\" type=checkbox id=\"replaceFavicon\" "+((replaceFavicon == 1) ? "checked" : "")+">Replace Favicon with <img src=\"data:image/png;base64,"+favIcon+"\"> (Legacy Setting)</label></div>\n\
 	<br><font style=\"color:red;\">Please note that these settings will only apply to the website you are currently on, which is: "+currentSiteDomain+"<br>\n\
 	Visit the settings page on each website using the links below to change the settings for those sites.</font><br>\n\
 	<br><a href=\"http://roosterteeth.com/EnhancedRT/settings\">Rooster Teeth</a> &nbsp; &nbsp; <a href=\"http://achievementhunter.com/EnhancedRT/settings\">Achievement Hunter</a> &nbsp; &nbsp; <a href=\"http://fun.haus/EnhancedRT/settings\">Funhaus</a> &nbsp; &nbsp; <a href=\"http://screwattack.com/EnhancedRT/settings\">ScrewAttack</a> &nbsp; &nbsp; <a href=\"http://theknow.tv/EnhancedRT/settings\">The Know</a></div></center>");
@@ -258,6 +296,45 @@ if(window.location.pathname=="/EnhancedRT/settings")
 		{
 			videoAlign = 1;
 			localStorage.setItem("videoAlign", videoAlign);
+		}
+	};
+	
+	document.getElementById("commentsStopPlayback").onclick = function () {
+		if(commentsStopPlayback == 1)
+		{
+			commentsStopPlayback = 0;
+			localStorage.setItem("commentsStopPlayback", commentsStopPlayback);
+		}
+		else
+		{
+			commentsStopPlayback = 1;
+			localStorage.setItem("commentsStopPlayback", commentsStopPlayback);
+		}
+	};
+	
+	document.getElementById("liveStreamAlign").onclick = function () {
+		if(liveStreamAlign == 1)
+		{
+			liveStreamAlign = 0;
+			localStorage.setItem("liveStreamAlign", liveStreamAlign);
+		}
+		else
+		{
+			liveStreamAlign = 1;
+			localStorage.setItem("liveStreamAlign", liveStreamAlign);
+		}
+	};
+	
+	document.getElementById("replaceFavicon").onclick = function () {
+		if(replaceFavicon == 1)
+		{
+			replaceFavicon = 0;
+			localStorage.setItem("replaceFavicon", replaceFavicon);
+		}
+		else
+		{
+			replaceFavicon = 1;
+			localStorage.setItem("replaceFavicon", replaceFavicon);
 		}
 	};
 	
@@ -336,27 +413,27 @@ if(window.location.pathname=="/episode/recently-added")
 			childLI[i].style.marginRight = "1%";
 			
 			video = childLI[i].children[0].href;
-			if(hide[hideSA][hideValue] == 1 && video.search("episode/(.*the-1-show|sidescrollers|five-fun-facts|.*top-10|desk-of-death-battle|.*evil-craig|available-now-podcast|.*reasons-we-hate|.*-sidescrollers|.*reasons-we-love|is-.*-good|announcing-g1|.*-screwattack-royal-rumble|.*one-minute-melee|screwattacks-top-10|samus-nutty|.*death-battle|fairly-odd-relatives|pokemon-vs-digimon|.*top-5|five-more-fun-facts|.*the-best.*ever|community-project|batman-dual|how-much-would-it-cost|the-worst|clip-of-the-week|dbx|top-10s|who-is|chad-|.*great-moments-in|hard-news|metal-gear-ben|.*nerdtastic|newsroom|[advantage]-newsroom|.*out-of-the-box|reboot-or-retro|.*the-armory|.*the-industry|.*video-game-vault|yaoi-hitler|dicks|top-ten|jackie-chan-hates-his-son|top-20|what-new-shows-are-coming-to-screwattack|superman-dies|screwattack-advantage|what-other-crazy|the-great-sphero|nicks-worst|amiibottles|screwattack-story-time|.*\x3Fwho-is\x3F|what-super-powers|chuck-vs-segata|watch-parker|sega-channel)") > 0)
+			if(hide[hideSA][hideValue] == 1 && video.search("episode/(.*the-1-show|sidescrollers|five-fun-facts|.*top-10|desk-of-death-battle|.*evil-craig|available-now-podcast|.*reasons-we-hate|.*-sidescrollers|.*reasons-we-love|is-.*-good|announcing-g1|.*-screwattack-royal-rumble|.*one-minute-melee|screwattacks-top-10|samus-nutty|.*death-battle|fairly-odd-relatives|pokemon-vs-digimon|.*top-5|five-more-fun-facts|.*the-best.*ever|community-project|batman-dual|how-much-would-it-cost|the-worst|clip-of-the-week|dbx|top-10s|who-is|chad-|.*great-moments-in|hard-news|metal-gear-ben|.*nerdtastic|newsroom|[advantage]-newsroom|.*out-of-the-box|reboot-or-retro|.*the-armory|.*the-industry|.*video-game-vault|yaoi-hitler|dicks|top-ten|jackie-chan-hates-his-son|top-20|what-new-shows-are-coming-to-screwattack|superman-dies|screwattack-advantage|what-other-crazy|the-great-sphero|nicks-worst|amiibottles|screwattack-story-time|.*\x3Fwho-is\x3F|what-super-powers|chuck-vs-segata|watch-parker|sega-channel)") >= 0)
 			{
 				 video = video.replace(currentSiteDomain, "screwattack.com");
 				 childLI[i].style.display = "none";
 			}
-			else if(hide[hideAH][hideValue] == 1 && video.search("episode/(lets-play|ahwu|things-to-do-in|play-pals|achievement-unlocked|behind-the-scenes|achievement-hunter|fails-of-the-weak|easter-eggs|achievement-hunt|five-facts|off-topic|how-to|vs-|go-|rage-quit|countdown|achievement-horse|forced-enjoyment|megacraft|sunday-driving|this-is|imaginary-achievements)") > 0)
+			else if(hide[hideAH][hideValue] == 1 && video.search("episode/(lets-play|ahwu|things-to-do-in|play-pals|achievement-unlocked|behind-the-scenes|achievement-hunter|fails-of-the-weak|easter-eggs|achievement-hunt|five-facts|off-topic|how-to|vs-|go-|rage-quit|countdown|achievement-horse|forced-enjoyment|megacraft|sunday-driving|this-is|imaginary-achievements)") >= 0)
 			{
 				video = video.replace(currentSiteDomain, "achievementhunter.com");
 				childLI[i].style.display = "none";
 			}
-			else if(hide[hideTK][hideValue] == 1 && video.search("episode/(the-know|the-patch|in-review|news-roundups|leaderboard|rt-news)") > 0)
+			else if(hide[hideTK][hideValue] == 1 && video.search("episode/(the-know|the-patch|in-review|news-roundups|leaderboard|rt-news)") >= 0)
 			{
 				video = video.replace(currentSiteDomain, "theknow.tv");
 				childLI[i].style.display = "none";
 			}
-			else if(hide[hideFH][hideValue] == 1 && video.search("episode/(gameplay|dude-soup|fan-show|funhaus|fullhaus|open-haus|demo-disk|rest-of)") > 0)
+			else if(hide[hideFH][hideValue] == 1 && video.search("episode/(gameplay|dude-soup|fan-show|funhaus|fullhaus|open-haus|demo-disk|rest-of)") >= 0)
 			{
 				video = video.replace(currentSiteDomain, "fun.haus");
 				childLI[i].style.display = "none";
 			}
-			else if(hide[hideRT][hideValue] == 1 && video.search("episode/(rt-sponsor-cut|happy-hour|free-play|lazer-team|million-dollars-but|rt-podcast|the-slow-mo-guys|rt-animated-adventures|rt-shorts|immersion|red-vs-blue|rt-anime-podcast|on-the-spot|buff-buddies|sponsor-vlog|rt-life|sportsball|rt-specials|rwby|x-ray-and-vav|trailers|social-disorder|rooster-teeth-entertainment-system|the-strangerhood|panics|1-800-magic|music-videos|rtx|pilot-program|rt-recap|r-t-docs|ten-little-roosters|rt-showcase)") > 0)
+			else if(hide[hideRT][hideValue] == 1 && video.search("episode/(rt-sponsor-cut|happy-hour|free-play|lazer-team|million-dollars-but|rt-podcast|the-slow-mo-guys|rt-animated-adventures|rt-shorts|immersion|red-vs-blue|rt-anime-podcast|on-the-spot|buff-buddies|sponsor-vlog|rt-life|sportsball|rt-specials|rwby|x-ray-and-vav|trailers|social-disorder|rooster-teeth-entertainment-system|the-strangerhood|panics|1-800-magic|music-videos|rtx|pilot-program|rt-recap|r-t-docs|rt-docs|ten-little-roosters|rt-showcase)") >= 0)
 			{
 				video = video.replace(currentSiteDomain, "roosterteeth.com");
 				childLI[i].style.display = "none";
@@ -486,12 +563,43 @@ if(window.location.pathname=="/episode/recently-added")
 // **************
 if(window.location.pathname.search("/episode/") >= 0 && window.location.pathname != "/episode/recently-added")
 {
-	var videoAlignDone = 0;
 	window.onload = function(){
-
-		if(videoAlign == 1 && videoAlignDone == 0)
+		if(window.location.hash == "#comments" && commentsStopPlayback == 1)
 		{
-			videoAlignDone = 1;
+			//var playerDiv = document.getElementById("episode-26089");
+			//alert(playerDiv[0].children[0].id);
+			//jwplayer(playerDiv[0].children[0].id).stop();
+			
+			//var playerInstance = jwplayer(episodeID);
+			//var playerInstance = jwplayer('episode-26089');
+			//playerInstance.stop();
+			
+			exec(function() {
+				var playerDiv = document.getElementsByClassName("container");
+				episodeID = playerDiv[0].children[0].id;
+				var playerInstance = jwplayer(episodeID);
+				//alert("test pause");
+				playerInstance.play(false);
+				/*
+				function stopVideoNow()
+				{
+					//alert("playing");
+					if(videoStopped == 0)
+					{
+						//alert("stopping");
+						videoStopped = 1;
+						playerInstance.pause();
+					}
+				}
+				videoStopped = 0;
+				//playerInstance.onPlay(stopVideoNow());
+				playerInstance.onBeforePlay(stopVideoNow())
+				*/
+			});
+		}
+		
+		if(videoAlign == 1 && window.location.hash != "#comments")
+		{
 			var heroBlock = document.getElementById("hero-block");
 			//var scrollPos = -window.pageYOffset + ((heroBlock.offsetTop + heroBlock.clientHeight) - window.innerHeight);
 			var scrollPos = (heroBlock.offsetTop + heroBlock.clientHeight) - window.innerHeight;
@@ -505,5 +613,86 @@ if(window.location.pathname.search("/episode/") >= 0 && window.location.pathname
 			window.scrollTo(0, parseInt(scrollPos));
 		}
 
+		
+		function linkVideoTimestamps(commentElement)
+		{
+			for ( var i = 0; i < commentElement.length; i++)
+			{
+				var j = 2;
+				while(commentElement[i].children[1].children[j].tagName != "DIV")
+				{
+					//console.log("Comment: "+i+", Line: "+j)
+					commentElement[i].children[1].children[j].innerHTML = commentElement[i].children[1].children[j].innerHTML.replace(/(?!<a[^>]*?>)((\d|\d\d)(:))?(\d|\d\d)(:)(\d\d)(?![^<]*?<\/a>)/g, "<a title=\"Go to video timestamp $2$3$4$5$6\" href=\"#\" onclick=\"var heroBlock = document.getElementById('hero-block');var scrollPos = (heroBlock.offsetTop + heroBlock.clientHeight) - window.innerHeight;window.scrollTo(0, scrollPos);if(jwplayer('"+episodeID+"').getState()!=='playing' && jwplayer('"+episodeID+"').getState()!=='paused'){jwplayer('"+episodeID+"').play(true);setTimeout(function() {jwplayer('"+episodeID+"').seek((0$2*3600)+($4*60)+$6);}, 1000);}else{jwplayer('"+episodeID+"').seek((0$2*3600)+($4*60)+$6);}return false;\">$2$3$4$5$6</a>");
+					j++;
+				}
+				
+				// Check for comment replies
+				j++;
+				//console.log(commentElement[i].children[1].children[j]);
+				if(commentElement[i].children[1].children[j] != undefined)
+				{
+					//console.log(commentElement[i].children[1].children[j].tagName);
+					if(commentElement[i].children[1].children[j].tagName == "FORM")
+					{
+						j++;
+					}
+					
+					if(commentElement[i].children[1].children[j].children[0] != undefined)
+					{
+						//console.log(commentElement[i].children[1].children[j].children.length+" comment Replies Detected");
+						var commentReplies = commentElement[i].children[1].children[j].children;
+						linkVideoTimestamps(commentReplies);
+					}
+				}
+			}
+		}
+		
+		// Comment Timestamps
+		var commentsList = document.getElementsByClassName("comments-list");
+		var comments = commentsList[0].children;
+		var playerDiv = document.getElementsByClassName("jwplayer");
+		var episodeID = playerDiv[0].id;
+
+		linkVideoTimestamps(comments);
+		
+		var controls = document.getElementsByClassName("controls")[0];
+		
+		// If there is more than 1 page of comments
+		if(controls != undefined)
+		{
+			controls.addEventListener('click', function() {
+				setTimeout(function() {
+					var commentsList = document.getElementsByClassName("comments-list");
+					var comments = commentsList[0].children;
+					linkVideoTimestamps(comments);
+				}, 3000);
+			});
+		}
+
+	}
+		
+}
+
+
+// ****************
+// Live Stream Page
+// ****************
+if(window.location.pathname.search("/livestream/") >= 0)
+{
+	if(liveStreamAlign == 1)
+	{
+		window.onload = function(){
+			var heroBlock = document.getElementById("hero-block");
+			//var scrollPos = -window.pageYOffset + ((heroBlock.offsetTop + heroBlock.clientHeight) - window.innerHeight);
+			var scrollPos = (heroBlock.offsetTop + heroBlock.clientHeight) - window.innerHeight;
+			/*
+			alert("Block Top: "+heroBlock.offsetTop+"\n\
+			Block Height: "+heroBlock.clientHeight+"\n\
+			Window pageYOffset: "+window.pageYOffset+"\n\
+			Window innerHeight: "+window.innerHeight);
+			alert(scrollPos);
+			*/
+			window.scrollTo(0, parseInt(scrollPos));
+		}
 	}
 }

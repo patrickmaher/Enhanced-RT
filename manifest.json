@@ -16,7 +16,7 @@
 			   "48": "icons/icon48.png",
 			   "128": "icons/icon128.png" },
     "converted_from_user_script": true,
-    "description":  "Enhancments for the Rooster Teeth family of websites.",
+    "description":  "Enhancements for the Rooster Teeth family of websites.",
     "name":         "Enhanced RT",
-    "version":      "0.1.0"
+    "version":      "0.2.0"
 }
