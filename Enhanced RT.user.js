@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name       Enhanced RT
-// @version    0.2.1
+// @version    0.2.2
 // @description  Enhancments for the Rooster Teeth family of websites
 // @include    *://roosterteeth.com/*
 // @include    *://achievementhunter.com/*
@@ -54,6 +54,8 @@ To be fixed
 
 Versions
 ========
+0.2.2
+-Added new Achievement Hunter show Theater Mode to the filter list.
 0.2.1
 -Added new ScrewAttack show Random Awesomeness to the filter list.
 0.2.0
@@ -420,7 +422,7 @@ if(window.location.pathname=="/episode/recently-added")
 				 video = video.replace(currentSiteDomain, "screwattack.com");
 				 childLI[i].style.display = "none";
 			}
-			else if(hide[hideAH][hideValue] == 1 && video.search("episode/(lets-play|ahwu|things-to-do-in|play-pals|achievement-unlocked|behind-the-scenes|achievement-hunter|fails-of-the-weak|easter-eggs|achievement-hunt|five-facts|off-topic|how-to|vs-|go-|rage-quit|countdown|achievement-horse|forced-enjoyment|megacraft|sunday-driving|this-is|imaginary-achievements)") >= 0)
+			else if(hide[hideAH][hideValue] == 1 && video.search("episode/(lets-play|ahwu|things-to-do-in|play-pals|achievement-unlocked|behind-the-scenes|achievement-hunter|fails-of-the-weak|easter-eggs|achievement-hunt|five-facts|off-topic|how-to|vs-|go-|rage-quit|countdown|achievement-horse|forced-enjoyment|megacraft|sunday-driving|this-is|imaginary-achievements|theater-mode)") >= 0)
 			{
 				video = video.replace(currentSiteDomain, "achievementhunter.com");
 				childLI[i].style.display = "none";
