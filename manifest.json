@@ -5,10 +5,11 @@
         "include_globs":    [ "*" ],
         "js":               [ "Enhanced RT.user.js" ],
         "matches":          [   "*://roosterteeth.com/*",
-								"*://achievementhunter.com/*",
-								"*://theknow.tv/*",
-								"*://fun.haus/*",
-								"*://screwattack.com/*"
+								"*://www.roosterteeth.com/*",
+								"*://achievementhunter.roosterteeth.com/*",
+								"*://theknow.roosterteeth.com/*",
+								"*://funhaus.roosterteeth.com/*",
+								"*://screwattack.roosterteeth.com/*"
                             ],
         "run_at": "document_end"
     } ],
@@ -18,5 +19,5 @@
     "converted_from_user_script": true,
     "description":  "Enhancements for the Rooster Teeth family of websites.",
     "name":         "Enhanced RT",
-    "version":      "0.2.3"
+    "version":      "0.3.0"
 }
