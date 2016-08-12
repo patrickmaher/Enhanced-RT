@@ -1,16 +1,10 @@
 {
     "manifest_version": 2,
     "content_scripts": [ {
-        "exclude_globs":    [  ],
+        "exclude_globs":    [ "*://store.roosterteeth.com/*" ],
         "include_globs":    [ "*" ],
         "js":               [ "Enhanced RT.user.js" ],
-        "matches":          [   "*://roosterteeth.com/*",
-								"*://www.roosterteeth.com/*",
-								"*://achievementhunter.roosterteeth.com/*",
-								"*://theknow.roosterteeth.com/*",
-								"*://funhaus.roosterteeth.com/*",
-								"*://screwattack.roosterteeth.com/*"
-                            ],
+        "matches":          [ "*://*.roosterteeth.com/*" ],
         "run_at": "document_end"
     } ],
 	"icons": { "16": "icons/icon16.png",
@@ -19,5 +13,6 @@
     "converted_from_user_script": true,
     "description":  "Enhancements for the Rooster Teeth family of websites.",
     "name":         "Enhanced RT",
-    "version":      "0.3.0"
+	"author":         "Patrick Maher",
+    "version":      "0.4.0"
 }
