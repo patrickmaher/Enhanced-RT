@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name       Enhanced RT
-// @version    0.4.0
+// @version    1.0.0
 // @description  Enhancments for the Rooster Teeth family of websites
 // @include    *://*.roosterteeth.com/*
 // @exclude    *://store.roosterteeth.com/*
@@ -23,12 +23,12 @@ Features
 The Known Issues
 ================
 -Filtering is based on a list of show titles that I manually entered. If new shows are added the list needs to be updated to correctly filter that show.
--Settings need to be configured separately for each RT website.
+-Endless Video feature makes queue button reload the page in order to queue a video instead of doing it in the background.
 
 Future Features
 ===============
 -Button to mark videos as watched.
--Fix bug that exists in Rooster Teeth websites that causes "Watch Later" button to fail when communicating across domains.
+-Make Enhanced RT settings link accessible when user is not logged in.
 
 
 Possible Future Features
@@ -51,6 +51,12 @@ To be fixed
 
 Versions
 ========
+1.0.0
+-Added new Rooster Teeth show Crunch Time to the filter list.
+-Added settings link to recently added page.
+-Firefox WebExtensions support.
+
+
 0.4.0
 -Added new Rooster Teeth shows Day 5 and Camp Camp to the filter list.
 -Added new Achievement Hunter show Heroes Halfwits to the filter list.
@@ -317,14 +323,18 @@ if(window.location.pathname=="/EnhancedRT/settings")
 	
 	for ( i = 0; i < hide.length; i++)
 	{
-		document.getElementById( hide[i][hideText] ).onclick = function () {
+		//console.log("Make onclick trigger for " + hide[i][hideName]);
+		document.getElementById( hide[i][hideText] ).onclick = function (event) {
+			//console.log("onclick detected for " + event.target.id);
 			if(hide[eval(event.target.id)][hideValue] == 1)
 			{
+				//console.log("onclick hide value changed to 0");
 				hide[eval(event.target.id)][hideValue] = 0;
 				localStorage.setItem(hide[eval(event.target.id)][hideText], hide[eval(event.target.id)][hideValue]);
 			}
 			else
 			{
+				//console.log("onclick hide value changed to 1");
 				hide[eval(event.target.id)][hideValue] = 1;
 				localStorage.setItem(hide[eval(event.target.id)][hideText], hide[eval(event.target.id)][hideValue]);
 			}
@@ -413,7 +423,7 @@ if(window.location.pathname=="/episode/recently-added")
 	var filters = document.getElementsByClassName("episode-blocks");
 	//alert(filters[0].parentNode.children[1].outerHTML);
 	
-	var filtersHTML = "<center>Enhanced RT Filters<br>\n\
+	var filtersHTML = "<center><b>Enhanced RT</b> (<a href=\"" + currentSiteDomain + "/EnhancedRT/settings\">Settings</a>)<br>\n\
 	<label style=\"color:#666;font-size:12px;\"><input style=\"margin:0 0 0 1em;\" type=checkbox id=\"endlessVideos\" "+((endlessVideos == 1) ? "checked" : "")+">Endless Videos</label>";
 	for ( i = 0; i < hide.length; i++)
 	{
@@ -424,7 +434,7 @@ if(window.location.pathname=="/episode/recently-added")
 
 	for ( i = 0; i < hide.length; i++)
 	{
-		document.getElementById( hide[i][hideText] ).onclick = function () {
+		document.getElementById( hide[i][hideText] ).onclick = function (event) {
 			if(hide[eval(event.target.id)][hideValue] == 1)
 			{
 				hide[eval(event.target.id)][hideValue] = 0;
@@ -489,7 +499,7 @@ if(window.location.pathname=="/episode/recently-added")
 					childLI[i].style.display = "none";
 				}
 			}
-			else if(video.search("episode/(rt-sponsor-cut|happy-hour|free-play|lazer-team|million-dollars-but|rt-podcast|the-slow-mo-guys|rt-animated-adventures|rt-shorts|immersion|red-vs-blue|rt-anime-podcast|on-the-spot|buff-buddies|sponsor-vlog|rt-life|sportsball|rt-specials|rwby|x-ray-and-vav|trailers|social-disorder|rooster-teeth-entertainment-system|the-strangerhood|panics|1-800-magic|music-videos|rtx|pilot-program|rt-recap|r-t-docs|rt-docs|ten-little-roosters|rt-showcase|day-5|camp-camp)") >= 0)
+			else if(video.search("episode/(rt-sponsor-cut|happy-hour|free-play|lazer-team|million-dollars-but|rt-podcast|the-slow-mo-guys|rt-animated-adventures|rt-shorts|immersion|red-vs-blue|rt-anime-podcast|on-the-spot|buff-buddies|sponsor-vlog|rt-life|sportsball|rt-specials|rwby|x-ray-and-vav|trailers|social-disorder|rooster-teeth-entertainment-system|the-strangerhood|panics|1-800-magic|music-videos|rtx|pilot-program|rt-recap|r-t-docs|rt-docs|ten-little-roosters|rt-showcase|day-5|camp-camp|crunch-time)") >= 0)
 			{
 				video = video.replace(window.location.host, "roosterteeth.com");
 				if(hide[hideRT][hideValue] == 1)
@@ -608,10 +618,20 @@ if(window.location.pathname=="/episode/recently-added")
 							
 								// When frame is loaded move videos and controls to parent page
 								document.getElementById("endless").onload = function () {
-									var endlessFrameVideos = window.frames["endless"].contentWindow.document.getElementsByClassName("episode-blocks");
-									filters[0].innerHTML = filters[0].innerHTML.concat(endlessFrameVideos[0].innerHTML);
+									console.log("Endless iframe loaded");
+									//console.log(document.getElementById("endless").contentWindow.document.getElementsByClassName("episode-blocks"));
 									
-									var endlessFrameControls = window.frames['endless'].contentWindow.document.getElementsByClassName("controls")[0];
+									//var endlessFrameVideos = window.frames["endless"].contentWindow.document.getElementsByClassName("episode-blocks");
+									
+									var endlessFrameVideos = document.getElementById("endless").contentWindow.document.getElementsByClassName("episode-blocks");
+									
+									filters[0].innerHTML = filters[0].innerHTML.concat(endlessFrameVideos[0].innerHTML);
+									//console.log(endlessFrameVideos[0].innerHTML);
+									
+									//var endlessFrameControls = window.frames['endless'].contentWindow.document.getElementsByClassName("controls")[0];
+									
+									var endlessFrameControls = document.getElementById("endless").contentWindow.document.getElementsByClassName("controls")[0];
+									
 									var primaryControls = document.getElementsByClassName("controls")[0];
 									primaryControls.outerHTML = endlessFrameControls.outerHTML;
 									
@@ -622,6 +642,8 @@ if(window.location.pathname=="/episode/recently-added")
 									// Delete loading animation when done
 									var loadingDiv = document.getElementById("loadingAnimation");
 									loadingDiv.parentNode.removeChild(loadingDiv);
+									
+									hideVideos();
 									
 									endlessPagesLoaded++;
 									// Stop loading every 10 pages and show button to load more
