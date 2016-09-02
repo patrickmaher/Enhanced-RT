@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name       Enhanced RT
-// @version    1.0.0
+// @version    1.0.1
 // @description  Enhancments for the Rooster Teeth family of websites
 // @include    *://*.roosterteeth.com/*
 // @exclude    *://store.roosterteeth.com/*
@@ -51,6 +51,10 @@ To be fixed
 
 Versions
 ========
+1.0.1
+-Added new Rooster Teeth show Always Open to the filter list.
+-Disabled the feature that makes timestamps in comments clickable. Rooster Teeth implemented a new video player on 2016-09-01 which broke this feature. I will fix it in a future update.
+
 1.0.0
 -Added new Rooster Teeth show Crunch Time to the filter list.
 -Added settings link to recently added page.
@@ -499,7 +503,7 @@ if(window.location.pathname=="/episode/recently-added")
 					childLI[i].style.display = "none";
 				}
 			}
-			else if(video.search("episode/(rt-sponsor-cut|happy-hour|free-play|lazer-team|million-dollars-but|rt-podcast|the-slow-mo-guys|rt-animated-adventures|rt-shorts|immersion|red-vs-blue|rt-anime-podcast|on-the-spot|buff-buddies|sponsor-vlog|rt-life|sportsball|rt-specials|rwby|x-ray-and-vav|trailers|social-disorder|rooster-teeth-entertainment-system|the-strangerhood|panics|1-800-magic|music-videos|rtx|pilot-program|rt-recap|r-t-docs|rt-docs|ten-little-roosters|rt-showcase|day-5|camp-camp|crunch-time)") >= 0)
+			else if(video.search("episode/(rt-sponsor-cut|happy-hour|free-play|lazer-team|million-dollars-but|rt-podcast|the-slow-mo-guys|rt-animated-adventures|rt-shorts|immersion|red-vs-blue|rt-anime-podcast|on-the-spot|buff-buddies|sponsor-vlog|rt-life|sportsball|rt-specials|rwby|x-ray-and-vav|trailers|social-disorder|rooster-teeth-entertainment-system|the-strangerhood|panics|1-800-magic|music-videos|rtx|pilot-program|rt-recap|r-t-docs|rt-docs|ten-little-roosters|rt-showcase|day-5|camp-camp|crunch-time|always-open)") >= 0)
 			{
 				video = video.replace(window.location.host, "roosterteeth.com");
 				if(hide[hideRT][hideValue] == 1)
@@ -740,7 +744,7 @@ if(window.location.pathname.search("/episode/") >= 0 && window.location.pathname
 			window.scrollTo(0, parseInt(scrollPos));
 		}
 
-		
+/*		
 		function linkVideoTimestamps(commentElement)
 		{
 			for ( var i = 0; i < commentElement.length; i++)
@@ -795,6 +799,7 @@ if(window.location.pathname.search("/episode/") >= 0 && window.location.pathname
 				}, 3000);
 			});
 		}
+*/
 
 	}
 		
