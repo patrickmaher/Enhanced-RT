@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name       Enhanced RT
-// @version    1.0.1
+// @version    1.0.2
 // @description  Enhancments for the Rooster Teeth family of websites
 // @include    *://*.roosterteeth.com/*
 // @exclude    *://store.roosterteeth.com/*
@@ -51,6 +51,9 @@ To be fixed
 
 Versions
 ========
+1.0.2
+-Added Past Livestreams from The Know to the Stream filter.
+
 1.0.1
 -Added new Rooster Teeth show Always Open to the filter list.
 -Disabled the feature that makes timestamps in comments clickable. Rooster Teeth implemented a new video player on 2016-09-01 which broke this feature. I will fix it in a future update.
@@ -65,7 +68,7 @@ Versions
 -Added new Rooster Teeth shows Day 5 and Camp Camp to the filter list.
 -Added new Achievement Hunter show Heroes Halfwits to the filter list.
 -Added new Funhaus show Twits and Crits to the filter list.
--Added Steam filter that filters out AH Full Streams, FH Fullhaus, and RT live stream archives.
+-Added Stream filter that filters out AH Full Streams, FH Fullhaus, and RT live stream archives.
 -Added Unknown filter to help filter videos that the filters cannot correctly detect.
 -Added support for Cow Chop and The Creatures subdomains inlcuding favicons.
 -Added filter for Cow Chop. Note that older Cow Chop and UberHaxorNova videos cannot be properly detected because there is no naming convention used. Please use the new Unkown filter for those.
@@ -543,7 +546,7 @@ if(window.location.pathname=="/episode/recently-added")
 			// Hide Streams
 			if(hide[hideStreams][hideValue] == 1)
 			{
-				if(video.search("episode/(.*-full-stream|fullhaus|.*-live-stream)") >= 0)
+				if(video.search("episode/(.*-full-stream|fullhaus|.*-live-stream|past-livestreams)") >= 0)
 				{
 					childLI[i].style.display = "none";
 				}
@@ -622,7 +625,7 @@ if(window.location.pathname=="/episode/recently-added")
 							
 								// When frame is loaded move videos and controls to parent page
 								document.getElementById("endless").onload = function () {
-									console.log("Endless iframe loaded");
+									//console.log("Endless iframe loaded");
 									//console.log(document.getElementById("endless").contentWindow.document.getElementsByClassName("episode-blocks"));
 									
 									//var endlessFrameVideos = window.frames["endless"].contentWindow.document.getElementsByClassName("episode-blocks");
