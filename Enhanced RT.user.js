@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name       Enhanced RT
-// @version    1.0.2
+// @version    2.0.0
 // @description  Enhancments for the Rooster Teeth family of websites
 // @include    *://*.roosterteeth.com/*
 // @exclude    *://store.roosterteeth.com/*
@@ -22,6 +22,8 @@ Features
 
 The Known Issues
 ================
+-Endless Videos requires user to scroll down to the footer of the web page. If watched filter removes many videos, the list of videos will end way before the footer. So user needs to scroll way passed the bottom of the video list to trigger Endless Video to load the next page of videos.
+-Extension hits a fatal error if filters are toggled when the "Load More Videos" button is visible.
 -Filtering is based on a list of show titles that I manually entered. If new shows are added the list needs to be updated to correctly filter that show.
 -Endless Video feature makes queue button reload the page in order to queue a video instead of doing it in the background.
 
@@ -51,6 +53,10 @@ To be fixed
 
 Versions
 ========
+2.0.0
+-Fixed the code for the Recently Added page to work with the updates that Rooster Teeth made to the site on 2016-10-19. Recently added page no longer shows videos from all sites so the site filters have been disabled. Added convenient links to Recently Added page for each site. Fixed Endless Videos so that it works without the pagination controls that were removed from the bottom of the page.
+
+
 1.0.2
 -Added Past Livestreams from The Know to the Stream filter.
 
@@ -306,6 +312,13 @@ if(settingsLink != null)
 }
 
 
+
+var currentPage = location.search.replace(/^\D+/g, '');
+if(currentPage == ''){currentPage = 1;}
+currentPage = parseInt(currentPage);
+//console.log(currentPage);
+
+
 // *************
 // Settings Page
 // *************
@@ -427,15 +440,16 @@ if(window.location.pathname=="/episode/recently-added")
 	// ***************
 	// Filter Controls
 	// ***************
-	var filters = document.getElementsByClassName("episode-blocks");
+	var filters = document.getElementsByClassName("grid-blocks");
 	//alert(filters[0].parentNode.children[1].outerHTML);
 	
-	var filtersHTML = "<center><b>Enhanced RT</b> (<a href=\"" + currentSiteDomain + "/EnhancedRT/settings\">Settings</a>)<br>\n\
+	var filtersHTML = "<center><b>Enhanced RT</b> (<a href=\"" + currentSiteDomain + "/EnhancedRT/settings\">Settings</a>)<br><font style=\"color:red;\">Site filters are currently disabled because of the changes made to the RT site on 2016-10-19.<br>\n\
 	<label style=\"color:#666;font-size:12px;\"><input style=\"margin:0 0 0 1em;\" type=checkbox id=\"endlessVideos\" "+((endlessVideos == 1) ? "checked" : "")+">Endless Videos</label>";
 	for ( i = 0; i < hide.length; i++)
 	{
-		filtersHTML = filtersHTML.concat("<label style=\"color:#666;font-size:12px;\"><input style=\"margin:0 0 0 1em;\" type=checkbox id="+hide[i][hideText]+" "+((hide[i][hideValue] == 0) ? "checked" : "")+">"+hide[i][hideName]+"</label>");
+		filtersHTML = filtersHTML.concat("<label style=\"color:#666;font-size:12px;\"><input style=\"margin:0 0 0 1em;\" type=checkbox id="+hide[i][hideText]+" "+((hide[i][hideValue] == 0) ? "checked" : "")+" "+((i > 1) ? "disabled" : "")+">"+hide[i][hideName]+"</label>");
 	}
+	filtersHTML = filtersHTML.concat("</font><br>Recently Added: <a href=\"http://roosterteeth.com/episode/recently-added\">RT</a> - <a href=\"http://achievementhunter.roosterteeth.com/episode/recently-added\">AH</a> - <a href=\"http://funhaus.roosterteeth.com/episode/recently-added\">Funhaus</a> - <a href=\"http://screwattack.roosterteeth.com/episode/recently-added\">ScrewAttack</a> - <a href=\"http://gameattack.roosterteeth.com/episode/recently-added\">Game Attack</a> - <a href=\"http://theknow.roosterteeth.com/episode/recently-added\">The Know</a> - <a href=\"http://cowchop.roosterteeth.com/episode/recently-added\">Cow Chop</a> - <a href=\"http://thecreaturehub.roosterteeth.com/episode/recently-added\">Creatures</a>");
 	filtersHTML = filtersHTML.concat("</center>");
 	filters[0].parentNode.children[1].outerHTML = filtersHTML.concat(filters[0].parentNode.children[1].outerHTML);
 
@@ -479,7 +493,7 @@ if(window.location.pathname=="/episode/recently-added")
 	function hideVideos()
 	{
 		
-		var block = document.getElementsByClassName("episode-blocks");
+		var block = document.getElementsByClassName("grid-blocks");
 		childLI = block[0].children;
 		for ( i = 0; i < childLI.length; i++)
 		{
@@ -490,6 +504,7 @@ if(window.location.pathname=="/episode/recently-added")
 			childLI[i].style.marginRight = "1%";
 			
 			video = childLI[i].children[0].href;
+			/*
 			if(video.search("episode/(lets-play|ahwu|things-to-do-in|play-pals|achievement-unlocked|behind-the-scenes|achievement-hunter|fails-of-the-weak|easter-eggs|achievement-hunt|five-facts|off-topic|how-to|vs-|go-|rage-quit|countdown|achievement-horse|forced-enjoyment|megacraft|sunday-driving|this-is|imaginary-achievements|theater-mode|heroes-halfwits)") >= 0)
 			{
 				video = video.replace(window.location.host, "achievementhunter.roosterteeth.com");
@@ -542,7 +557,7 @@ if(window.location.pathname=="/episode/recently-added")
 			{
 				childLI[i].style.display = "none";
 			}
-		
+		*/
 			// Hide Streams
 			if(hide[hideStreams][hideValue] == 1)
 			{
@@ -588,12 +603,14 @@ if(window.location.pathname=="/episode/recently-added")
 		
 		checkForEndlessTrigger = function(){
 			//console.log("checkForEndlessTrigger");
-			var endlessFrameHTML = document.getElementsByClassName("pagination")[0];
+			//var endlessFrameHTML = document.getElementsByClassName("pagination")[0];
+			var endlessFrameHTML = document.getElementsByTagName("footer")[0];
 			var endlessOffset = endlessFrameHTML.offsetTop + endlessFrameHTML.clientHeight;
 			var pageOffset = window.pageYOffset + window.innerHeight;
 			
 			// Check if scrolled low enough to load more videos
-			if(pageOffset > (endlessOffset - 100) && endlessVideos == 1)
+			//if(pageOffset > (endlessOffset - 100) && endlessVideos == 1)
+			if(pageOffset > (endlessOffset - 600) && endlessVideos == 1)
 			{
 				//console.log("EndlessTriggered");
 				loadNextVideoPage = function(){
@@ -604,64 +621,99 @@ if(window.location.pathname=="/episode/recently-added")
 							//console.log("Endless Load New Page");
 							endlessLoadingInProgress = 1;
 							// Find current page number
-							var currentPage = parseInt(document.getElementsByClassName("current")[0].children[0].innerHTML);
+							
+							//pagination dead, use url to detect page
+							//var currentPage = parseInt(document.getElementsByClassName("current")[0].children[0].innerHTML);
+							
 							//console.log("Endless Found current page: " + currentPage);
 							//Find end page number
-							var endPage = parseInt(document.getElementsByClassName("controls")[0].children[11].children[0].innerHTML);
+							
+							//pagination dead, endPage unknown
+							//var endPage = parseInt(document.getElementsByClassName("controls")[0].children[11].children[0].innerHTML);
+							
+							
 							//console.log("Endless Found end page: " + endPage);
 
-							if(currentPage < endPage) // Don't go past last page
+							//if(currentPage < endPage) // Don't go past last page
+							if(true) // pagination dead, no need to check for endPage passed
 							{
 								// Create iframe for next page of videos
-								var endlessFrameHTML = document.getElementsByClassName("pagination")[0];
+								//pagination dead, don't uses pagination for iframe loading point, use footer
+								//var endlessFrameHTML = document.getElementsByClassName("pagination")[0];
+								var endlessFrameHTML = document.getElementsByTagName("footer")[0];
+								
 								//console.log("Endless endlessFrameHTML: " + endlessFrameHTML);
 								endlessFrameHTML.outerHTML = endlessFrameHTML.outerHTML.concat("<iframe id=\"endless\" style=\"visibility: hidden;width: 1px;height: 1px;\" src=\""+currentSiteDomain+"/episode/recently-added?page="+(currentPage + 1)+"\"></iframe>");
 								//console.log("Endless endlessFrameHTML.outerHTML: " + endlessFrameHTML.outerHTML);
 							
 								// Loading Animation
-								var endlessLoadingHTML = document.getElementsByClassName("pagination")[0];
-								var endlessLoadingAnimation = "<div id=\"loadingAnimation\"><center><br><img src=\"data:image/gif;base64,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\"> Loading more videos</center></div>";
-								endlessLoadingHTML.outerHTML = endlessLoadingAnimation.concat(endlessLoadingHTML.outerHTML);
+								//var endlessLoadingHTML = document.getElementsByClassName("pagination")[0];
+								
+								
+								var endlessLoadingAnimation = "<div id=\"loadingAnimation\"><center><br><img src=\"data:image/gif;base64,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\"> Loading videos from page "+ (currentPage + 1) + "</center></div>";
+								
+								
+								//endlessLoadingHTML.outerHTML = endlessLoadingAnimation.concat(endlessLoadingHTML.outerHTML);
+								
+								var endlessLoadingPageNumber = "<div id=\"PageNumber\"><center><br>Current Page: " + currentPage +"</center></div>";
+								
+								filters[0].innerHTML = filters[0].innerHTML.concat(endlessLoadingPageNumber + endlessLoadingAnimation);
 							
 								// When frame is loaded move videos and controls to parent page
 								document.getElementById("endless").onload = function () {
 									//console.log("Endless iframe loaded");
-									//console.log(document.getElementById("endless").contentWindow.document.getElementsByClassName("episode-blocks"));
+									//console.log(document.getElementById("endless").contentWindow.document.getElementsByClassName("grid-blocks"));
 									
-									//var endlessFrameVideos = window.frames["endless"].contentWindow.document.getElementsByClassName("episode-blocks");
+									//var endlessFrameVideos = window.frames["endless"].contentWindow.document.getElementsByClassName("grid-blocks");
 									
-									var endlessFrameVideos = document.getElementById("endless").contentWindow.document.getElementsByClassName("episode-blocks");
-									
-									filters[0].innerHTML = filters[0].innerHTML.concat(endlessFrameVideos[0].innerHTML);
-									//console.log(endlessFrameVideos[0].innerHTML);
-									
-									//var endlessFrameControls = window.frames['endless'].contentWindow.document.getElementsByClassName("controls")[0];
-									
-									var endlessFrameControls = document.getElementById("endless").contentWindow.document.getElementsByClassName("controls")[0];
-									
-									var primaryControls = document.getElementsByClassName("controls")[0];
-									primaryControls.outerHTML = endlessFrameControls.outerHTML;
-									
-									// Delete iframe when done
-									var endlessFrame = document.getElementById("endless");
-									endlessFrame.parentNode.removeChild(endlessFrame);
+									var pageNumberDiv = document.getElementById("PageNumber");
+									pageNumberDiv.parentNode.removeChild(pageNumberDiv);
 									
 									// Delete loading animation when done
 									var loadingDiv = document.getElementById("loadingAnimation");
 									loadingDiv.parentNode.removeChild(loadingDiv);
 									
+									var endlessFrameVideos = document.getElementById("endless").contentWindow.document.getElementsByClassName("grid-blocks");
+									
+									//endlessLoadingPageNumber = "<div id=\"PageNumber\"><center><br>Current Page: " + currentPage +"</center></div>";
+									
+									filters[0].innerHTML = filters[0].innerHTML.concat(endlessFrameVideos[0].innerHTML);
+									//console.log(endlessFrameVideos[0].innerHTML);
+									
+									
+									//var endlessFrameControls = window.frames['endless'].contentWindow.document.getElementsByClassName("controls")[0];
+									
+									//pagination dead, don't uses page nums
+									/*
+									var endlessFrameControls = document.getElementById("endless").contentWindow.document.getElementsByClassName("controls")[0];
+									
+									var primaryControls = document.getElementsByClassName("controls")[0];
+									primaryControls.outerHTML = endlessFrameControls.outerHTML;
+									*/
+									
+									// Delete iframe when done
+									var endlessFrame = document.getElementById("endless");
+									endlessFrame.parentNode.removeChild(endlessFrame);
+									
+									
+									
 									hideVideos();
 									
+									currentPage++; //pagination dead, count pages as they are loaded
+									//console.log(currentPage);
 									endlessPagesLoaded++;
+									
+								
 									// Stop loading every 10 pages and show button to load more
 									if(endlessPagesLoaded >= 10)
 									{
 										if(loadingPaused == 0)
 										{
 											loadingPaused = 1;
-											var endlessLoadingHTML = document.getElementsByClassName("pagination")[0];
+											//var endlessLoadingHTML = document.getElementsByClassName("pagination")[0];
 											var endlessLoadingButton = "<div id=\"loadingBreak\"><center><br><button id=\"loadMore\" type=\"button\">Load more videos</button></center></div>";
-											endlessLoadingHTML.outerHTML = endlessLoadingButton.concat(endlessLoadingHTML.outerHTML);
+											//endlessLoadingHTML.outerHTML = endlessLoadingButton.concat(endlessLoadingHTML.outerHTML);
+											filters[0].innerHTML = filters[0].innerHTML.concat(endlessLoadingButton);
 											
 											document.getElementById("loadMore").onclick = function () {
 												endlessPagesLoaded = 0;
@@ -673,6 +725,8 @@ if(window.location.pathname=="/episode/recently-added")
 											};
 										}
 									}
+								
+									
 									endlessLoadingInProgress = 0;
 									checkForEndlessTrigger();
 								}
@@ -686,6 +740,7 @@ if(window.location.pathname=="/episode/recently-added")
 		
 		checkForEndlessTrigger();
 	}
+
 }
 
 
