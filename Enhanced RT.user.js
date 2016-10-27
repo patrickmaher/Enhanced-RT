@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name       Enhanced RT
-// @version    2.0.1
+// @version    2.0.2
 // @description  Enhancments for the Rooster Teeth family of websites
 // @include    *://*.roosterteeth.com/*
 // @exclude    *://store.roosterteeth.com/*
@@ -50,6 +50,9 @@ To be fixed
 
 Versions
 ========
+2.0.2
+-Added YT Primetime to the Stream filter.
+
 2.0.1
 -Fixed some issues with Endless Videos feature that were present while the pagination was gone. Now that the pagination is back the Endless Videos feature should work the same as it did before version 2.0.0.
 -Fixed the clickable video timestamp in comments feature to work with new videojs player.
@@ -564,7 +567,7 @@ if(window.location.pathname=="/episode/recently-added")
 			// Hide Streams
 			if(hide[hideStreams][hideValue] == 1)
 			{
-				if(video.search("episode/(.*-full-stream|fullhaus|.*-live-stream|past-livestreams)") >= 0)
+				if(video.search("episode/(.*-full-stream|fullhaus|.*-live-stream|past-livestreams|.*yt-primetime)") >= 0)
 				{
 					childLI[i].style.display = "none";
 				}
