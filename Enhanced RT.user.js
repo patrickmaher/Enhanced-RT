@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name       Enhanced RT
-// @version    2.0.2
+// @version    2.0.3
 // @description  Enhancments for the Rooster Teeth family of websites
 // @include    *://*.roosterteeth.com/*
 // @exclude    *://store.roosterteeth.com/*
@@ -15,15 +15,16 @@ Features
 -Video filters that allow you to hide videos that you don't want to see on the Recently Added page.
 -Endless loading of videos on the Recently Added page.
 -Converts video time stamps in comments into click-able links.
--Align videos to browser window on video and live stream pages.
--Pauses video when video page loaded using comments button.
 -Settings page which can be accessed from the profile menu at the top right of the page.
 -Legacy favorite icons for Funhaus, Achievement Hunter, ScrewAttack, and The Know.
+-Align videos to browser window on video and live stream pages.
+-Pauses video when video page loaded using comments button.
 
 The Known Issues
 ================
 -Filtering is based on a list of show titles that I manually entered. If new shows are added the list needs to be updated to correctly filter that show.
 -Endless Video feature makes queue button reload the page in order to queue a video instead of doing it in the background.
+-When switching between comment pages on video pages, timestamps in comments may not be detected if the comments took too long to load. Need to find a way to detect when comments are loaded instead of using time delay.
 
 Future Features
 ===============
@@ -50,6 +51,10 @@ To be fixed
 
 Versions
 ========
+2.0.3
+-Negative timestamps in video comments now link to the correct position in the video
+-Changed video comments timestamp detection delay when switching between comment pages. Was waiting 3 seconds for comments to load, now waits 7 seconds. Need to find a way to detect when comments are loaded instead of using time delay.
+
 2.0.2
 -Added YT Primetime to the Stream filter.
 
@@ -449,8 +454,11 @@ if(window.location.pathname=="/episode/recently-added")
 	var filters = document.getElementsByClassName("grid-blocks");
 	//alert(filters[0].parentNode.children[1].outerHTML);
 	
+	
 	var filtersHTML = "<center><b>Enhanced RT</b> (<a href=\"" + currentSiteDomain + "/EnhancedRT/settings\">Settings</a>)<br><font style=\"color:red;\">Site filters are currently disabled because of the changes made to the RT site on 2016-10-19.<br>\n\
 	<label style=\"color:#666;font-size:12px;\"><input style=\"margin:0 0 0 1em;\" type=checkbox id=\"endlessVideos\" "+((endlessVideos == 1) ? "checked" : "")+">Endless Videos</label>";
+
+	
 	for ( i = 0; i < hide.length; i++)
 	{
 		filtersHTML = filtersHTML.concat("<label style=\"color:#666;font-size:12px;\"><input style=\"margin:0 0 0 1em;\" type=checkbox id="+hide[i][hideText]+" "+((hide[i][hideValue] == 0) ? "checked" : "")+" "+((i > 1) ? "disabled" : "")+">"+hide[i][hideName]+"</label>");
@@ -802,8 +810,10 @@ if(window.location.pathname.search("/episode/") >= 0 && window.location.pathname
 					//console.log("Comment: "+i+", Line: "+j)
 					//commentElement[i].children[1].children[j].innerHTML = commentElement[i].children[1].children[j].innerHTML.replace(/(?!<a[^>]*?>)((\d|\d\d)(:))?(\d|\d\d)(:)(\d\d)(?![^<]*?<\/a>)/g, "<a title=\"Go to video timestamp $2$3$4$5$6\" href=\"#\" onclick=\"var heroBlock = document.getElementById('hero-block');var scrollPos = (heroBlock.offsetTop + heroBlock.clientHeight) - window.innerHeight;window.scrollTo(0, scrollPos);if(jwplayer('"+episodeID+"').getState()!=='playing' && jwplayer('"+episodeID+"').getState()!=='paused'){jwplayer('"+episodeID+"').play(true);setTimeout(function() {jwplayer('"+episodeID+"').seek((0$2*3600)+($4*60)+$6);}, 1000);}else{jwplayer('"+episodeID+"').seek((0$2*3600)+($4*60)+$6);}return false;\">$2$3$4$5$6</a>");
 					
-					commentElement[i].children[1].children[j].innerHTML = commentElement[i].children[1].children[j].innerHTML.replace(/(?!<a[^>]*?>)((\d|\d\d)(:))?(\d|\d\d)(:)(\d\d)(?![^<]*?<\/a>)/g, "<a title=\"Go to video timestamp $2$3$4$5$6\" href=\"javascript:undefined\" onclick=\"var heroBlock = document.getElementById('hero-block');var scrollPos = (heroBlock.offsetTop + heroBlock.clientHeight) - window.innerHeight;window.scrollTo(0,  parseInt(scrollPos));document.getElementById('"+videoID+"').currentTime=(0$2*3600)+($4*60)+$6;document.getElementById('"+videoID+"').play();\">$2$3$4$5$6</a>");
+					commentElement[i].children[1].children[j].innerHTML = commentElement[i].children[1].children[j].innerHTML.replace(/(?!<a[^>]*?>)(-)?((\d|\d\d)(:))?(\d|\d\d)(:)(\d\d)(?![^<]*?<\/a>)/g, "<a title=\"Go to video timestamp $1$3$4$5$6$7\" href=\"javascript:undefined\" onclick=\"var heroBlock = document.getElementById('hero-block');var scrollPos = (heroBlock.offsetTop + heroBlock.clientHeight) - window.innerHeight;window.scrollTo(0,  parseInt(scrollPos));if('$1' == '-'){document.getElementById('"+videoID+"').currentTime=(Math.floor(document.getElementById('"+videoID+"').duration))-((0$3*3600)+($5*60)+$7);}else{document.getElementById('"+videoID+"').currentTime=(0$3*3600)+($5*60)+$7;}document.getElementById('"+videoID+"').play();\">$1$3$4$5$6$7</a>"); 
 					j++;
+					
+					//1 is $1, 2 is $2, 3 is $3, 4 is $4, 5 is $5, 6 is $6, 7 is $7, //regex parts for testing
 				}
 				
 				// Check for comment replies
@@ -846,7 +856,7 @@ if(window.location.pathname.search("/episode/") >= 0 && window.location.pathname
 					var commentsList = document.getElementsByClassName("comments-list");
 					var comments = commentsList[0].children;
 					linkVideoTimestamps(comments);
-				}, 3000);
+				}, 7000);
 			});
 		}
 
