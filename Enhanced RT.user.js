@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name       Enhanced RT
-// @version    2.0.3
+// @version    2.0.4
 // @description  Enhancments for the Rooster Teeth family of websites
 // @include    *://*.roosterteeth.com/*
 // @exclude    *://store.roosterteeth.com/*
@@ -51,6 +51,9 @@ To be fixed
 
 Versions
 ========
+2.0.4
+-Fixes for updates made to RT sites.
+
 2.0.3
 -Negative timestamps in video comments now link to the correct position in the video
 -Changed video comments timestamp detection delay when switching between comment pages. Was waiting 3 seconds for comments to load, now waits 7 seconds. Need to find a way to detect when comments are loaded instead of using time delay.
@@ -446,26 +449,81 @@ if(window.location.pathname=="/EnhancedRT/settings")
 // *******************
 if(window.location.pathname=="/episode/recently-added")
 {
+
 	//console.log("Recently Added Page");
 
+	
+	
+	
 	// ***************
 	// Filter Controls
 	// ***************
 	var filters = document.getElementsByClassName("grid-blocks");
+	var recentHeader = document.getElementsByClassName("recently-added-header");
 	//alert(filters[0].parentNode.children[1].outerHTML);
 	
 	
-	var filtersHTML = "<center><b>Enhanced RT</b> (<a href=\"" + currentSiteDomain + "/EnhancedRT/settings\">Settings</a>)<br><font style=\"color:red;\">Site filters are currently disabled because of the changes made to the RT site on 2016-10-19.<br>\n\
+	var filtersHTML = "<center><b>Enhanced RT</b> (<a href=\"" + currentSiteDomain + "/EnhancedRT/settings\">Settings</a>)<br><font color=red>Some features still missing/broken.</font><br>\n\
 	<label style=\"color:#666;font-size:12px;\"><input style=\"margin:0 0 0 1em;\" type=checkbox id=\"endlessVideos\" "+((endlessVideos == 1) ? "checked" : "")+">Endless Videos</label>";
 
 	
 	for ( i = 0; i < hide.length; i++)
 	{
-		filtersHTML = filtersHTML.concat("<label style=\"color:#666;font-size:12px;\"><input style=\"margin:0 0 0 1em;\" type=checkbox id="+hide[i][hideText]+" "+((hide[i][hideValue] == 0) ? "checked" : "")+" "+((i > 1) ? "disabled" : "")+">"+hide[i][hideName]+"</label>");
+		filtersHTML = filtersHTML.concat("<label style=\"color:#666;font-size:12px;\"><input style=\"margin:0 0 0 1em;\" type=checkbox id="+hide[i][hideText]+" "+((hide[i][hideValue] == 0) ? "checked" : "")+ ">" +hide[i][hideName]+"</label>");
 	}
-	filtersHTML = filtersHTML.concat("</font><br>Recently Added: <a href=\"http://roosterteeth.com/episode/recently-added\">RT</a> - <a href=\"http://achievementhunter.roosterteeth.com/episode/recently-added\">AH</a> - <a href=\"http://funhaus.roosterteeth.com/episode/recently-added\">Funhaus</a> - <a href=\"http://screwattack.roosterteeth.com/episode/recently-added\">ScrewAttack</a> - <a href=\"http://gameattack.roosterteeth.com/episode/recently-added\">Game Attack</a> - <a href=\"http://theknow.roosterteeth.com/episode/recently-added\">The Know</a> - <a href=\"http://cowchop.roosterteeth.com/episode/recently-added\">Cow Chop</a> - <a href=\"http://thecreaturehub.roosterteeth.com/episode/recently-added\">Creatures</a>");
+	
+	
+	filtersHTML = filtersHTML.concat("</font>");
+	//filtersHTML = filtersHTML.concat("<br><img src=\"https://yt3.ggpht.com/-hddEYyXVeZM/AAAAAAAAAAI/AAAAAAAAAAA/ghwEL1-FHdE/s100-c-k-no-mo-rj-c0xffffff/photo.jpg\" title=\"Rooster Teeth\" height=\"50\" width=\"50\" style=\"opacity: 1;\"><img src=\"https://yt3.ggpht.com/--LriGZRRpiw/AAAAAAAAAAI/AAAAAAAAAAA/ttVIfJrhhSo/s100-c-k-no-mo-rj-c0xffffff/photo.jpg\" title=\"Achievement Hunter\" height=\"50\" width=\"50\" style=\"opacity: 0.4;\"><img src=\"https://yt3.ggpht.com/-HILPkklaPdc/AAAAAAAAAAI/AAAAAAAAAAA/hQJlzz2yVKo/s100-c-k-no-mo-rj-c0xffffff/photo.jpg\" title=\"Funhaus\" height=\"50\" width=\"50\" style=\"opacity: 1;\"><img src=\"https://yt3.ggpht.com/-SUZQeTehAWg/AAAAAAAAAAI/AAAAAAAAAAA/5qECcvH4Tgw/s100-c-k-no-mo-rj-c0xffffff/photo.jpg\" title=\"ScrewAttack\" height=\"50\" width=\"50\" style=\"opacity: 1;\"><img src=\"https://yt3.ggpht.com/-GNSc5FQPkL8/AAAAAAAAAAI/AAAAAAAAAAA/RaKPDs9yekM/s100-c-k-no-mo-rj-c0xffffff/photo.jpg\" title=\"Game Attack\" height=\"50\" width=\"50\" style=\"opacity: 1;\"><img src=\"https://yt3.ggpht.com/-0lKHa9Wjo54/AAAAAAAAAAI/AAAAAAAAAAA/fVDFDWwii7A/s100-c-k-no-mo-rj-c0xffffff/photo.jpg\" title=\"The Know\" height=\"50\" width=\"50\" style=\"opacity: 0.4;\"><img src=\"https://yt3.ggpht.com/-JFEziQI27OU/AAAAAAAAAAI/AAAAAAAAAAA/txesb6uR8BE/s100-c-k-no-mo-rj-c0xffffff/photo.jpg\" title=\"Cow Chop\" height=\"50\" width=\"50\" style=\"opacity: 1;\"><img src=\"https://yt3.ggpht.com/-k4hkmiUDStw/AAAAAAAAAAI/AAAAAAAAAAA/cNfVCYG3lng/s100-c-k-no-mo-rj-c0xffffff/photo.jpg\" title=\"The Creatures\" height=\"50\" width=\"50\" style=\"opacity: 1;\">");
+	//filtersHTML = filtersHTML.concat("<br>Recently Added: <a href=\"http://roosterteeth.com/episode/recently-added\">RT</a> - <a href=\"http://achievementhunter.roosterteeth.com/episode/recently-added\">AH</a> - <a href=\"http://funhaus.roosterteeth.com/episode/recently-added\">Funhaus</a> - <a href=\"http://screwattack.roosterteeth.com/episode/recently-added\">ScrewAttack</a> - <a href=\"http://gameattack.roosterteeth.com/episode/recently-added\">Game Attack</a> - <a href=\"http://theknow.roosterteeth.com/episode/recently-added\">The Know</a> - <a href=\"http://cowchop.roosterteeth.com/episode/recently-added\">Cow Chop</a> - <a href=\"http://thecreaturehub.roosterteeth.com/episode/recently-added\">Creatures</a>");
 	filtersHTML = filtersHTML.concat("</center>");
-	filters[0].parentNode.children[1].outerHTML = filtersHTML.concat(filters[0].parentNode.children[1].outerHTML);
+	
+	
+	var div = document.createElement("div");
+	//div.className = "container-fluid";
+	div.innerHTML = filtersHTML;
+	
+	//var element = recentHeader[0];
+	//element.appendChild(div);
+	
+	var element = document.getElementsByClassName("col-lg-8")[0];
+	element.insertBefore(div, element.childNodes[2]);
+	
+	//var element = document.getElementsByName("paginated-results")[0];
+	//element.insertBefore(div, element.childNodes[0]);
+	
+	//recentHeader[0].outerHTML = recentHeader[0].outerHTML.concat(filtersHTML);
+
+	
+	
+	filters[0].id = "detect";
+	
+	//document.getElementsByClassName("grid-blocks")[0].id = "detect";
+	
+	// select the target node
+	//var target = document.getElementById("detect");
+	var target = document.getElementById("recently-added-grid");
+	
+	// create an observer instance
+	var observer = new MutationObserver(function(mutations) {
+	  mutations.forEach(function(mutation) {
+		console.log(mutation);
+	  });
+	  console.log("hide videos after change");
+	  hideVideos();
+	});
+	 
+	// configuration of the observer:
+	//var config = { attributeFilter: ["style"] };
+	var config = { attributes: true, childList: true, characterData: true };
+
+	 
+	// pass in the target node, as well as the observer options
+	observer.observe(target, config);
+	
+	
+	
+	
 
 	for ( i = 0; i < hide.length; i++)
 	{
@@ -482,7 +540,7 @@ if(window.location.pathname=="/episode/recently-added")
 			}
 			
 			hideVideos();
-			checkForEndlessTrigger();
+			//checkForEndlessTrigger();
 		};
 	}
 	document.getElementById("endlessVideos").onclick = function () {
@@ -495,9 +553,11 @@ if(window.location.pathname=="/episode/recently-added")
 		{
 			endlessVideos = 1;
 			localStorage.setItem("endlessVideos", endlessVideos);
-			checkForEndlessTrigger();
+			//checkForEndlessTrigger();
 		}
 	};
+
+	
 	hideVideos();
 
 
@@ -511,13 +571,64 @@ if(window.location.pathname=="/episode/recently-added")
 		childLI = block[0].children;
 		for ( i = 0; i < childLI.length; i++)
 		{
+			
 			childLI[i].style.clear = "none";
 			childLI[i].style.float = "none";
 			childLI[i].style.display = "inline-block";
 			childLI[i].style.verticalAlign = "top";
 			childLI[i].style.marginRight = "1%";
 			
+			
 			video = childLI[i].children[0].href;
+			
+			if(video.search("achievementhunter.roosterteeth.com") >= 0)
+			{
+				if(hide[hideAH][hideValue] == 1)
+				{
+					childLI[i].style.display = "none";
+				}
+			}
+			else if(video.search("theknow.roosterteeth.com") >= 0)
+			{
+				if(hide[hideTK][hideValue] == 1)
+				{
+					childLI[i].style.display = "none";
+				}
+			}
+			else if(video.search("//roosterteeth.com") >= 0)
+			{
+				if(hide[hideRT][hideValue] == 1)
+				{
+					childLI[i].style.display = "none";
+				}
+			}
+			else if(video.search("funhaus.roosterteeth.com") >= 0)
+			{
+				if(hide[hideFH][hideValue] == 1)
+				{
+					childLI[i].style.display = "none";
+				}
+			}
+			else if(video.search("screwattack.roosterteeth.com") >= 0)
+			{
+				if(hide[hideSA][hideValue] == 1)
+				{
+					childLI[i].style.display = "none";
+				}
+			}
+			else if(video.search("cowchop.roosterteeth.com") >= 0)
+			{
+				if(hide[hideCC][hideValue] == 1)
+				{
+					childLI[i].style.display = "none";
+				}
+			}
+			else if(hide[hideUnknown][hideValue] == 1)
+			{
+				childLI[i].style.display = "none";
+			}
+			
+			
 			/*
 			if(video.search("episode/(lets-play|ahwu|things-to-do-in|play-pals|achievement-unlocked|behind-the-scenes|achievement-hunter|fails-of-the-weak|easter-eggs|achievement-hunt|five-facts|off-topic|how-to|vs-|go-|rage-quit|countdown|achievement-horse|forced-enjoyment|megacraft|sunday-driving|this-is|imaginary-achievements|theater-mode|heroes-halfwits)") >= 0)
 			{
@@ -572,6 +683,7 @@ if(window.location.pathname=="/episode/recently-added")
 				childLI[i].style.display = "none";
 			}
 		*/
+		
 			// Hide Streams
 			if(hide[hideStreams][hideValue] == 1)
 			{
@@ -594,7 +706,7 @@ if(window.location.pathname=="/episode/recently-added")
 
 	}
 
-
+/*
 	// *********************
 	// Endless Video Loading
 	// *********************
@@ -735,7 +847,7 @@ if(window.location.pathname=="/episode/recently-added")
 		
 		checkForEndlessTrigger();
 	}
-
+*/
 }
 
 
