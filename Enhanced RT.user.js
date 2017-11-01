@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name       Enhanced RT
-// @version    2.0.4
+// @version    2.0.5
 // @description  Enhancments for the Rooster Teeth family of websites
 // @include    *://*.roosterteeth.com/*
 // @exclude    *://store.roosterteeth.com/*
@@ -13,7 +13,7 @@ Features
 ========
 -Works on all sites in the Rooster Teeth family.
 -Video filters that allow you to hide videos that you don't want to see on the Recently Added page.
--Endless loading of videos on the Recently Added page.
+-Endless loading of videos on the Recently Added page. (Currently broken)
 -Converts video time stamps in comments into click-able links.
 -Settings page which can be accessed from the profile menu at the top right of the page.
 -Legacy favorite icons for Funhaus, Achievement Hunter, ScrewAttack, and The Know.
@@ -51,6 +51,11 @@ To be fixed
 
 Versions
 ========
+2.0.5
+-Added Game Attack and Sugar Pine 7 filters.
+-Removed Endless Videos options since the feature isn't working.
+-Temporary fix that adds Sugar Pine 7 to the channel filter drop down options
+
 2.0.4
 -Fixes for updates made to RT sites.
 
@@ -89,7 +94,7 @@ Versions
 -Added Stream filter that filters out AH Full Streams, FH Fullhaus, and RT live stream archives.
 -Added Unknown filter to help filter videos that the filters cannot correctly detect.
 -Added support for Cow Chop and The Creatures subdomains inlcuding favicons.
--Added filter for Cow Chop. Note that older Cow Chop and UberHaxorNova videos cannot be properly detected because there is no naming convention used. Please use the new Unkown filter for those.
+-Added filter for Cow Chop. Note that older Cow Chop and UberHaxorNova videos cannot be properly detected because there is no naming convention used. Please use the new Unknown filter for those.
 -Improved how subdomains are handled so that when new sites are added the extension will still work. The extension should work on all subdomains of roosterteeth.com except for the store subdomain.
 
 0.3.0
@@ -176,7 +181,9 @@ var hideSA = 5;
 var hideTK = 6;
 var hideCC = 7;
 //var hideTC = ?;
-var hideUnknown = 8;
+var hideGA = 8;
+var hideSP7 = 9;
+var hideUnknown = 10;
 hideValue = 0;
 hideText = 1;
 hideName = 2;
@@ -184,7 +191,7 @@ currentSiteDomain = window.location.protocol + "//" + window.location.host;
 
 
 // Load Stored Settings
-var hide = createArray(9, 3);
+var hide = createArray(11, 3);
 hide[hideWatched][hideValue] = ((localStorage.getItem("hideWatched") == null) ? 0 : localStorage.getItem("hideWatched"));
 hide[hideWatched][hideText] = "hideWatched";
 hide[hideWatched][hideName] = "Watched";
@@ -212,6 +219,12 @@ hide[hideCC][hideName] = "Cow Chop";
 //hide[hideTC][hideValue] = ((localStorage.getItem("hideTC") == null) ? 0 : localStorage.getItem("hideTC"));
 //hide[hideTC][hideText] = "hideTC";
 //hide[hideTC][hideName] = "The Creatures";
+hide[hideGA][hideValue] = ((localStorage.getItem("hideGA") == null) ? 0 : localStorage.getItem("hideGA"));
+hide[hideGA][hideText] = "hideGA";
+hide[hideGA][hideName] = "Game Attack";
+hide[hideSP7][hideValue] = ((localStorage.getItem("hideSP7") == null) ? 0 : localStorage.getItem("hideSP7"));
+hide[hideSP7][hideText] = "hideSP7";
+hide[hideSP7][hideName] = "Sugar Pine 7";
 hide[hideUnknown][hideValue] = ((localStorage.getItem("hideUnknown") == null) ? 0 : localStorage.getItem("hideUnknown"));
 hide[hideUnknown][hideText] = "hideUnknown";
 hide[hideUnknown][hideName] = "Unknown";
@@ -291,6 +304,22 @@ else if(window.location.host.search("thecreaturehub.roosterteeth.com") >= 0) // 
     // favicon
     var favIcon = "AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwLDQAAAAADGRwhMC40PINBSVS+PkRP2l9gZdpXWF2+JSkxgxodIjAAAAADDAsNAAAAAAAAAAAAAAAAABgZHQAODQ8OKS83cTpEUNpBTlv8Rk9a/29yd/+ysLH/qKeo/0hOV/w4Qk3aKS83cQ0NDg4XGRwAAAAAABITGAAIBggOIicxkDxHVPdHVWP/UFlj/1tbhP+LibP/x8bH/8/NzP+UlJj/SFRh/zxHVPciJS+QCgUGDhMSFgAAAAACFEZsciVDYPg1PU3/SVZj/3qIj/9SWZL/Ghh//1JXfv+bp6//srW2/11kbf81Pk7/JzVI+BUySnIAAAACDTBDMBSBvdkgYIr/PUVU/3eOnP+IpLH/Ul5w/zM0Vf8wMlX/YXKC/5Wqtf9pcHn/KzJB/x5nlP8Uf7rZDTFEMBFlhYIMrez8GXqk/0xaaP+JmaL/kaCn/3uKkv+rq6v/j5WZ/2+CkP+Cm6n/b4GN/yw/UP8Qlsz/Da3s/BFlhYIak7q9B7/5/xOGrf9PY3L/hJWe/5KRjf+OmZ7/q7S5/5ynrP+KkZH/m6Sn/4KTnf81WWz/Ca/k/wfA+v8ak7q9IKTN2gyl1f8kS2H/QExa/2t/i/9vgYz/g5un/4ehrv+Dm6j/g4+V/4mWnP94i5j/Ml5z/wiz5/8Gx///IaPL2iCnz9oSjLX/NEBR/zpEU/9JVmT/YHOA/3mRn/9+l6X/f5il/22CkP9leYb/UWBt/yRRZ/8ZeJv/D6DO/yGjytoam7+9FIux/ztLWv9GU2H/MTlG/z9KWP9HVGH/S1lm/01caf9NW2n/RVJh/zE5SP83QE//NjxL/yFacv8ciqm9D3CLghGUuPw4UGH/SVZk/0JPXP9GUmD/QEtY/0NQXf9CTlv/PkpX/y82Q/8+Slj/SFVj/ztEU/8eXnb8EWJ5ggs7SDAPkrLZK2V7/0dRX/9JVWP/PVBe/zZATv88Q1L/QEtY/0RRX/9BTFr/R1Ri/ztVZf8jbob/EYOg2Qs8STAAAAACDmuBchiRrfg1Z3n/OGx+/x2euv8ci6b/H4CZ/zVhcv9JU2D/QFtq/yqGnf8Xttf/EbbY+A5sgXIAAAACDTdAAAoQEw4Reo2QGLTP9xnQ7v8W3/7/Ft///xbe/v8gs83/Loyg/yCyy/8X2vn/FcXj9xF8kJALDhAODTY/AAAAAAAONDoADBIUDhNzgnEZscXaHNTs/B7i+v8e5///Hef+/x3g+P8c1e38GbDF2hNxf3EMEBIODjI4AAAAAAAAAAAAAAAAAA0LDAAIAAADED5EMBx8h4Msrry+NL/M2jS/zNosr7y+HHyHgxA+RDAIAAADDQsMAAAAAAAAAAAA4AcAAMADAACAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIABAADAAwAA4AcAAA==";
 }
+else if(window.location.host.search("gameattack.roosterteeth.com") >= 0) // Game Attack
+{
+    currentSite = "GA";
+    //currentSiteDomain = "gameattack.roosterteeth.com";
+
+    // favicon
+    var favIcon = "";
+}
+else if(window.location.host.search("sugarpine7.roosterteeth.com") >= 0) // Sugar Pine 7
+{
+    currentSite = "SP7";
+    //currentSiteDomain = "sugarpine7.roosterteeth.com";
+
+    // favicon
+    var favIcon = "";
+}
 else
 {
 	currentSite = "Unknown";
@@ -339,8 +368,8 @@ currentPage = parseInt(currentPage);
 if(window.location.pathname=="/EnhancedRT/settings")
 {
     var settings = document.getElementById("body-block");
-	var settingsHTML = "<center><div style=\"display: inline-block;padding: 10px;\"><h1>Enhanced RT Settings</h1><div style=\"border:1px solid black;display: inline-block;padding: 10px;\"><h3>Recently Added Page Settings</h3>\n\
-	<label style=\"color:#666;font-size:12px;\"><input style=\"margin:0 0 0 1em;\" type=checkbox id=\"endlessVideos\" "+((endlessVideos == 1) ? "checked" : "")+">Endless Videos</label>";
+	var settingsHTML = "<center><div style=\"display: inline-block;padding: 10px;\"><h1>Enhanced RT Settings</h1><div style=\"border:1px solid black;display: inline-block;padding: 10px;\"><h3>Recently Added Page Settings</h3>\n";
+	//<label style=\"color:#666;font-size:12px;\"><input style=\"margin:0 0 0 1em;\" type=checkbox id=\"endlessVideos\" "+((endlessVideos == 1) ? "checked" : "")+">Endless Videos</label>";
 	for ( i = 0; i < hide.length; i++)
 	{
 		settingsHTML = settingsHTML.concat("<label style=\"color:#666;font-size:12px;\"><input style=\"margin:0 0 0 1em;\" type=checkbox id="+hide[i][hideText]+" "+((hide[i][hideValue] == 0) ? "checked" : "")+">"+hide[i][hideName]+"</label>");
@@ -376,7 +405,7 @@ if(window.location.pathname=="/EnhancedRT/settings")
 	}
 	
 	
-	document.getElementById("endlessVideos").onclick = function () {
+/*	document.getElementById("endlessVideos").onclick = function () {
 		if(endlessVideos == 1)
 		{
 			endlessVideos = 0;
@@ -388,7 +417,7 @@ if(window.location.pathname=="/EnhancedRT/settings")
 			localStorage.setItem("endlessVideos", endlessVideos);
 		}
 	};
-	
+*/	
 	document.getElementById("videoAlign").onclick = function () {
 		if(videoAlign == 1)
 		{
@@ -452,7 +481,15 @@ if(window.location.pathname=="/episode/recently-added")
 
 	//console.log("Recently Added Page");
 
-	
+	// ***************
+	// Temp Fix to add SP7 drop down option
+	// ***************
+	SP7fix = document.createElement('option');
+	SP7fix.value = '9';
+	SP7fix.dataset.filter = 'sugarpine7';
+	SP7fix.label = 'Sugar Pine 7';
+	var channelFilter = document.getElementById("channelFilter");
+	channelFilter.append(SP7fix);
 	
 	
 	// ***************
@@ -463,8 +500,9 @@ if(window.location.pathname=="/episode/recently-added")
 	//alert(filters[0].parentNode.children[1].outerHTML);
 	
 	
-	var filtersHTML = "<center><b>Enhanced RT</b> (<a href=\"" + currentSiteDomain + "/EnhancedRT/settings\">Settings</a>)<br><font color=red>Some features still missing/broken.</font><br>\n\
-	<label style=\"color:#666;font-size:12px;\"><input style=\"margin:0 0 0 1em;\" type=checkbox id=\"endlessVideos\" "+((endlessVideos == 1) ? "checked" : "")+">Endless Videos</label>";
+	var filtersHTML = "<center><b>Enhanced RT</b> (<a href=\"" + currentSiteDomain + "/EnhancedRT/settings\">Settings</a>)<br>\n";
+	
+	/*<label style=\"color:#666;font-size:12px;\"><input style=\"margin:0 0 0 1em;\" type=checkbox id=\"endlessVideos\" "+((endlessVideos == 1) ? "checked" : "")+">Endless Videos</label>*/
 
 	
 	for ( i = 0; i < hide.length; i++)
@@ -543,7 +581,7 @@ if(window.location.pathname=="/episode/recently-added")
 			//checkForEndlessTrigger();
 		};
 	}
-	document.getElementById("endlessVideos").onclick = function () {
+/*	document.getElementById("endlessVideos").onclick = function () {
 		if(endlessVideos == 1)
 		{
 			endlessVideos = 0;
@@ -556,7 +594,7 @@ if(window.location.pathname=="/episode/recently-added")
 			//checkForEndlessTrigger();
 		}
 	};
-
+*/
 	
 	hideVideos();
 
@@ -619,6 +657,20 @@ if(window.location.pathname=="/episode/recently-added")
 			else if(video.search("cowchop.roosterteeth.com") >= 0)
 			{
 				if(hide[hideCC][hideValue] == 1)
+				{
+					childLI[i].style.display = "none";
+				}
+			}
+			else if(video.search("gameattack.roosterteeth.com") >= 0)
+			{
+				if(hide[hideGA][hideValue] == 1)
+				{
+					childLI[i].style.display = "none";
+				}
+			}
+			else if(video.search("sugarpine7.roosterteeth.com") >= 0)
+			{
+				if(hide[hideSP7][hideValue] == 1)
 				{
 					childLI[i].style.display = "none";
 				}
