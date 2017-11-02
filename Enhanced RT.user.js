@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name       Enhanced RT
-// @version    2.0.5
+// @version    2.0.6
 // @description  Enhancments for the Rooster Teeth family of websites
 // @include    *://*.roosterteeth.com/*
 // @exclude    *://store.roosterteeth.com/*
@@ -51,6 +51,9 @@ To be fixed
 
 Versions
 ========
+2.0.6
+-Removed temporary fix that adds Sugar Pine 7 to the channel filter drop down options. No longer needed now that it has been officially added to the website.
+
 2.0.5
 -Added Game Attack and Sugar Pine 7 filters.
 -Removed Endless Videos options since the feature isn't working.
@@ -484,12 +487,14 @@ if(window.location.pathname=="/episode/recently-added")
 	// ***************
 	// Temp Fix to add SP7 drop down option
 	// ***************
+/*	
 	SP7fix = document.createElement('option');
 	SP7fix.value = '9';
 	SP7fix.dataset.filter = 'sugarpine7';
 	SP7fix.label = 'Sugar Pine 7';
 	var channelFilter = document.getElementById("channelFilter");
 	channelFilter.append(SP7fix);
+*/
 	
 	
 	// ***************
