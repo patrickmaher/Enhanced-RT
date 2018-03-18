@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name       Enhanced RT
-// @version    3.0.0
+// @version    3.0.1
 // @description  Enhancments for the Rooster Teeth family of websites
 // @include    *://*.roosterteeth.com/*
 // @exclude    *://store.roosterteeth.com/*
@@ -51,13 +51,17 @@ To be fixed
 
 Versions
 ========
+3.0.1
+-Beta site: Fixed bug in conversion of comment timestamps to seconds when the timestamp contained hours.
+
+
 3.0.0
 -Added initial support for the Rooster Teeth Beta site.
--Created Beta site Recently Added video page which uses Rooster Teeth's API to determine available channles and videos.
--Beta site Recently Added page displays videos in a grid view, allows the user to loaded additional videos on the page, and the videos can be filtered by channel.
--Beta site RECENT VIDEOS text on home page is converted to a clickable link to the Recently Added page.
--Beta site video comment timestamps are converted to clickable links.
--Beta site Binge Mode on/off setting added to the settings page.
+-Beta site: Created Recently Added video page which uses Rooster Teeth's API to determine available channles and videos.
+-Beta site: Recently Added page displays videos in a grid view, allows the user to loaded additional videos on the page, and the videos can be filtered by channel.
+-Beta site: RECENT VIDEOS text on home page is converted to a clickable link to the Recently Added page.
+-Beta site: video comment timestamps are converted to clickable links.
+-Beta site: Binge Mode on/off setting added to the settings page.
 
 
 2.0.6
@@ -2079,7 +2083,7 @@ else // On SVOD
 		{
 			var videoID = document.getElementsByTagName("video")[0].id;
 			document.getElementsByClassName('video-container')[0].scrollIntoView(false);
-			document.getElementById(videoID).currentTime=(((matchTimestamp[1] != undefined)?parseInt(matchTimestamp[1]):0 * 3600) + (parseInt(matchTimestamp[2]) * 60) + parseInt(matchTimestamp[3]));
+			document.getElementById(videoID).currentTime=(((matchTimestamp[1] != undefined)?(parseInt(matchTimestamp[1]) * 3600 ) : 0) + (parseInt(matchTimestamp[2]) * 60) + parseInt(matchTimestamp[3]));
 			document.getElementById(videoID).play();
 			//console.log(((matchTimestamp[1] != undefined)?parseInt(matchTimestamp[1]):0 * 3600));
 		}
