@@ -682,6 +682,7 @@ function recentlyAdded()
 	
 	//
 	var episodeBatch = "";
+	var episodeData = new Object();
 	
 	// Get List of Episodes
 	var xmlhttp = new XMLHttpRequest();
@@ -696,6 +697,7 @@ function recentlyAdded()
 
 			// Episode list
 			var myObj = JSON.parse(this.responseText);
+			episodeData = myObj;
 
 			// Parse episodes in list
 			for (var i = 0, len = myObj.data.length; i < len; i++) {
@@ -755,12 +757,24 @@ function recentlyAdded()
 	watchTimeXMLHttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			var watchTimeObj = JSON.parse(this.responseText);
+			var watchedThreshold = 10;
 
-			for (var i = 0, len = watchTimeObj.length; i < len; i++)
+			for (var i = 0; i < watchTimeObj.length; i++)
 			{
-				console.log("Video ID: " + watchTimeObj[i].uuid + " Watch Time: " + watchTimeObj[i].value);
+				for (var j = 0; j < episodeData.data.length; j++)
+				{
+					if(episodeData.data[j].uuid == watchTimeObj[i].uuid)
+					{
+						if(watchTimeObj[i].value > episodeData.data[j].attributes.length - watchedThreshold)
+						{
+							console.log("Episode " + episodeData.data[j].attributes.display_title + " is watched. It is " + episodeData.data[j].attributes.length + " seconds long and watch time is " + watchTimeObj[i].value + " seconds.");
+						}
+					}
+				}
 			}
-			
+
+			// Reset in preparation for next batch
+			episodeData = {};
 		}
 	};
 	
@@ -776,9 +790,9 @@ function recentlyAdded()
 		watchTimeXMLHttp.setRequestHeader('Authorization', 'Bearer ' + accessToken);
 		watchTimeXMLHttp.send();
 	}
-		
-		
-		
+	
+	
+	
 	// *********************
 	// Endless Video Loading
 	// *********************
