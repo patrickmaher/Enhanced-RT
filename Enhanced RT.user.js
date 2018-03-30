@@ -680,7 +680,8 @@ function recentlyAdded()
 	// ***Initial Setup End***
 	
 	
-	
+	//
+	var episodeBatch = "";
 	
 	// Get List of Episodes
 	var xmlhttp = new XMLHttpRequest();
@@ -700,6 +701,9 @@ function recentlyAdded()
 			for (var i = 0, len = myObj.data.length; i < len; i++) {
 				//console.log("Title: " + myObj.data[i].attributes.title + " Show: " + myObj.data[i].attributes.show_title + " Channel: " + myObj.data[i].attributes.channel_id);
 
+				// Comma separated list of episodes in current batch.
+				episodeBatch += (episodeBatch == "")?myObj.data[i].uuid:("," + myObj.data[i].uuid);
+				
 				// Clone element structure for individual episodes. Don't need to rebuild the whole structure for each episode.
 				var cloneEpisodeDiv = episodeDiv.cloneNode(true);
 
@@ -728,23 +732,53 @@ function recentlyAdded()
 				// Add episode to page
 				document.getElementsByClassName("episode-grid-container")[0].insertBefore(cloneEpisodeDiv, document.getElementsByClassName("show-more")[0]);
 			}
-			
+
+			// Get watch times for current episode batch
+			getWatchTimes(watchTimeXMLHttp, episodeBatch);
+			// Reset in preparation for next batch
+			episodeBatch = "";
+
 			hideVideos();
+			
 		}
 	};
 	
 	// Get initial set of episodes
 	getEpisodes(xmlhttp, episodePage, episodesPerPage);
 	episodePage++;
+	
+	
+	
+	// Request episode watch times from Watch Time Collector (wtc) server.
+	var watchTimeXMLHttp = new XMLHttpRequest();
+	
+	watchTimeXMLHttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			var watchTimeObj = JSON.parse(this.responseText);
 
+			for (var i = 0, len = watchTimeObj.length; i < len; i++)
+			{
+				console.log("Video ID: " + watchTimeObj[i].uuid + " Watch Time: " + watchTimeObj[i].value);
+			}
+			
+		}
+	};
 	
 	
-	
-
-	
-	
-	
-	
+	function getWatchTimes(watchTimeXMLHttp, episodeBatch)
+	{
+		// Retrieve rt_access_token from document.cookie
+		var tokenLocation = document.cookie.indexOf("rt_access_token=") + 16;
+		var accessToken = document.cookie.substring(tokenLocation, document.cookie.indexOf(";", tokenLocation));
+		
+		// Request watch times for current episode batch
+		watchTimeXMLHttp.open("GET", "https://wtc.roosterteeth.com/api/v1/my/played_positions/mget/" + episodeBatch, true);
+		watchTimeXMLHttp.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+		watchTimeXMLHttp.send();
+	}
+		
+		
+		
 	// *********************
 	// Endless Video Loading
 	// *********************
