@@ -372,9 +372,7 @@ function displaySettings()
 }
 
 // Get settings from local storage
-var watchedFilter = new Array;
-var watchedFilterString = localStorage.getItem("enhancedRT_watchedFilter");
-watchedFilter = ((watchedFilterString == null) ? [] : JSON.parse(watchedFilterString));
+watchedFilter = ((localStorage.getItem("enhancedRT_watchedFilter") == null) ? "false" : localStorage.getItem("enhancedRT_watchedFilter"));
 
 var streamFilter = new Array;
 var streamFilterString = localStorage.getItem("enhancedRT_streamFilter");
@@ -424,6 +422,34 @@ function recentlyAdded()
 	showWrapperDiv.appendChild(CenterHeader);
 
 
+	var watchedLabel = document.createElement("label");
+	watchedLabel.style = "font-size: 1.64rem;";
+	var watchedCheckbox = document.createElement("input");
+	watchedCheckbox.type = "checkbox";
+	watchedCheckbox.id = "watchedFilter";
+	watchedCheckbox.defaultChecked = ((watchedFilter == "false") ? true : false);
+	watchedCheckbox.style = "position: static; opacity: 100; pointer-events:auto; margin:0 0 0 1em; width: 17px; height: 17px;";
+	watchedLabel.appendChild(watchedCheckbox);
+	watchedLabel.appendChild(document.createTextNode("Watched"));
+	
+	headerDiv.appendChild(watchedLabel);
+	
+	watchedLabel.onclick = function (event)
+	{
+		if(event.target.checked == true)
+		{
+			watchedFilter = "false";
+			localStorage.setItem("enhancedRT_watchedFilter", watchedFilter);
+		}
+		else if(event.target.checked == false)
+		{
+			watchedFilter = "true";
+			localStorage.setItem("enhancedRT_watchedFilter", watchedFilter);
+		}
+		
+		hideVideos();
+		checkForEndlessTrigger();
+	};
 	
 	
 	// Get List of Channels
@@ -634,7 +660,6 @@ function recentlyAdded()
 	timestampDiv.className = "timestamp";
 	timestampDiv.appendChild(document.createTextNode("***Timestamp Text***"));
 	
-	
 	var infoDiv = document.createElement("div");
 	infoDiv.className = "info-line";
 	
@@ -769,7 +794,17 @@ function recentlyAdded()
 					{
 						if(watchTimeObj[i].value > episodeData.data[j].attributes.length - watchedThreshold)
 						{
-							console.log("Episode " + episodeData.data[j].attributes.display_title + " is watched. It is " + episodeData.data[j].attributes.length + " seconds long and watch time is " + watchTimeObj[i].value + " seconds.");
+							//console.log("Episode " + episodeData.data[j].attributes.display_title + " is watched. It is " + episodeData.data[j].attributes.length + " seconds long and watch time is " + watchTimeObj[i].value + " seconds.");
+							document.querySelector("[data-episode-id='"+watchTimeObj[i].uuid+"']").dataset.watched = "true";
+							
+							var WatchedDiv = document.createElement("div");
+							WatchedDiv.className = "timestamp";
+							WatchedDiv.style.top = "0%";
+							WatchedDiv.style.right = "0%";
+							WatchedDiv.style.bottom = "93%";
+							WatchedDiv.appendChild(document.createTextNode("Watched"));
+							
+							document.querySelector("[data-episode-id='"+watchTimeObj[i].uuid+"']").childNodes[0].childNodes[0].childNodes[0].childNodes[0].appendChild(WatchedDiv);
 						}
 					}
 				}
@@ -777,6 +812,9 @@ function recentlyAdded()
 
 			// Reset in preparation for next batch
 			episodeData = {};
+			
+			// Need to do hideVideos again after watched status is determined
+			hideVideos();
 		}
 	};
 	
@@ -896,7 +934,19 @@ function hideVideos()
 	var episode = document.getElementsByClassName("col s12 m4 l3");
 	for ( i = 0; i < episode.length; i++)
 	{
+		var hideEpisode = false;
+		
 		if(channelFilter.indexOf(episode[i].dataset.channelId) != -1)
+		{
+			hideEpisode = true;
+		}
+
+		if(watchedFilter == "true" && episode[i].dataset.watched == "true")
+		{
+			hideEpisode = true;
+		}
+
+		if(hideEpisode == true)
 		{
 			episode[i].style.display = "none";
 		}
@@ -906,76 +956,7 @@ function hideVideos()
 		}
 	}
 	
-	/*
-	var episode = document.getElementsByClassName("col s12 m4 l3");
-	for ( i = 0; i < episode.length; i++)
-	{
-		//episode[i].style.display = "";
-		
-		if(episode[i].id == "achievement-hunter")
-		{
-			if(hide[hideAH][hideValue] == 1)
-			{
-				episode[i].style.display = "none";
-			}
-		}
-		else if(episode[i].id == "the-know")
-		{
-			if(hide[hideTK][hideValue] == 1)
-			{
-				episode[i].style.display = "none";
-			}
-		}
-		else if(episode[i].id == "rooster-teeth")
-		{
-			if(hide[hideRT][hideValue] == 1)
-			{
-				episode[i].style.display = "none";
-			}
-		}
-		else if(episode[i].id == "funhaus")
-		{
-			if(hide[hideFH][hideValue] == 1)
-			{
-				episode[i].style.display = "none";
-			}
-		}
-		else if(episode[i].id == "screwattack")
-		{
-			if(hide[hideSA][hideValue] == 1)
-			{
-				episode[i].style.display = "none";
-			}
-		}
-		else if(episode[i].id == "cow-chop")
-		{
-			if(hide[hideCC][hideValue] == 1)
-			{
-				episode[i].style.display = "none";
-			}
-		}
-		else if(episode[i].id == "game-attack")
-		{
-			if(hide[hideGA][hideValue] == 1)
-			{
-				episode[i].style.display = "none";
-			}
-		}
-		else if(episode[i].id == "sugar-pine-7")
-		{
-			if(hide[hideSP7][hideValue] == 1)
-			{
-				episode[i].style.display = "none";
-			}
-		}
-		else if(hide[hideUnknown][hideValue] == 1)
-		{
-			episode[i].style.display = "none";
-		}
-		*/
-		
-		
-		
+
 		/*
 		// Hide Streams
 		if(hide[hideStreams][hideValue] == 1)
@@ -986,21 +967,6 @@ function hideVideos()
 			}
 		}
 		*/
-	
-		/*
-		if(hide[hideWatched][hideValue] == 1)
-		{
-			var watched = document.getElementsByClassName("watched");
-			for ( i = 0; i < watched.length; i++)
-			{
-				//watched[i].parentNode.parentNode.parentNode.parentNode.parentNode.style.display = " "+((hide[hideWatched][hideValue] == 1) ? "none" : "")+"";
-				watched[i].parentNode.parentNode.parentNode.parentNode.parentNode.style.display = "none";
-			}
-		}
-		*/
-	
-	//}
-
 }
 
 
