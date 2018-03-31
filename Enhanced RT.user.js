@@ -710,7 +710,9 @@ function recentlyAdded()
 				var cloneEpisodeDiv = episodeDiv.cloneNode(true);
 
 				// Update cloned elements with current episodes information
-				cloneEpisodeDiv.id = myObj.data[i].attributes.channel_id;
+				cloneEpisodeDiv.dataset.episodeID = myObj.data[i].uuid;
+				cloneEpisodeDiv.dataset.channelID = myObj.data[i].attributes.channel_id;
+				cloneEpisodeDiv.dataset.seriesID = myObj.data[i].attributes.show_id;
 				cloneEpisodeDiv.getElementsByClassName("card-image-wrapper")[0].childNodes[0].href = "/episode/" + myObj.data[i].attributes.slug;
 				cloneEpisodeDiv.getElementsByClassName("image")[0].style = "background-image: url(\"" + myObj.data[i].included.images["0"].attributes.small + "\");";
 				cloneEpisodeDiv.getElementsByClassName("episode-title")[0].href = "/episode/" + myObj.data[i].attributes.slug;
@@ -894,7 +896,7 @@ function hideVideos()
 	var episode = document.getElementsByClassName("col s12 m4 l3");
 	for ( i = 0; i < episode.length; i++)
 	{
-		if(channelFilter.indexOf(episode[i].id) != -1)
+		if(channelFilter.indexOf(episode[i].dataset.channelID) != -1)
 		{
 			episode[i].style.display = "none";
 		}
