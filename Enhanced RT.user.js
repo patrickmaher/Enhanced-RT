@@ -300,6 +300,7 @@ ready('.settings-app', function(element) {
 // *******************
 function displaySettings()
 {
+	/*
 	//console.log(document.getElementsByClassName("simplebar-content")[1]);
 
 	// Create elements for Enhanced RT settings
@@ -363,7 +364,7 @@ function displaySettings()
 
 	
 	//console.log(document.getElementsByClassName("simplebar-content")[1]);
-
+	*/
 }
 
 // Get settings from local storage
