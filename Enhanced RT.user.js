@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name       Enhanced RT
-// @version    3.0.1
+// @version    3.1.0
 // @description  Enhancments for the Rooster Teeth family of websites
 // @include    *://*.roosterteeth.com/*
 // @exclude    *://store.roosterteeth.com/*
@@ -51,6 +51,10 @@ To be fixed
 
 Versions
 ========
+3.1.0
+-Removed support for the old Rooster Teeth website
+-Removed binge mode setting. Rooster Teeth has implemented an auto play setting that takes its place.
+
 3.0.1
 -Beta site: Fixed bug in conversion of comment timestamps to seconds when the timestamp contained hours.
 
