@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name       Enhanced RT
-// @version    3.1.0
-// @description  Enhancments for the Rooster Teeth family of websites
+// @version    3.2.0
+// @description  Enhances the Rooster Teeth website
 // @include    *://*.roosterteeth.com/*
 // @exclude    *://store.roosterteeth.com/*
 // @run-at document-end
@@ -51,6 +51,9 @@ To be fixed
 
 Versions
 ========
+3.2.0
+-Added star icons to episodes on the Recently Added page that are FIRST only and FIRST for a limited time.
+
 3.1.0
 -Removed support for the old Rooster Teeth website
 -Removed binge mode setting. Rooster Teeth has implemented an auto play setting that takes its place.

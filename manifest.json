@@ -11,8 +11,8 @@
 			   "48": "icons/icon48.png",
 			   "128": "icons/icon128.png" },
     "converted_from_user_script": true,
-    "description":  "Enhancements for the Rooster Teeth website",
+    "description":  "Enhances the Rooster Teeth website",
     "name":         "Enhanced RT",
 	"author":         "Patrick Maher",
-    "version":      "3.1.0"
+    "version":      "3.2.0"
 }
