@@ -758,6 +758,33 @@ function recentlyAdded()
 				var episodeDateFormatted = ('0' + (episodeDate.getMonth()+1)).slice(-2) + '/' + ('0' + episodeDate.getDate()).slice(-2) + '/' + episodeDate.getFullYear();
 				cloneEpisodeDiv.getElementsByClassName("episode-extra")[0].childNodes[1].nodeValue = " | " + episodeDateFormatted;
 
+				
+				// Determine if episode is First only or First for a limited time and show appropriate star icon
+				var premiumDiv = document.createElement("div");
+				premiumDiv.className = "premium__badge__wrapper";
+				
+				// First only
+				if(myObj.data[i].attributes.is_sponsors_only == true)
+				{
+					var starFilledIcon = document.createElement("i");
+					starFilledIcon.className = "premium icon-star2";
+					premiumDiv.appendChild(starFilledIcon);
+					cloneEpisodeDiv.getElementsByClassName("card-image-wrapper")[0].appendChild(premiumDiv);
+				}
+				// First for limited time
+				else if(myObj.data[i].attributes.sponsor_golive_at != myObj.data[i].attributes.member_golive_at)
+				{
+					// Using member_golive_at value to compare with current date/time. Should we detect if user is not logged on and in that case check public_golive_at instead? Need to find a video where member_golive_at value and public_golive_at differ but member_golive_at date has not yet passed.
+					//console.log(myObj.data[i].attributes.display_title + " Current date: " + new Date() + " Release date: " + new Date(myObj.data[i].attributes.member_golive_at));
+					if(new Date() < new Date(myObj.data[i].attributes.member_golive_at))
+					{
+						var starOutlineIcon = document.createElement("i");
+						starOutlineIcon.className = "premium icon-star_border";
+						premiumDiv.appendChild(starOutlineIcon);
+						cloneEpisodeDiv.getElementsByClassName("card-image-wrapper")[0].appendChild(premiumDiv);
+					}
+				}
+				
 				// Add episode to page
 				document.getElementsByClassName("episode-grid-container")[0].insertBefore(cloneEpisodeDiv, document.getElementsByClassName("show-more")[0]);
 			}
@@ -800,7 +827,8 @@ function recentlyAdded()
 							var WatchedDiv = document.createElement("div");
 							WatchedDiv.className = "timestamp";
 							WatchedDiv.style.top = "0%";
-							WatchedDiv.style.right = "0%";
+							WatchedDiv.style.left = "0%";
+							WatchedDiv.style.right = "89%";
 							WatchedDiv.style.bottom = "93%";
 							WatchedDiv.appendChild(document.createTextNode("Watched"));
 							
