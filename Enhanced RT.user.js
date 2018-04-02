@@ -304,6 +304,45 @@ ready('.episode-main', function(element) {
 		//console.log(element);
 		recentlyAdded();
 	}
+	else
+	{
+		//console.log("Video page detected: " + window.location.pathname.replace("/episode/", ""));
+		// Get List of Channels
+		var episodeXMLHttp = new XMLHttpRequest();
+		
+		episodeXMLHttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				var episodeObj = JSON.parse(this.responseText);
+				
+				//console.log(episodeObj.data.length);
+				if(episodeObj.data.length < 1)
+				{
+					//console.log("Episode not yet available");
+					var episodeContentDiv = document.getElementsByClassName("episode-content")[0];
+					
+					var CenterHeader = document.createElement("center");
+					var headerDiv = document.createElement("div");
+					var pageTitleHeader = document.createElement("h4");
+					pageTitleHeader.className = "shows-title";
+					var pageTitleSpan = document.createElement("span");
+					CenterHeader.appendChild(headerDiv);
+					headerDiv.appendChild(pageTitleHeader);
+					pageTitleHeader.appendChild(pageTitleSpan);
+					pageTitleSpan.appendChild(document.createTextNode("Enhanced RT: It is not time for this scheduled episode. Go back to "));
+					var goBackLink = document.createElement("a");
+					goBackLink.href = "/schedule";
+					goBackLink.appendChild(document.createTextNode("Schedule page."));
+					pageTitleSpan.appendChild(goBackLink);
+					episodeContentDiv.insertBefore(CenterHeader, episodeContentDiv.childNodes[0]);
+				}
+			}
+		};
+		
+		// Request channels list from server
+		episodeXMLHttp.open("GET", "https://svod-be.roosterteeth.com/api/v1/episodes/" + window.location.pathname.replace("/episode/", ""), true);
+		episodeXMLHttp.send();
+		
+	}
 });
 
 
