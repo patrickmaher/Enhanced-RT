@@ -7,7 +7,7 @@
 // @match        *://*.roosterteeth.com/*
 // @exclude      *://store.roosterteeth.com/*
 // @run-at       document-end
-// @version      3.2.0
+// @version      3.3.0
 // ==/UserScript==
 
 
@@ -54,6 +54,11 @@ To be fixed
 
 Versions
 ========
+3.3.0
+-Added links to Recently Added page and Schedule page on the left side menu.
+-Improved how episode information is displayed on the Recently Added page.
+-Added tooltip when you mouse over episode information on the Recently Added page.
+
 3.2.0
 -Added star icons to episodes on the Recently Added page that are FIRST only and FIRST for a limited time.
 
