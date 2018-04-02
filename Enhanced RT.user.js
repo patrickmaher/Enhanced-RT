@@ -755,6 +755,9 @@ function recentlyAdded()
 				// Comma separated list of episodes in current batch.
 				episodeBatch += (episodeBatch == "")?myObj.data[i].uuid:("," + myObj.data[i].uuid);
 				
+				// Separate season/episode number from display title so it can be displayed separately
+				var seasonInfo = myObj.data[i].attributes.display_title.split(" -", 1)[0].split(":");
+
 				// Clone element structure for individual episodes. Don't need to rebuild the whole structure for each episode.
 				var cloneEpisodeDiv = episodeDiv.cloneNode(true);
 
@@ -765,9 +768,10 @@ function recentlyAdded()
 				cloneEpisodeDiv.getElementsByClassName("card-image-wrapper")[0].childNodes[0].href = "/episode/" + myObj.data[i].attributes.slug;
 				cloneEpisodeDiv.getElementsByClassName("image")[0].style = "background-image: url(\"" + myObj.data[i].included.images["0"].attributes.small + "\");";
 				cloneEpisodeDiv.getElementsByClassName("episode-title")[0].href = "/episode/" + myObj.data[i].attributes.slug;
-				cloneEpisodeDiv.getElementsByClassName("episode-title")[0].childNodes[0].nodeValue = myObj.data[i].attributes.display_title;
+				cloneEpisodeDiv.getElementsByClassName("episode-title")[0].childNodes[0].nodeValue = myObj.data[i].attributes.title;
 				cloneEpisodeDiv.getElementsByClassName("episode-extra__link")[0].href = "/series/" + myObj.data[i].attributes.show_slug;
-				cloneEpisodeDiv.getElementsByClassName("episode-extra__link")[0].childNodes[0].nodeValue = myObj.data[i].attributes.show_title;
+				cloneEpisodeDiv.getElementsByClassName("episode-extra__link")[0].childNodes[0].nodeValue = myObj.data[i].attributes.show_title + " - " + seasonInfo[0] + " : " + seasonInfo[1];
+				cloneEpisodeDiv.getElementsByClassName("info-line")[0].title = myObj.data[i].attributes.title + "\n" + myObj.data[i].attributes.show_title + " - " + seasonInfo[0] + " : " + seasonInfo[1] + "\n\n" + myObj.data[i].attributes.description;
 
 				// Format episode length to human readable
 				var totalSeconds = myObj.data[i].attributes.length;
