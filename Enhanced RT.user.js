@@ -1,10 +1,13 @@
 // ==UserScript==
-// @name       Enhanced RT
-// @version    3.2.0
+// @name         Enhanced RT
+// @author       Patrick Maher
+// @namespace    https://github.com/patrickmaher/Enhanced-RT
 // @description  Enhances the Rooster Teeth website
-// @include    *://*.roosterteeth.com/*
-// @exclude    *://store.roosterteeth.com/*
-// @run-at document-end
+// @match        *://roosterteeth.com/*
+// @match        *://*.roosterteeth.com/*
+// @exclude      *://store.roosterteeth.com/*
+// @run-at       document-end
+// @version      3.2.0
 // ==/UserScript==
 
 
