@@ -1,0 +1,1 @@
+Please don't submit code that uses JQuery.
