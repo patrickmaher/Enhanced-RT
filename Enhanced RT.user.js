@@ -255,6 +255,27 @@ observer.observe(target, config);
 			
 })(this);
 
+ready('.side-menu', function(element) {
+	//console.log("Enhanced RT: Side Menu Detected");
+
+	// Add schedule and recently added link to side menu
+	var scheduleItem = document.createElement("li");
+	var scheduleLink = document.createElement("a");
+	scheduleLink.className = "waves-effect waves-brand";
+	scheduleLink.href = "/schedule";
+	scheduleLink.appendChild(document.createTextNode("Schedule"));
+	scheduleItem.appendChild(scheduleLink);
+	
+	var recentlyAddedItem = document.createElement("li");
+	var recentlyAddedLink = document.createElement("a");
+	recentlyAddedLink.className = "waves-effect waves-brand";
+	recentlyAddedLink.href = "/episode/recently-added";
+	recentlyAddedLink.appendChild(document.createTextNode("Recently Added"));
+	recentlyAddedItem.appendChild(recentlyAddedLink);
+
+	element.insertBefore(recentlyAddedItem, document.getElementsByClassName("side-menu")[0].childNodes[4]);
+	element.insertBefore(scheduleItem, document.getElementsByClassName("side-menu")[0].childNodes[4]);	
+});
 
 ready('.carousel-title', function(element) {
 	//console.log("Enhanced RT: Carousel Detected");
