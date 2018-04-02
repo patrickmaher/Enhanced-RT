@@ -7,6 +7,7 @@
 // @match        *://*.roosterteeth.com/*
 // @exclude      *://store.roosterteeth.com/*
 // @run-at       document-end
+// @noframes
 // @version      3.3.0
 // ==/UserScript==
 
