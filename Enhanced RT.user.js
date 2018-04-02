@@ -458,7 +458,7 @@ function recentlyAdded()
 	
 	headerDiv.appendChild(watchedLabel);
 	
-	watchedLabel.onclick = function (event)
+	watchedCheckbox.onclick = function (event)
 	{
 		if(event.target.checked == true)
 		{
@@ -501,7 +501,7 @@ function recentlyAdded()
 				
 				headerDiv.appendChild(channelLabel);
 				
-				channelLabel.onclick = function (event)
+				channelCheckbox.onclick = function (event)
 				{
 					if(event.target.checked == true)
 					{
