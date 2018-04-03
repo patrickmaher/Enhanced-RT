@@ -8,7 +8,7 @@
 // @exclude      *://store.roosterteeth.com/*
 // @run-at       document-end
 // @noframes
-// @version      3.3.0
+// @version      3.3.1
 // ==/UserScript==
 
 
@@ -55,6 +55,9 @@ To be fixed
 
 Versions
 ========
+3.3.1
+-Fixed bug causing Firefox and Edge to load many instances of the userscript on the episode page.
+
 3.3.0
 -Added links to Recently Added page and Schedule page on the left side menu.
 -Improved how episode information is displayed on the Recently Added page.
