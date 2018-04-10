@@ -671,6 +671,7 @@ function recentlyAdded()
 	
 	var episodeGridContainerDiv = document.createElement("div");
 	episodeGridContainerDiv.className = "episode-grid-container row";
+	episodeGridContainerDiv.style = "display: flex; flex-wrap: wrap;";
 	
 	var showMoreDiv = document.createElement("div");
 	showMoreDiv.className = "col s12 show-more";
