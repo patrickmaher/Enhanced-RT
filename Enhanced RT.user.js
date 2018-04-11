@@ -715,6 +715,7 @@ function recentlyAdded()
 	// Create elements used to display individual episode 
 	var episodeDiv = document.createElement("div");
 	episodeDiv.className = "col s12 m4 l3";
+	episodeDiv.style = "margin-left: 0;";
 	
 	var episodeCardDiv = document.createElement("div");
 	episodeCardDiv.className = "episode-card";
