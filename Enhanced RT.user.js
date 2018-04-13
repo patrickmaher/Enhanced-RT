@@ -8,7 +8,7 @@
 // @exclude      *://store.roosterteeth.com/*
 // @run-at       document-end
 // @noframes
-// @version      3.3.1
+// @version      3.3.2
 // ==/UserScript==
 
 
@@ -55,6 +55,9 @@ To be fixed
 
 Versions
 ========
+3.3.2
+-Fixed empty gaps in Recently Added grid caused by text wrapping.
+
 3.3.1
 -Fixed bug causing Firefox and Edge to load many instances of the userscript on the episode page.
 
