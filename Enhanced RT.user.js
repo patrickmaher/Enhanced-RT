@@ -153,6 +153,100 @@ ready('.carousel-title', function(element) {
 });
 
 
+ready('.vjs-fullscreen-control', function(element) {
+	
+	// Create Full Window video player button
+	var fullWindowButton = document.createElement("button");
+	fullWindowButton.className = "icon-expand";
+	fullWindowButton.type = "button";
+	fullWindowButton.title = "Full Window";
+	fullWindowButton.style = "font-size: medium;width: 2em;";
+	fullWindowButton.dataset.fullWindow = "false";
+	element.parentNode.insertBefore(fullWindowButton, element);
+	
+	// Toggle between Full Window and Non-Full Window video player
+	fullWindowButton.onclick = function (event)
+	{
+		if(event.target.dataset.fullWindow == "false")
+		{
+			event.target.className = "icon-compress";
+			event.target.title = "Non-Full Window";
+			
+			var videoElement = document.getElementsByTagName("video")[0];
+			
+			videoElement.parentNode.parentNode.style.width = "100vw";
+			videoElement.parentNode.parentNode.style.height = "56.25vw";
+			videoElement.parentNode.parentNode.style.maxHeight = "100vh";
+			videoElement.parentNode.parentNode.style.maxWidth = "177.78vh";
+			videoElement.parentNode.parentNode.style.margin = "auto";
+			videoElement.parentNode.parentNode.style.position = "fixed";
+			videoElement.parentNode.parentNode.style.top = "0";
+			videoElement.parentNode.parentNode.style.bottom = "0";
+			videoElement.parentNode.parentNode.style.left = "0";
+			videoElement.parentNode.parentNode.style.right = "0";
+			
+			videoElement.parentNode.parentNode.parentNode.style.position = "fixed";
+			videoElement.parentNode.parentNode.parentNode.style.top = "0";
+			videoElement.parentNode.parentNode.parentNode.style.left = "0";
+			videoElement.parentNode.parentNode.parentNode.style.width = "100%";
+			videoElement.parentNode.parentNode.parentNode.style.height = "100%";
+			videoElement.parentNode.parentNode.parentNode.style.zIndex = "10000";
+
+			event.target.dataset.fullWindow = "true";
+		}
+		else
+		{
+			event.target.className = "icon-expand";
+			event.target.title = "Full Window";
+			
+			var videoElement = document.getElementsByTagName("video")[0];
+			
+			videoElement.parentNode.parentNode.style.width = "";
+			videoElement.parentNode.parentNode.style.height = "";
+			videoElement.parentNode.parentNode.style.maxHeight = "";
+			videoElement.parentNode.parentNode.style.maxWidth = "";
+			videoElement.parentNode.parentNode.style.margin = "";
+			videoElement.parentNode.parentNode.style.position = "";
+			videoElement.parentNode.parentNode.style.top = "";
+			videoElement.parentNode.parentNode.style.bottom = "";
+			videoElement.parentNode.parentNode.style.left = "";
+			videoElement.parentNode.parentNode.style.right = "";
+			
+			videoElement.parentNode.parentNode.parentNode.style.position = "";
+			videoElement.parentNode.parentNode.parentNode.style.top = "";
+			videoElement.parentNode.parentNode.parentNode.style.left = "";
+			videoElement.parentNode.parentNode.parentNode.style.width = "";
+			videoElement.parentNode.parentNode.parentNode.style.height = "";
+			videoElement.parentNode.parentNode.parentNode.style.zIndex = "";
+			
+			event.target.dataset.fullWindow = "false";
+		}
+	};
+	
+	
+	stickyPlayer = new MutationObserver(function () {
+		
+		// Check if full screen button is hidden and hide full window button accordingly
+		if(window.getComputedStyle(document.getElementsByClassName("vjs-fullscreen-control")[0], null).getPropertyValue("display") == "none")
+		{
+			fullWindowButton.style.display = "none";
+		}
+		else
+		{
+			fullWindowButton.style.display = "";
+		}
+		
+	});
+	
+	// Watch for video player transform to small sticky player
+	stickyPlayer.observe(document.getElementsByTagName("video")[0].parentNode, {
+		attributes: true,
+		attributeFilter: ['style']
+	});
+	
+});
+
+
 ready('.episode-main', function(element) {
 	if(window.location.pathname.search("/episode/recently-added") >= 0)
 	{
