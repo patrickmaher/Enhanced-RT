@@ -137,12 +137,12 @@ ready('.carousel-title', function(element) {
 	//console.log("Enhanced RT: Carousel Detected");
 	//console.log(element.childNodes[0].nodeValue);
 	
-	if(element.childNodes[0] != undefined && element.childNodes[0].nodeValue == "recent videos")
+	if(element.childNodes[0] != undefined && element.childNodes[0].nodeValue == "recent episodes")
 	{
 		var recentLink = document.createElement("a");
 		recentLink.className = "carousel-title link";
 		recentLink.href = "/episode/recently-added";
-		recentLink.appendChild(document.createTextNode("recent videos "));
+		recentLink.appendChild(document.createTextNode("recent episodes "));
 		var recentArrow = document.createElement("i");
 		recentArrow.className = "show-more icon-keyboard_arrow_right";
 		recentLink.appendChild(recentArrow);
