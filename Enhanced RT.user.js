@@ -418,7 +418,7 @@ function recentlyAdded()
 	showWrapperDiv.className = "show-main__wrapper";
 	
 	// Start by appending parent element to page. The other elements will be added to it.
-	document.getElementsByClassName("simplebar-content")[1].appendChild(showWrapperDiv);
+	document.getElementsByClassName("episode-main")[0].appendChild(showWrapperDiv);
 	
 	// ***Filters Setup Start***
 	
