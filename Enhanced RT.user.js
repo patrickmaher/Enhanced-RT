@@ -516,34 +516,34 @@ function recentlyAdded()
 	
 	/*
 	var rtLogoDiv = document.createElement("div");
-	rtLogoDiv.style="background-color: #c9373f; width: 50px; height: 50px; -webkit-mask-box-image: url(https://svod.roosterteeth.com/img/RT_Cockbite_White.png);"
+	rtLogoDiv.style="background-color: #c9373f; width: 50px; height: 50px; -webkit-mask-box-image: url(https://roosterteeth.com/img/RT_Cockbite_White.png);"
 	headerDiv.appendChild(rtLogoDiv);
 	var ahLogoDiv = document.createElement("div");
-	ahLogoDiv.style="background-color: #5f9f41; width: 50px; height: 50px; -webkit-mask-box-image: url(https://svod.roosterteeth.com/img/AH_Logo_White.png);"
+	ahLogoDiv.style="background-color: #5f9f41; width: 50px; height: 50px; -webkit-mask-box-image: url(https://roosterteeth.com/img/AH_Logo_White.png);"
 	headerDiv.appendChild(ahLogoDiv);
 	var fhLogoDiv = document.createElement("div");
-	fhLogoDiv.style="background-color: #fe8204; width: 50px; height: 50px; -webkit-mask-box-image: url(https://svod.roosterteeth.com/img/FH_Logo_White.png);"
+	fhLogoDiv.style="background-color: #fe8204; width: 50px; height: 50px; -webkit-mask-box-image: url(https://roosterteeth.com/img/FH_Logo_White.png);"
 	headerDiv.appendChild(fhLogoDiv);
 	var saLogoDiv = document.createElement("div");
-	saLogoDiv.style="background-color: #00aeef; width: 50px; height: 50px; -webkit-mask-box-image: url(https://svod.roosterteeth.com/img/SA_Logo_White.png);"
+	saLogoDiv.style="background-color: #00aeef; width: 50px; height: 50px; -webkit-mask-box-image: url(https://roosterteeth.com/img/SA_Logo_White.png);"
 	headerDiv.appendChild(saLogoDiv);
 	var ccLogoDiv = document.createElement("div");
-	ccLogoDiv.style="background-color: #d5b037; width: 50px; height: 50px; -webkit-mask-box-image: url(https://svod.roosterteeth.com/img/CC_Logo_White.png);"
+	ccLogoDiv.style="background-color: #d5b037; width: 50px; height: 50px; -webkit-mask-box-image: url(https://roosterteeth.com/img/CC_Logo_White.png);"
 	headerDiv.appendChild(ccLogoDiv);
 	var sp7LogoDiv = document.createElement("div");
-	sp7LogoDiv.style="background-color: #1bb479; width: 50px; height: 50px; -webkit-mask-box-image: url(https://svod.roosterteeth.com/img/SP7_Logo_White.png);"
+	sp7LogoDiv.style="background-color: #1bb479; width: 50px; height: 50px; -webkit-mask-box-image: url(https://roosterteeth.com/img/SP7_Logo_White.png);"
 	headerDiv.appendChild(sp7LogoDiv);
 	var gaLogoDiv = document.createElement("div");
-	gaLogoDiv.style="background-color: #8b54dc; width: 50px; height: 50px; -webkit-mask-box-image: url(https://svod.roosterteeth.com/img/GA_Logo_White.png);"
+	gaLogoDiv.style="background-color: #8b54dc; width: 50px; height: 50px; -webkit-mask-box-image: url(https://roosterteeth.com/img/GA_Logo_White.png);"
 	headerDiv.appendChild(gaLogoDiv);
 	var tkLogoDiv = document.createElement("div");
-	tkLogoDiv.style="background-color: #00639d; width: 50px; height: 50px; -webkit-mask-box-image: url(https://svod.roosterteeth.com/img/TK_Logo_White.png);"
+	tkLogoDiv.style="background-color: #00639d; width: 50px; height: 50px; -webkit-mask-box-image: url(https://roosterteeth.com/img/TK_Logo_White.png);"
 	headerDiv.appendChild(tkLogoDiv);
 	var jtLogoDiv = document.createElement("div");
-	jtLogoDiv.style="background-color: #FC1334; width: 175px; height: 175px; -webkit-mask-image: url(https://rtv3-image.roosterteeth.com/store/bed8a666-3528-4c89-9dc9-643bacf0c681.png/original/SongsAboutGamesLogo.png); -webkit-mask-position: right; transform: scale(0.33);"
+	jtLogoDiv.style="background-color: #FC1334; width: 50px; height: 50px; -webkit-mask-box-image: url(https://roosterteeth.com/img/JT_Logo_White.png);"
 	headerDiv.appendChild(jtLogoDiv);
 	
-	https://svod.roosterteeth.com/img/JT_Logo_White.png
+	
 	*/
 	
 	
@@ -688,6 +688,20 @@ function recentlyAdded()
 		
 	}
 	*/
+	
+	// Channel colors and logo URLs
+	var channelData = new Array;
+	channelData.push({id: "92b6bb21-91d2-4b1b-bf95-3268fa0d9939", color: "C9373F", logo: "https://roosterteeth.com/img/RT_Cockbite_White.png"});
+	channelData.push({id: "2cb2a70c-be50-46f5-93d7-84a1baabb4f7", color: "5F9F41", logo: "https://roosterteeth.com/img/AH_Logo_White.png"});
+	channelData.push({id: "2dc2a30b-55b7-443c-b565-1b3be9257fc4", color: "FE8204", logo: "https://roosterteeth.com/img/FH_Logo_White.png"});
+	channelData.push({id: "dd838359-a0e0-405f-b18b-5b0ed16ef852", color: "00AEEF", logo: "https://roosterteeth.com/img/SA_Logo_White.png"});
+	channelData.push({id: "84c7eaaf-54ab-40b6-8832-f6527eb22335", color: "D5B037", logo: "https://roosterteeth.com/img/CC_Logo_White.png"});
+	channelData.push({id: "33c38834-k169-3828-a527-49f7baz27482", color: "1BB479", logo: "https://roosterteeth.com/img/SP7_Logo_White.png"});
+	channelData.push({id: "528e5605-502e-499b-a3a3-2652498607ac", color: "8B54DC", logo: "https://roosterteeth.com/img/GA_Logo_White.png"});
+	channelData.push({id: "d7882a89-da75-4ee3-a02a-f49dc5889214", color: "00639D", logo: "https://roosterteeth.com/img/TK_Logo_White.png"});
+	channelData.push({id: "23g6dajk-76dc-27y3-6531-h5902rh48941", color: "FC1334", logo: "https://roosterteeth.com/img/JT_Logo_White.png"});
+
+	
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 
@@ -719,6 +733,20 @@ function recentlyAdded()
 				cloneEpisodeDiv.getElementsByClassName("episode-extra__link")[0].href = "/series/" + myObj.data[i].attributes.show_slug;
 				cloneEpisodeDiv.getElementsByClassName("episode-extra__link")[0].childNodes[0].nodeValue = myObj.data[i].attributes.show_title + " - " + seasonInfo[0] + " : " + seasonInfo[1];
 				cloneEpisodeDiv.getElementsByClassName("info-line")[0].title = myObj.data[i].attributes.title + "\n" + myObj.data[i].attributes.show_title + " - " + seasonInfo[0] + " : " + seasonInfo[1] + "\n\n" + myObj.data[i].attributes.description;
+				
+				
+				// Show channel color for each video
+				channelData.forEach(function(element) {
+					if(element.id == myObj.data[i].attributes.channel_id)
+					{
+						cloneEpisodeDiv.getElementsByClassName("info-line")[0].style.borderLeft = "10px solid #" + element.color;
+						cloneEpisodeDiv.getElementsByClassName("info-line")[0].style.paddingLeft = "5px";
+					}
+				});
+
+				// Show channel logo over thumbnail
+				//<div class="timestamp" style="top: 74%;left: 0%;right: 84%;bottom: 0%;/* display: none; */background: #1d1d1d;"><img src="https://roosterteeth.com/img/AH_Logo_White.png" style="height: 100%;width: 100%;"></div>
+
 
 				// Format episode length to human readable
 				var totalSeconds = myObj.data[i].attributes.length;
