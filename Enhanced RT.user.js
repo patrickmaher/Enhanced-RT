@@ -793,7 +793,7 @@ function recentlyAdded()
 			}
 
 			// Get watch times for current episode batch
-			//getWatchTimes(watchTimeXMLHttp, episodeBatch);
+			getWatchTimes(watchTimeXMLHttp, episodeBatch);
 			// Reset in preparation for next batch
 			episodeBatch = "";
 
@@ -814,7 +814,7 @@ function recentlyAdded()
 	watchTimeXMLHttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			var watchTimeObj = JSON.parse(this.responseText);
-			var watchedThreshold = 10;
+			var watchedThreshold = 35;
 
 			for (var i = 0; i < watchTimeObj.length; i++)
 			{
@@ -836,6 +836,33 @@ function recentlyAdded()
 							WatchedDiv.appendChild(document.createTextNode("Watched"));
 							
 							document.querySelector("[data-episode-id='"+watchTimeObj[i].uuid+"']").childNodes[0].childNodes[0].childNodes[0].childNodes[0].appendChild(WatchedDiv);
+						}
+						else // There is a watch time but it is not within the watched threshold
+						{
+							var ResumableDiv = document.createElement("div");
+							ResumableDiv.className = "timestamp";
+							ResumableDiv.style.top = "0%";
+							ResumableDiv.style.left = "0%";
+							ResumableDiv.style.right = "87%";
+							ResumableDiv.style.bottom = "93%";
+							ResumableDiv.appendChild(document.createTextNode("Resumable"));
+							
+							document.querySelector("[data-episode-id='"+watchTimeObj[i].uuid+"']").childNodes[0].childNodes[0].childNodes[0].childNodes[0].appendChild(ResumableDiv);
+							
+							var PercentDiv = document.createElement("div");
+							PercentDiv.className = "percent-bar";
+							var ProgressDiv = document.createElement("div");
+							ProgressDiv.className = "progress";
+							var DeterminateDiv = document.createElement("div");
+							DeterminateDiv.className = "determinate";
+							DeterminateDiv.style.width = "" + (Math.round((Math.trunc(watchTimeObj[i].value) / episodeData.data[j].attributes.length) * 1000000) / 10000) + "%";
+							
+							ProgressDiv.appendChild(DeterminateDiv);
+							PercentDiv.appendChild(ProgressDiv);
+							
+							document.querySelector("[data-episode-id='"+watchTimeObj[i].uuid+"']").childNodes[0].childNodes[0].childNodes[0].appendChild(PercentDiv);
+							
+							//<div class="percent-bar"><div class="progress"><div class="determinate" style="width: 4.69484%;"></div></div></div>
 						}
 					}
 				}
