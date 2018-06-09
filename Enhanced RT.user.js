@@ -879,14 +879,18 @@ function recentlyAdded()
 	
 	function getWatchTimes(watchTimeXMLHttp, episodeBatch)
 	{
-		// Retrieve rt_access_token from document.cookie
-		var tokenLocation = document.cookie.indexOf("rt_access_token=") + 16;
-		var accessToken = document.cookie.substring(tokenLocation, document.cookie.indexOf(";", tokenLocation));
-		
-		// Request watch times for current episode batch
-		watchTimeXMLHttp.open("GET", "https://wtc.roosterteeth.com/api/v1/my/played_positions/mget/" + episodeBatch, true);
-		watchTimeXMLHttp.setRequestHeader('Authorization', 'Bearer ' + accessToken);
-		watchTimeXMLHttp.send();
+		// Only get watch times if access token exists
+		if(document.cookie.indexOf("rt_access_token=") != -1)
+		{
+			// Retrieve rt_access_token from document.cookie
+			var tokenLocation = document.cookie.indexOf("rt_access_token=") + 16;
+			var accessToken = document.cookie.substring(tokenLocation, document.cookie.indexOf(";", tokenLocation));
+			
+			// Request watch times for current episode batch
+			watchTimeXMLHttp.open("GET", "https://wtc.roosterteeth.com/api/v1/my/played_positions/mget/" + episodeBatch, true);
+			watchTimeXMLHttp.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+			watchTimeXMLHttp.send();
+		}
 	}
 	
 	
