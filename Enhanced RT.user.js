@@ -804,32 +804,27 @@ function recentlyAdded()
 				{
 					if(episodeData.data[j].uuid == watchTimeObj[i].uuid)
 					{
+						// Create Watched/Resume label
+						var WatchedDiv = document.createElement("div");
+						WatchedDiv.className = "timestamp";
+						WatchedDiv.style.top = "0%";
+						WatchedDiv.style.left = "0%";
+						WatchedDiv.style.right = "auto";
+						WatchedDiv.style.bottom = "auto";
+						
 						if(watchTimeObj[i].value > episodeData.data[j].attributes.length - watchedThreshold)
 						{
-							//console.log("Episode " + episodeData.data[j].attributes.display_title + " is watched. It is " + episodeData.data[j].attributes.length + " seconds long and watch time is " + watchTimeObj[i].value + " seconds.");
-							document.querySelector("[data-episode-id='"+watchTimeObj[i].uuid+"']").dataset.watched = "true";
-							
-							var WatchedDiv = document.createElement("div");
-							WatchedDiv.className = "timestamp";
-							WatchedDiv.style.top = "0%";
-							WatchedDiv.style.left = "0%";
-							WatchedDiv.style.right = "89%";
-							WatchedDiv.style.bottom = "93%";
+							// Set Watched label text
 							WatchedDiv.appendChild(document.createTextNode("Watched"));
 							
-							document.querySelector("[data-episode-id='"+watchTimeObj[i].uuid+"']").childNodes[0].childNodes[0].childNodes[0].childNodes[0].appendChild(WatchedDiv);
+							document.querySelector("[data-episode-id='"+watchTimeObj[i].uuid+"']").dataset.watched = "true";
+							
+							//console.log("Episode " + episodeData.data[j].attributes.display_title + " is watched. It is " + episodeData.data[j].attributes.length + " seconds long and watch time is " + watchTimeObj[i].value + " seconds.");
 						}
 						else // There is a watch time but it is not within the watched threshold
 						{
-							var ResumableDiv = document.createElement("div");
-							ResumableDiv.className = "timestamp";
-							ResumableDiv.style.top = "0%";
-							ResumableDiv.style.left = "0%";
-							ResumableDiv.style.right = "87%";
-							ResumableDiv.style.bottom = "93%";
-							ResumableDiv.appendChild(document.createTextNode("Resumable"));
-							
-							document.querySelector("[data-episode-id='"+watchTimeObj[i].uuid+"']").childNodes[0].childNodes[0].childNodes[0].childNodes[0].appendChild(ResumableDiv);
+							// Set Resume label text
+							WatchedDiv.appendChild(document.createTextNode("Resumable"));
 							
 							var PercentDiv = document.createElement("div");
 							PercentDiv.className = "percent-bar";
@@ -843,9 +838,11 @@ function recentlyAdded()
 							PercentDiv.appendChild(ProgressDiv);
 							
 							document.querySelector("[data-episode-id='"+watchTimeObj[i].uuid+"']").childNodes[0].childNodes[0].childNodes[0].appendChild(PercentDiv);
-							
-							//<div class="percent-bar"><div class="progress"><div class="determinate" style="width: 4.69484%;"></div></div></div>
 						}
+
+						// Append Watched/Resume label
+						document.querySelector("[data-episode-id='"+watchTimeObj[i].uuid+"']").childNodes[0].childNodes[0].childNodes[0].childNodes[0].appendChild(WatchedDiv);
+
 					}
 				}
 			}
