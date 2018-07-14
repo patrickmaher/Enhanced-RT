@@ -249,6 +249,15 @@ ready('.settings-app', function(element) {
 });
 
 
+function seconds2Timestamp(seconds)
+{
+	var timestamp = ["hours", "minutes", "seconds"];
+	timestamp.hours = Math.floor(seconds / 3600);
+	seconds %= 3600;
+	timestamp.minutes = Math.floor(seconds / 60);
+	timestamp.seconds = seconds % 60;
+	return timestamp;
+}
 
 // *******************
 // Settings Page
@@ -730,14 +739,9 @@ function recentlyAdded()
 				// Show channel logo over thumbnail
 				//<div class="timestamp" style="top: 74%;left: 0%;right: 84%;bottom: 0%;/* display: none; */background: #1d1d1d;"><img src="https://roosterteeth.com/img/AH_Logo_White.png" style="height: 100%;width: 100%;"></div>
 
-
-				// Format episode length to human readable
-				var totalSeconds = myObj.data[i].attributes.length;
-				hours = Math.floor(totalSeconds / 3600);
-				totalSeconds %= 3600;
-				minutes = Math.floor(totalSeconds / 60);
-				seconds = totalSeconds % 60;
-				cloneEpisodeDiv.getElementsByClassName("timestamp")[0].childNodes[0].nodeValue = ((hours == 0) ? minutes : hours + ":" + ('0'+minutes).slice(-2)) +':'+ ('0'+seconds).slice(-2);
+				var episodeLength = seconds2Timestamp(myObj.data[i].attributes.length);
+				
+				cloneEpisodeDiv.getElementsByClassName("timestamp")[0].childNodes[0].nodeValue = ((episodeLength.hours == 0) ? episodeLength.minutes : episodeLength.hours + ":" + ('0'+episodeLength.minutes).slice(-2)) +':'+ ('0'+episodeLength.seconds).slice(-2);
 
 				// Format episode date to human readable
 				var episodeDate = new Date(myObj.data[i].sort["0"]);
@@ -826,7 +830,8 @@ function recentlyAdded()
 						else // There is a watch time but it is not within the watched threshold
 						{
 							// Set Resume label text
-							WatchedDiv.appendChild(document.createTextNode("Resumable"));
+							var watchedLength = seconds2Timestamp(watchTimeObj[i].value);
+							WatchedDiv.appendChild(document.createTextNode("Resume from " + ((watchedLength.hours == 0) ? watchedLength.minutes : watchedLength.hours + ":" + ('0'+watchedLength.minutes).slice(-2)) +':'+ ('0'+watchedLength.seconds).slice(-2)));
 							
 							var PercentDiv = document.createElement("div");
 							PercentDiv.className = "percent-bar";
