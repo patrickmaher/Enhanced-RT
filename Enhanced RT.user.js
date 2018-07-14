@@ -381,7 +381,7 @@ function recentlyAdded()
 	pageTitleSpan.appendChild(document.createTextNode("Recently Added (Enhanced RT)"));
 	showWrapperDiv.appendChild(CenterHeader);
 
-	/*
+
 	var watchedLabel = document.createElement("label");
 	watchedLabel.style = "font-size: 1.64rem;";
 	var watchedCheckbox = document.createElement("input");
@@ -410,8 +410,8 @@ function recentlyAdded()
 		hideVideos();
 		checkForEndlessTrigger();
 	};
-	*/
-	
+
+
 	// Get List of Channels
 	var channelsXMLHttp = new XMLHttpRequest();
 	
