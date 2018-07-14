@@ -611,6 +611,7 @@ function recentlyAdded()
 	
 	var timestampDiv = document.createElement("div");
 	timestampDiv.className = "timestamp";
+	timestampDiv.style.fontSize = "1rem";
 	timestampDiv.appendChild(document.createTextNode("***Timestamp Text***"));
 	
 	var infoDiv = document.createElement("div");
@@ -811,6 +812,7 @@ function recentlyAdded()
 						WatchedDiv.style.left = "0%";
 						WatchedDiv.style.right = "auto";
 						WatchedDiv.style.bottom = "auto";
+						WatchedDiv.style.fontSize = "1rem";
 						
 						if(watchTimeObj[i].value > episodeData.data[j].attributes.length - watchedThreshold)
 						{
