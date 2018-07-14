@@ -355,7 +355,7 @@ function recentlyAdded()
 
 		
 	var episodePage = 1;
-	var episodesPerPage = 24;
+	var episodesPerPage = 100;
 	
 	
 	// ***Initial Setup Start***
