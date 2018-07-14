@@ -17,24 +17,6 @@
 //console.log(window.location.pathname);
 //console.log(window.location.href);
 
-// Delete local storage items that were used for the old site
-localStorage.removeItem("hideWatched");
-localStorage.removeItem("hideStreams");
-localStorage.removeItem("hideRT");
-localStorage.removeItem("hideAH");
-localStorage.removeItem("hideFH");
-localStorage.removeItem("hideSA");
-localStorage.removeItem("hideTK");
-localStorage.removeItem("hideCC");
-localStorage.removeItem("hideGA");
-localStorage.removeItem("hideSP7");
-localStorage.removeItem("hideUnknown");
-
-localStorage.removeItem("endlessVideos");
-localStorage.removeItem("videoAlign");
-localStorage.removeItem("liveStreamAlign");
-localStorage.removeItem("commentsStopPlayback");
-localStorage.removeItem("replaceFavicon");
 
 // Try to use MutationObserver to detect page changes since Beta site loads pages differently
 
