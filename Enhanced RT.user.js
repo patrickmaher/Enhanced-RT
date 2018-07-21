@@ -147,6 +147,9 @@ ready('.vjs-fullscreen-control', function(element) {
 			event.target.className = "icon-compress-alt";
 			event.target.title = "Non-Full Window";
 			
+			// Disable scroll while in full window
+			document.getElementsByTagName("body")[0].style.overflow = "hidden";
+			
 			var videoElement = document.getElementsByTagName("video")[0];
 			
 			videoElement.parentNode.parentNode.style.width = "100vw";
@@ -173,6 +176,9 @@ ready('.vjs-fullscreen-control', function(element) {
 		{
 			event.target.className = "icon-expand-alt";
 			event.target.title = "Full Window";
+			
+			// Re-enable scroll
+			document.getElementsByTagName("body")[0].style.overflow = "visible";
 			
 			var videoElement = document.getElementsByTagName("video")[0];
 			
