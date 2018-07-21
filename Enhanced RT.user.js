@@ -132,7 +132,7 @@ ready('.vjs-fullscreen-control', function(element) {
 	
 	// Create Full Window video player button
 	var fullWindowButton = document.createElement("button");
-	fullWindowButton.className = "icon-expand";
+	fullWindowButton.className = "icon-expand-alt";
 	fullWindowButton.type = "button";
 	fullWindowButton.title = "Full Window";
 	fullWindowButton.style = "font-size: medium;width: 2em;";
@@ -144,7 +144,7 @@ ready('.vjs-fullscreen-control', function(element) {
 	{
 		if(event.target.dataset.fullWindow == "false")
 		{
-			event.target.className = "icon-compress";
+			event.target.className = "icon-compress-alt";
 			event.target.title = "Non-Full Window";
 			
 			var videoElement = document.getElementsByTagName("video")[0];
@@ -171,7 +171,7 @@ ready('.vjs-fullscreen-control', function(element) {
 		}
 		else
 		{
-			event.target.className = "icon-expand";
+			event.target.className = "icon-expand-alt";
 			event.target.title = "Full Window";
 			
 			var videoElement = document.getElementsByTagName("video")[0];
