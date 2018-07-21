@@ -42,6 +42,7 @@ var config = { childList:true, subtree:true };
 observer.observe(target, config);
 */
 
+var watchedThreshold = 35;
 
 (function(win) {
 	'use strict';
@@ -233,6 +234,44 @@ ready('.error-page-wrapper', function(element) {
 	}
 });
 
+ready('.percent-bar', function(element) {
+	if(window.location.pathname.search("/episode/recently-added") == -1 && window.location.pathname.search("/my-watchlist") == -1)
+	{
+		//console.log("Enhanced RT: Watched Video Detected");
+		//console.log(element);
+		//console.log(element.childNodes[0].childNodes[0].style.width);
+		//console.log(element.parentNode.childNodes[0].childNodes[1].childNodes[0]);
+
+		var episodeLengthTimestamp = element.parentNode.childNodes[0].childNodes[1].childNodes[0].nodeValue.split(":");
+
+		if(episodeLengthTimestamp.length == 3)
+		{
+			var episodeLength = (parseInt(episodeLengthTimestamp[0]) * 3600) + (parseInt(episodeLengthTimestamp[1]) * 60) + parseInt(episodeLengthTimestamp[2]);
+		}
+		else
+		{
+			var episodeLength = (parseInt(episodeLengthTimestamp[0]) * 60) + parseInt(episodeLengthTimestamp[1]);
+		}
+		
+		if(episodeLength - (episodeLength * (parseFloat(element.childNodes[0].childNodes[0].style.width) / 100)) < watchedThreshold)
+		{
+			// Create Watched/Resume label
+			var WatchedDiv = document.createElement("div");
+			WatchedDiv.className = "timestamp";
+			WatchedDiv.style.top = "0%";
+			WatchedDiv.style.left = "0%";
+			WatchedDiv.style.right = "auto";
+			WatchedDiv.style.bottom = "auto";
+			WatchedDiv.style.fontSize = "1rem";
+			
+			// Set Watched label text
+			WatchedDiv.appendChild(document.createTextNode("Watched"));
+			
+			// Append Watched/Resume label
+			element.parentNode.childNodes[0].appendChild(WatchedDiv);
+		}
+	}
+});
 
 ready('.Linkify', function(element) {
 	if(window.location.pathname.search("/episode/") >= 0)
@@ -801,7 +840,6 @@ function recentlyAdded()
 	watchTimeXMLHttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			var watchTimeObj = JSON.parse(this.responseText);
-			var watchedThreshold = 35;
 
 			for (var i = 0; i < watchTimeObj.length; i++)
 			{
