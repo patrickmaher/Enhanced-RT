@@ -227,6 +227,91 @@ ready('.vjs-fullscreen-control', function(element) {
 	
 });
 
+ready('.vjs-upnext', function(element) {
+	//console.log("Enhanced RT: Up Next Div Detected");
+	
+	// Ignore if it is the Up Next template Div
+	if(element.childNodes[0].childNodes[1].childNodes[0].href != "https://roosterteeth.com/")
+	{
+		// Only download Auto Play Next Video preference if user is logged in
+		if(document.cookie.indexOf("rt_access_token=") != -1)
+		{
+			// Get users Auto Play Next Video preference from server
+			var meXMLHttp = new XMLHttpRequest();
+			
+			meXMLHttp.onreadystatechange = function() {
+				
+				if (this.readyState == 4 && this.status == 200) // Successfully downloaded user preference
+				{
+					var meObj = JSON.parse(this.responseText);
+					//console.log("Connected, get preference from server");
+					//console.log("Auto Play Next Video is " + meObj.attributes.preferences.autoplay);
+
+					autoPlayNextVideo = meObj.attributes.preferences.autoplay.toString();
+					// Store users Auto Play Next Video preference locally
+					localStorage.setItem("enhancedRT_autoPlayNextVideo", autoPlayNextVideo);
+					
+					if(autoPlayNextVideo == "false")
+					{
+						// Stop next video auto play
+						element.childNodes[0].childNodes[0].childNodes[0].click();
+
+						// Delete next up div so it does not display
+						element.parentNode.removeChild(element);
+						
+						//console.log("Auto Play Next Video has been killed");
+						//alert("Auto Play Next Video has been killed");
+					}
+				}
+
+
+				if (this.readyState == 4 && this.status != 200) // Failed to downloaded user preference
+				{
+					// Could not connect, get preference from local storage
+					autoPlayNextVideo = ((localStorage.getItem("enhancedRT_autoPlayNextVideo") == null) ? "true" : localStorage.getItem("enhancedRT_autoPlayNextVideo"));
+					//console.log("Could not connect, get preference from local storage");
+					//console.log("Auto Play Next Video is " + autoPlayNextVideo);
+					
+					if(autoPlayNextVideo == "false")
+					{
+						// Stop next video auto play
+						element.childNodes[0].childNodes[0].childNodes[0].click();
+
+						// Delete next up div so it does not display
+						element.parentNode.removeChild(element);
+						
+						//console.log("Auto Play Next Video has been killed");
+						//alert("Auto Play Next Video has been killed");
+					}
+				}
+			};
+
+			// Request user's preferences from server
+			meXMLHttp.open("GET", "https://business-service.roosterteeth.com/api/v1/me", true);
+			meXMLHttp.send();
+
+		}
+		else
+		{
+			// User not logged in, get preference from local storage
+			autoPlayNextVideo = ((localStorage.getItem("enhancedRT_autoPlayNextVideo") == null) ? "true" : localStorage.getItem("enhancedRT_autoPlayNextVideo"));
+			//console.log("Not logged in, get preference from local storage");
+			//console.log("Auto Play Next Video is " + autoPlayNextVideo);
+			
+			if(autoPlayNextVideo == "false")
+			{
+				// Stop next video auto play
+				element.childNodes[0].childNodes[0].childNodes[0].click();
+
+				// Delete next up div so it does not display
+				element.parentNode.removeChild(element);
+				//console.log("Auto Play Next Video has been killed");
+				//alert("Auto Play Next Video has been killed");
+			}
+		}
+	}
+});
+
 ready('.error-page-wrapper', function(element) {
 	if(window.location.pathname.search("/episode/recently-added") >= 0)
 	{
@@ -236,6 +321,28 @@ ready('.error-page-wrapper', function(element) {
 		// Remove 404 error
 		element.remove();
 		
+		
+		// Only check Auto Play Next Video preference if user is logged in
+		if(document.cookie.indexOf("rt_access_token=") != -1)
+		{
+			// Update users Auto Play Next Video preference and store locally
+			var meXMLHttp = new XMLHttpRequest();
+			
+			meXMLHttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) // Successfully downloaded user preference
+				{
+					var meObj = JSON.parse(this.responseText);
+					// Store users Auto Play Next Video preference locally
+					localStorage.setItem("enhancedRT_autoPlayNextVideo", meObj.attributes.preferences.autoplay.toString());
+				}
+			};
+
+			// Request user's preferences from server
+			meXMLHttp.open("GET", "https://business-service.roosterteeth.com/api/v1/me", true);
+			meXMLHttp.send();
+		}
+		
+		// Create Recently Added page
 		recentlyAdded();
 	}
 });
