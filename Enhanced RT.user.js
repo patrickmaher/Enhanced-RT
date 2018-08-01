@@ -505,10 +505,20 @@ seriesFilter = ((seriesFilterString == null) ? [] : JSON.parse(seriesFilterStrin
 function recentlyAdded()
 {	
 
-		
 	var episodePage = 1;
 	var episodesPerPage = 100;
 	
+	// Channel colors and logo URLs
+	var channelData = new Array;
+	channelData.push({id: "92b6bb21-91d2-4b1b-bf95-3268fa0d9939", color: "C9373F", logo: "https://roosterteeth.com/img/RT_Cockbite_White.png"});
+	channelData.push({id: "2cb2a70c-be50-46f5-93d7-84a1baabb4f7", color: "5F9F41", logo: "https://roosterteeth.com/img/AH_Logo_White.png"});
+	channelData.push({id: "2dc2a30b-55b7-443c-b565-1b3be9257fc4", color: "FE8204", logo: "https://roosterteeth.com/img/FH_Logo_White.png"});
+	channelData.push({id: "dd838359-a0e0-405f-b18b-5b0ed16ef852", color: "00AEEF", logo: "https://roosterteeth.com/img/SA_Logo_White.png"});
+	channelData.push({id: "84c7eaaf-54ab-40b6-8832-f6527eb22335", color: "D5B037", logo: "https://roosterteeth.com/img/CC_Logo_White.png"});
+	channelData.push({id: "33c38834-k169-3828-a527-49f7baz27482", color: "1BB479", logo: "https://roosterteeth.com/img/SP7_Logo_White.png"});
+	channelData.push({id: "528e5605-502e-499b-a3a3-2652498607ac", color: "8B54DC", logo: "https://roosterteeth.com/img/GA_Logo_White.png"});
+	channelData.push({id: "d7882a89-da75-4ee3-a02a-f49dc5889214", color: "00639D", logo: "https://roosterteeth.com/img/TK_Logo_White.png"});
+	channelData.push({id: "23g6dajk-76dc-27y3-6531-h5902rh48941", color: "FC1334", logo: "https://roosterteeth.com/img/JT_Logo_White.png"});
 	
 	// ***Initial Setup Start***
 
@@ -534,35 +544,73 @@ function recentlyAdded()
 	showWrapperDiv.appendChild(CenterHeader);
 
 
-	var watchedLabel = document.createElement("label");
-	watchedLabel.style = "font-size: 1.64rem;";
-	var watchedCheckbox = document.createElement("input");
-	watchedCheckbox.type = "checkbox";
-	watchedCheckbox.id = "watchedFilter";
-	watchedCheckbox.defaultChecked = ((watchedFilter == "false") ? true : false);
-	watchedCheckbox.style = "position: static; opacity: 100; pointer-events:auto; margin:0 0 0 1em; width: 17px; height: 17px;";
-	watchedLabel.appendChild(watchedCheckbox);
-	watchedLabel.appendChild(document.createTextNode("Watched"));
-	
-	headerDiv.appendChild(watchedLabel);
-	
-	watchedCheckbox.onclick = function (event)
+	// Determine if channel logos can be used instead of channel checkboxes. Logos should work on all browsers except Microsoft Edge.
+	if(CSS.supports("-webkit-mask-image", "url()"))
 	{
-		if(event.target.checked == true)
-		{
-			watchedFilter = "false";
-			localStorage.setItem("enhancedRT_watchedFilter", watchedFilter);
-		}
-		else if(event.target.checked == false)
-		{
-			watchedFilter = "true";
-			localStorage.setItem("enhancedRT_watchedFilter", watchedFilter);
-		}
+		var watchedLogoDiv = document.createElement("div");
+		watchedLogoDiv.className = ((watchedFilter == "false") ? "icon-eye" : "icon-eye-slash");
+		watchedLogoDiv.title = ((watchedFilter == "false") ? "Hide Watched Episodes" : "Show Watched Episodes");
+		watchedLogoDiv.style = "display: inline-block; cursor: pointer; margin-right: 20px; font-size: 40px; color: #ddd; opacity: 1;";
+		watchedLogoDiv.style.color = ((watchedFilter == "false") ? "#ddd" : "gray");
+		watchedLogoDiv.style.opacity = ((watchedFilter == "false") ? 1 : 0.5);
+		headerDiv.appendChild(watchedLogoDiv);
 		
-		hideVideos();
-		checkForEndlessTrigger();
-	};
-
+		watchedLogoDiv.onclick = function (event)
+		{
+			if(event.target.className == "icon-eye-slash")
+			{
+				event.target.className = "icon-eye";
+				event.target.style.color = "#ddd";
+				event.target.style.opacity = 1;
+				event.target.title = "Hide Watched Episodes";
+				watchedFilter = "false";
+				localStorage.setItem("enhancedRT_watchedFilter", watchedFilter);
+			}
+			else if(event.target.className == "icon-eye")
+			{
+				event.target.className = "icon-eye-slash";
+				event.target.style.color = "gray";
+				event.target.style.opacity = 0.5;
+				event.target.title = "Show Watched Episodes";
+				watchedFilter = "true";
+				localStorage.setItem("enhancedRT_watchedFilter", watchedFilter);
+			}
+			
+			hideVideos();
+			checkForEndlessTrigger();
+		};
+	}
+	else
+	{
+		var watchedLabel = document.createElement("label");
+		watchedLabel.style = "font-size: 1.64rem; margin-right: 10px;";
+		var watchedCheckbox = document.createElement("input");
+		watchedCheckbox.type = "checkbox";
+		watchedCheckbox.id = "watchedFilter";
+		watchedCheckbox.defaultChecked = ((watchedFilter == "false") ? true : false);
+		watchedCheckbox.style = "position: static; opacity: 100; pointer-events:auto; width: 17px; height: 17px; margin-left: 5px;";
+		watchedLabel.appendChild(watchedCheckbox);
+		watchedLabel.appendChild(document.createTextNode("Watched"));
+		
+		headerDiv.appendChild(watchedLabel);
+		
+		watchedCheckbox.onclick = function (event)
+		{
+			if(event.target.checked == true)
+			{
+				watchedFilter = "false";
+				localStorage.setItem("enhancedRT_watchedFilter", watchedFilter);
+			}
+			else if(event.target.checked == false)
+			{
+				watchedFilter = "true";
+				localStorage.setItem("enhancedRT_watchedFilter", watchedFilter);
+			}
+			
+			hideVideos();
+			checkForEndlessTrigger();
+		};
+	}
 
 	// Get List of Channels
 	var channelsXMLHttp = new XMLHttpRequest();
@@ -575,121 +623,118 @@ function recentlyAdded()
 			{
 				//console.log("Name: " + channelsObj.data[i].attributes.name + " ID: " + channelsObj.data[i].uuid);
 				//channelArray[channelsObj.data[i].uuid] = "true";
+
+				logoFound = false;
 				
-				
-				var channelLabel = document.createElement("label");
-				channelLabel.style = "font-size: 1.64rem;";
-				var channelCheckbox = document.createElement("input");
-				channelCheckbox.type = "checkbox";
-				channelCheckbox.id = channelsObj.data[i].uuid;
-				channelCheckbox.defaultChecked = ((channelFilter.indexOf(channelsObj.data[i].uuid) == -1) ? true : false);
-				channelCheckbox.style = "position: static; opacity: 100; pointer-events:auto; margin:0 0 0 1em; width: 17px; height: 17px;";
-				channelLabel.appendChild(channelCheckbox);
-				channelLabel.appendChild(document.createTextNode(channelsObj.data[i].attributes.name));
-				
-				headerDiv.appendChild(channelLabel);
-				
-				channelCheckbox.onclick = function (event)
+				// Determine if channel logos can be used instead of channel checkboxes. Logos should work on all browsers except Microsoft Edge.
+				if(CSS.supports("-webkit-mask-image", "url()"))
 				{
-					if(event.target.checked == true)
-					{
-						//console.log("onclick checked: " + event.target.checked);
-						if (channelFilter.indexOf(event.target.id) != -1) {
-							channelFilter.splice(channelFilter.indexOf(event.target.id), 1);
+					// Find channel color and logo URL
+					channelData.forEach(function(element) {
+						if(element.id == channelsObj.data[i].uuid)
+						{
+							logoFound = true;
+							
+							var channelLogoDiv = document.createElement("div");
+							channelLogoDiv.dataset.channelId = channelsObj.data[i].uuid;
+							channelLogoDiv.dataset.channelName = channelsObj.data[i].attributes.name;
+							channelLogoDiv.dataset.channelColor = element.color;
+							channelLogoDiv.dataset.channelLogo = element.logo;
+							channelLogoDiv.title = ((channelFilter.indexOf(channelsObj.data[i].uuid) == -1) ? "Hide " : "Show ") + channelLogoDiv.dataset.channelName;
+							channelLogoDiv.style = "display:inline-block; cursor: pointer; width: 40px; height: 40px; margin-right: 20px; -webkit-mask-image: url('" + channelLogoDiv.dataset.channelLogo + "'); -webkit-mask-size: 100% 100%;"
+							if(channelFilter.indexOf(channelsObj.data[i].uuid) == -1)
+							{
+								channelLogoDiv.title = "Hide " + channelLogoDiv.dataset.channelName;
+								channelLogoDiv.style.backgroundColor = "#" + channelLogoDiv.dataset.channelColor;
+								channelLogoDiv.style.opacity = 1;
+							}
+							else
+							{
+								channelLogoDiv.title = "Show " + channelLogoDiv.dataset.channelName;
+								channelLogoDiv.style.backgroundColor = "gray";
+								channelLogoDiv.style.opacity = 0.5;
+							}
+							headerDiv.appendChild(channelLogoDiv);
+
+							
+
+							channelLogoDiv.onclick = function (event)
+							{
+								if(event.target.style.backgroundColor == "gray")
+								{
+									event.target.style.backgroundColor = "#" + event.target.dataset.channelColor;
+									event.target.style.opacity = 1;
+									event.target.title = "Hide " + event.target.dataset.channelName;
+									if (channelFilter.indexOf(event.target.dataset.channelId) != -1) {
+										channelFilter.splice(channelFilter.indexOf(event.target.dataset.channelId), 1);
+									}
+									localStorage.setItem("enhancedRT_channelFilter", JSON.stringify(channelFilter));
+								}
+								else if(event.target.style.backgroundColor != "gray")
+								{
+									event.target.style.backgroundColor = "gray";
+									event.target.style.opacity = 0.5;
+									event.target.title = "Show " + event.target.dataset.channelName;
+									if (channelFilter.indexOf(event.target.dataset.channelId) == -1) {
+										channelFilter.push(event.target.dataset.channelId)
+									}
+									localStorage.setItem("enhancedRT_channelFilter", JSON.stringify(channelFilter));
+								}
+								
+								hideVideos();
+								checkForEndlessTrigger();
+							};
 						}
-						localStorage.setItem("enhancedRT_channelFilter", JSON.stringify(channelFilter));
-					}
-					else if(event.target.checked == false)
-					{
-						//console.log("onclick unchecked: " + event.target.checked);
-						if (channelFilter.indexOf(event.target.id) == -1) {
-							channelFilter.push(event.target.id)
-						}
-						localStorage.setItem("enhancedRT_channelFilter", JSON.stringify(channelFilter));
-					}
-					
-					hideVideos();
-					checkForEndlessTrigger();
-				};
+					});
+				}
 				
+				// Default to checkbox if no logo found or logo image mask not supported
+				if(!logoFound)
+				{
+					var channelLabel = document.createElement("label");
+					channelLabel.style = "font-size: 1.64rem; margin-right: 10px;";
+					var channelCheckbox = document.createElement("input");
+					channelCheckbox.type = "checkbox";
+					channelCheckbox.id = channelsObj.data[i].uuid;
+					channelCheckbox.defaultChecked = ((channelFilter.indexOf(channelsObj.data[i].uuid) == -1) ? true : false);
+					channelCheckbox.style = "position: static; opacity: 100; pointer-events:auto; width: 17px; height: 17px; margin-left: 5px;";
+					channelLabel.appendChild(channelCheckbox);
+					channelLabel.appendChild(document.createTextNode(channelsObj.data[i].attributes.name));
+					
+					headerDiv.appendChild(channelLabel);
+					
+					channelCheckbox.onclick = function (event)
+					{
+						if(event.target.checked == true)
+						{
+							//console.log("onclick checked: " + event.target.checked);
+							if (channelFilter.indexOf(event.target.id) != -1) {
+								channelFilter.splice(channelFilter.indexOf(event.target.id), 1);
+							}
+							localStorage.setItem("enhancedRT_channelFilter", JSON.stringify(channelFilter));
+						}
+						else if(event.target.checked == false)
+						{
+							//console.log("onclick unchecked: " + event.target.checked);
+							if (channelFilter.indexOf(event.target.id) == -1) {
+								channelFilter.push(event.target.id)
+							}
+							localStorage.setItem("enhancedRT_channelFilter", JSON.stringify(channelFilter));
+						}
+						
+						hideVideos();
+						checkForEndlessTrigger();
+					};
+				}
 			}
 		}
 	};
-	
+
 	// Request channels list from server
 	channelsXMLHttp.open("GET", "https://svod-be.roosterteeth.com/api/v1/channels", true);
 	channelsXMLHttp.send();
-	
-	/*
-	for ( i = 0; i < hide.length; i++)
-	{
-		//<label style=\"color:#666;font-size:12px;\"><input style=\"margin:0 0 0 1em;\" type=checkbox id="+hide[i][hideText]+" "+((hide[i][hideValue] == 0) ? "checked" : "")+ ">" +hide[i][hideName]+"</label>"
-		var channelLabel = document.createElement("label");
-		//channelLabel.style = "color:#666;font-size:12px;";
-		channelLabel.style = "font-size: 1.64rem;";
 
-		var channelCheckbox = document.createElement("input");
-		//channelCheckbox.style = "margin:0 0 0 1em;";
-		channelCheckbox.type = "checkbox";
-		channelCheckbox.id = hide[i][hideText];
-		channelCheckbox.defaultChecked = ((hide[i][hideValue] == 0) ? true : false);
-		channelCheckbox.style = "position: static; opacity: 100; pointer-events:auto; margin:0 0 0 1em; width: 17px; height: 17px;";
-		channelLabel.appendChild(channelCheckbox);
-		channelLabel.appendChild(document.createTextNode(hide[i][hideName]));
-		
-		headerDiv.appendChild(channelLabel);
-		
-		document.getElementById( hide[i][hideText] ).onclick = function (event) {
-			if(hide[eval(event.target.id)][hideValue] == 1)
-			{
-				hide[eval(event.target.id)][hideValue] = 0;
-				localStorage.setItem(hide[eval(event.target.id)][hideText], hide[eval(event.target.id)][hideValue]);
-			}
-			else
-			{
-				hide[eval(event.target.id)][hideValue] = 1;
-				localStorage.setItem(hide[eval(event.target.id)][hideText], hide[eval(event.target.id)][hideValue]);
-			}
-			
-			hideVideos();
-			checkForEndlessTrigger();
-		};
-	}
-	*/
-	
-	/*
-	var rtLogoDiv = document.createElement("div");
-	rtLogoDiv.style="background-color: #c9373f; width: 50px; height: 50px; -webkit-mask-box-image: url(https://roosterteeth.com/img/RT_Cockbite_White.png);"
-	headerDiv.appendChild(rtLogoDiv);
-	var ahLogoDiv = document.createElement("div");
-	ahLogoDiv.style="background-color: #5f9f41; width: 50px; height: 50px; -webkit-mask-box-image: url(https://roosterteeth.com/img/AH_Logo_White.png);"
-	headerDiv.appendChild(ahLogoDiv);
-	var fhLogoDiv = document.createElement("div");
-	fhLogoDiv.style="background-color: #fe8204; width: 50px; height: 50px; -webkit-mask-box-image: url(https://roosterteeth.com/img/FH_Logo_White.png);"
-	headerDiv.appendChild(fhLogoDiv);
-	var saLogoDiv = document.createElement("div");
-	saLogoDiv.style="background-color: #00aeef; width: 50px; height: 50px; -webkit-mask-box-image: url(https://roosterteeth.com/img/SA_Logo_White.png);"
-	headerDiv.appendChild(saLogoDiv);
-	var ccLogoDiv = document.createElement("div");
-	ccLogoDiv.style="background-color: #d5b037; width: 50px; height: 50px; -webkit-mask-box-image: url(https://roosterteeth.com/img/CC_Logo_White.png);"
-	headerDiv.appendChild(ccLogoDiv);
-	var sp7LogoDiv = document.createElement("div");
-	sp7LogoDiv.style="background-color: #1bb479; width: 50px; height: 50px; -webkit-mask-box-image: url(https://roosterteeth.com/img/SP7_Logo_White.png);"
-	headerDiv.appendChild(sp7LogoDiv);
-	var gaLogoDiv = document.createElement("div");
-	gaLogoDiv.style="background-color: #8b54dc; width: 50px; height: 50px; -webkit-mask-box-image: url(https://roosterteeth.com/img/GA_Logo_White.png);"
-	headerDiv.appendChild(gaLogoDiv);
-	var tkLogoDiv = document.createElement("div");
-	tkLogoDiv.style="background-color: #00639d; width: 50px; height: 50px; -webkit-mask-box-image: url(https://roosterteeth.com/img/TK_Logo_White.png);"
-	headerDiv.appendChild(tkLogoDiv);
-	var jtLogoDiv = document.createElement("div");
-	jtLogoDiv.style="background-color: #FC1334; width: 50px; height: 50px; -webkit-mask-box-image: url(https://roosterteeth.com/img/JT_Logo_White.png);"
-	headerDiv.appendChild(jtLogoDiv);
-	
-	
-	*/
-	
-	
+
 	// ***Filters Setup End***
 
 	
@@ -833,19 +878,7 @@ function recentlyAdded()
 	}
 	*/
 	
-	// Channel colors and logo URLs
-	var channelData = new Array;
-	channelData.push({id: "92b6bb21-91d2-4b1b-bf95-3268fa0d9939", color: "C9373F", logo: "https://roosterteeth.com/img/RT_Cockbite_White.png"});
-	channelData.push({id: "2cb2a70c-be50-46f5-93d7-84a1baabb4f7", color: "5F9F41", logo: "https://roosterteeth.com/img/AH_Logo_White.png"});
-	channelData.push({id: "2dc2a30b-55b7-443c-b565-1b3be9257fc4", color: "FE8204", logo: "https://roosterteeth.com/img/FH_Logo_White.png"});
-	channelData.push({id: "dd838359-a0e0-405f-b18b-5b0ed16ef852", color: "00AEEF", logo: "https://roosterteeth.com/img/SA_Logo_White.png"});
-	channelData.push({id: "84c7eaaf-54ab-40b6-8832-f6527eb22335", color: "D5B037", logo: "https://roosterteeth.com/img/CC_Logo_White.png"});
-	channelData.push({id: "33c38834-k169-3828-a527-49f7baz27482", color: "1BB479", logo: "https://roosterteeth.com/img/SP7_Logo_White.png"});
-	channelData.push({id: "528e5605-502e-499b-a3a3-2652498607ac", color: "8B54DC", logo: "https://roosterteeth.com/img/GA_Logo_White.png"});
-	channelData.push({id: "d7882a89-da75-4ee3-a02a-f49dc5889214", color: "00639D", logo: "https://roosterteeth.com/img/TK_Logo_White.png"});
-	channelData.push({id: "23g6dajk-76dc-27y3-6531-h5902rh48941", color: "FC1334", logo: "https://roosterteeth.com/img/JT_Logo_White.png"});
 
-	
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 
