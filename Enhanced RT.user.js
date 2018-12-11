@@ -1123,7 +1123,7 @@ function recentlyAdded()
 			var accessToken = document.cookie.substring(tokenLocation, document.cookie.indexOf(";", tokenLocation));
 			
 			// Request watch times for current episode batch
-			watchTimeXMLHttp.open("GET", "https://wtc.roosterteeth.com/api/v1/my/played_positions/mget/" + episodeBatch, true);
+			watchTimeXMLHttp.open("GET", "https://wtcg.roosterteeth.com/api/v1/my/played_positions/mget/" + episodeBatch, true);
 			watchTimeXMLHttp.setRequestHeader('Authorization', 'Bearer ' + accessToken);
 			watchTimeXMLHttp.send();
 		}
