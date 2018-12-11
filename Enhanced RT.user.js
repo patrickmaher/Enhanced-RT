@@ -726,6 +726,72 @@ function recentlyAdded()
 						checkForEndlessTrigger();
 					};
 				}
+				
+				/*
+				// Get series that belong to this channel
+				var seriesXMLHttp = new XMLHttpRequest();
+				
+				seriesXMLHttp.onreadystatechange = function()
+				{
+					if (this.readyState == 4 && this.status == 200)
+					{
+						var seriesObj = JSON.parse(this.responseText);
+						
+						headerDiv.appendChild(document.createElement("br"));
+						headerDiv.appendChild(document.createElement("br"));
+						headerDiv.appendChild(document.createElement("label").appendChild(document.createTextNode(seriesObj.data[1].attributes.channel_slug)));
+						headerDiv.appendChild(document.createElement("br"));
+						
+						for (var i = 0, len = seriesObj.data.length; i < len; i++)
+						{
+							console.log("Series name: " + seriesObj.data[i].attributes.title + " ID: " + seriesObj.data[i].uuid);
+
+							var seriesLabel = document.createElement("label");
+							seriesLabel.style = "font-size: 1.64rem; margin-right: 10px;";
+							var seriesCheckbox = document.createElement("input");
+							seriesCheckbox.type = "checkbox";
+							seriesCheckbox.id = seriesObj.data[i].uuid;
+							seriesCheckbox.defaultChecked = ((seriesFilter.indexOf(seriesObj.data[i].uuid) == -1) ? true : false);
+							seriesCheckbox.style = "position: static; opacity: 100; pointer-events:auto; width: 17px; height: 17px; margin-left: 5px;";
+							seriesLabel.appendChild(seriesCheckbox);
+							seriesLabel.appendChild(document.createTextNode(seriesObj.data[i].attributes.title));
+							
+							headerDiv.appendChild(seriesLabel);
+							headerDiv.appendChild(document.createElement("br"));
+							
+							seriesCheckbox.onclick = function (event)
+							{
+								if(event.target.checked == true)
+								{
+									//console.log("onclick checked: " + event.target.checked);
+									if (seriesFilter.indexOf(event.target.id) != -1) {
+										seriesFilter.splice(seriesFilter.indexOf(event.target.id), 1);
+									}
+									localStorage.setItem("enhancedRT_seriesFilter", JSON.stringify(seriesFilter));
+								}
+								else if(event.target.checked == false)
+								{
+									//console.log("onclick unchecked: " + event.target.checked);
+									if (seriesFilter.indexOf(event.target.id) == -1) {
+										seriesFilter.push(event.target.id)
+									}
+									localStorage.setItem("enhancedRT_seriesFilter", JSON.stringify(seriesFilter));
+								}
+								
+								hideVideos();
+								checkForEndlessTrigger();
+							};
+							
+						}
+
+					}
+				}
+
+				// Request series list from server
+				seriesXMLHttp.open("GET", "https://svod-be.roosterteeth.com/api/v1/channels/" + channelsObj.data[i].attributes.slug + "/shows", true);
+				seriesXMLHttp.send();
+				*/
+
 			}
 		}
 	};
@@ -1169,6 +1235,11 @@ function hideVideos()
 		var hideEpisode = false;
 		
 		if(channelFilter.indexOf(episode[i].dataset.channelId) != -1)
+		{
+			hideEpisode = true;
+		}
+		
+		if(seriesFilter.indexOf(episode[i].dataset.seriesId) != -1)
 		{
 			hideEpisode = true;
 		}
