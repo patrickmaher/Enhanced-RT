@@ -959,8 +959,20 @@ function recentlyAdded()
 				// Comma separated list of episodes in current batch.
 				episodeBatch += (episodeBatch == "")?myObj.data[i].uuid:("," + myObj.data[i].uuid);
 				
-				// Separate season/episode number from display title so it can be displayed separately
-				var seasonInfo = myObj.data[i].attributes.display_title.split(" -", 1)[0].split(":");
+				// Make sure that display text actually starts with season and episode information by detecting an episode number
+				if(myObj.data[i].attributes.display_title.split(" -", 1)[0].search(":E\\d") >= 0)
+				{
+					// Separate season/episode number from display title so it can be displayed separately
+					// Pulling the season information from the display title field saves from making a query to the Season API for each episode
+					var seasonInfo = myObj.data[i].attributes.display_title.split(" -", 1)[0].split(":");
+					var seasonInfoText = " - " + seasonInfo[0] + " : " + seasonInfo[1];
+				}
+				else
+				{
+					// Season and episode info were not found, so seasonInfo text will be left blank
+					// Could query the Season API instead of leaving it blank
+					var seasonInfoText = "";
+				}
 
 				// Clone element structure for individual episodes. Don't need to rebuild the whole structure for each episode.
 				var cloneEpisodeDiv = episodeDiv.cloneNode(true);
@@ -974,8 +986,8 @@ function recentlyAdded()
 				cloneEpisodeDiv.getElementsByClassName("episode-title")[0].href = "/episode/" + myObj.data[i].attributes.slug;
 				cloneEpisodeDiv.getElementsByClassName("episode-title")[0].childNodes[0].nodeValue = myObj.data[i].attributes.title;
 				cloneEpisodeDiv.getElementsByClassName("episode-extra__link")[0].href = "/series/" + myObj.data[i].attributes.show_slug;
-				cloneEpisodeDiv.getElementsByClassName("episode-extra__link")[0].childNodes[0].nodeValue = myObj.data[i].attributes.show_title + " - " + seasonInfo[0] + " : " + seasonInfo[1];
-				cloneEpisodeDiv.getElementsByClassName("info-line")[0].title = myObj.data[i].attributes.title + "\n" + myObj.data[i].attributes.show_title + " - " + seasonInfo[0] + " : " + seasonInfo[1] + "\n\n" + myObj.data[i].attributes.description;
+				cloneEpisodeDiv.getElementsByClassName("episode-extra__link")[0].childNodes[0].nodeValue = myObj.data[i].attributes.show_title + seasonInfoText;
+				cloneEpisodeDiv.getElementsByClassName("info-line")[0].title = myObj.data[i].attributes.title + "\n" + myObj.data[i].attributes.show_title + seasonInfoText + "\n\n" + myObj.data[i].attributes.description;
 				
 				
 				// Show channel color for each video
