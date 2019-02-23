@@ -517,7 +517,7 @@ function recentlyAdded()
 	channelData.push({id: "84c7eaaf-54ab-40b6-8832-f6527eb22335", color: "D5B037", logo: "https://roosterteeth.com/img/CC_Logo_White.png"});
 	channelData.push({id: "33c38834-k169-3828-a527-49f7baz27482", color: "1BB479", logo: "https://roosterteeth.com/img/SP7_Logo_White.png"});
 	channelData.push({id: "528e5605-502e-499b-a3a3-2652498607ac", color: "8B54DC", logo: "https://roosterteeth.com/img/GA_Logo_White.png"});
-	channelData.push({id: "d7882a89-da75-4ee3-a02a-f49dc5889214", color: "00639D", logo: "https://roosterteeth.com/img/TK_Logo_White.png"});
+	channelData.push({id: "d7882a89-da75-4ee3-a02a-f49dc5889214", color: "D8262F", logo: "https://assets.roosterteeth.com/static/media/IG_Logo_White.f699b6b7.png"});
 	channelData.push({id: "23g6dajk-76dc-27y3-6531-h5902rh48941", color: "FC1334", logo: "https://roosterteeth.com/img/JT_Logo_White.png"});
 	
 	// ***Initial Setup Start***
