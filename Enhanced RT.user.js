@@ -510,15 +510,15 @@ function recentlyAdded()
 	
 	// Channel colors and logo URLs
 	var channelData = new Array;
-	channelData.push({id: "92b6bb21-91d2-4b1b-bf95-3268fa0d9939", color: "C9373F", logo: "https://roosterteeth.com/img/RT_Cockbite_White.png"});
-	channelData.push({id: "2cb2a70c-be50-46f5-93d7-84a1baabb4f7", color: "5F9F41", logo: "https://roosterteeth.com/img/AH_Logo_White.png"});
-	channelData.push({id: "2dc2a30b-55b7-443c-b565-1b3be9257fc4", color: "FE8204", logo: "https://roosterteeth.com/img/FH_Logo_White.png"});
-	channelData.push({id: "dd838359-a0e0-405f-b18b-5b0ed16ef852", color: "00AEEF", logo: "https://roosterteeth.com/img/SA_Logo_White.png"});
-	channelData.push({id: "84c7eaaf-54ab-40b6-8832-f6527eb22335", color: "D5B037", logo: "https://roosterteeth.com/img/CC_Logo_White.png"});
-	channelData.push({id: "33c38834-k169-3828-a527-49f7baz27482", color: "1BB479", logo: "https://roosterteeth.com/img/SP7_Logo_White.png"});
-	channelData.push({id: "528e5605-502e-499b-a3a3-2652498607ac", color: "8B54DC", logo: "https://roosterteeth.com/img/GA_Logo_White.png"});
+	channelData.push({id: "92b6bb21-91d2-4b1b-bf95-3268fa0d9939", color: "C9373F", logo: "https://assets.roosterteeth.com/img/RT_Cockbite_White.png"});
+	channelData.push({id: "2cb2a70c-be50-46f5-93d7-84a1baabb4f7", color: "5F9F41", logo: "https://assets.roosterteeth.com/img/AH_Logo_White.png"});
+	channelData.push({id: "2dc2a30b-55b7-443c-b565-1b3be9257fc4", color: "FE8204", logo: "https://assets.roosterteeth.com/img/FH_Logo_White.png"});
+	channelData.push({id: "dd838359-a0e0-405f-b18b-5b0ed16ef852", color: "00AEEF", logo: "https://assets.roosterteeth.com/img/SA_Logo_White.png"});
+	channelData.push({id: "84c7eaaf-54ab-40b6-8832-f6527eb22335", color: "D5B037", logo: "https://assets.roosterteeth.com/img/CC_Logo_White.png"});
+	channelData.push({id: "33c38834-k169-3828-a527-49f7baz27482", color: "1BB479", logo: "https://assets.roosterteeth.com/img/SP7_Logo_White.png"});
+	channelData.push({id: "528e5605-502e-499b-a3a3-2652498607ac", color: "8B54DC", logo: "https://assets.roosterteeth.com/img/GA_Logo_White.png"});
 	channelData.push({id: "d7882a89-da75-4ee3-a02a-f49dc5889214", color: "D8262F", logo: "https://assets.roosterteeth.com/static/media/IG_Logo_White.f699b6b7.png"});
-	channelData.push({id: "23g6dajk-76dc-27y3-6531-h5902rh48941", color: "FC1334", logo: "https://roosterteeth.com/img/JT_Logo_White.png"});
+	channelData.push({id: "23g6dajk-76dc-27y3-6531-h5902rh48941", color: "FC1334", logo: "https://assets.roosterteeth.com/img/JT_Logo_White.png"});
 	
 	// ***Initial Setup Start***
 
