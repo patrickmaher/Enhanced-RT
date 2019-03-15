@@ -94,18 +94,19 @@ var watchedThreshold = 35;
 			
 })(this);
 
-ready('.side-menu', function(element) {
+ready('.side-nav-menu', function(element) {
 	//console.log("Enhanced RT: Side Menu Detected");
 
 	// Add recently added link to side menu
 	var recentlyAddedItem = document.createElement("li");
+	recentlyAddedItem.className = "side-nav-menu__item";
 	var recentlyAddedLink = document.createElement("a");
-	recentlyAddedLink.className = "waves-effect waves-brand";
+	recentlyAddedLink.className = "side-nav-menu__link waves-effect waves-brand";
 	recentlyAddedLink.href = "/episode/recently-added";
 	recentlyAddedLink.appendChild(document.createTextNode("Recently Added"));
 	recentlyAddedItem.appendChild(recentlyAddedLink);
 
-	element.insertBefore(recentlyAddedItem, document.getElementsByClassName("side-menu")[0].childNodes[4]);
+	element.insertBefore(recentlyAddedItem, document.getElementsByClassName("side-nav-menu")[0].childNodes[3]);
 });
 
 ready('.carousel-title', function(element) {
