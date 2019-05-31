@@ -313,7 +313,7 @@ ready('.vjs-upnext', function(element) {
 	}
 });
 
-ready('.error-page-wrapper', function(element) {
+ready('.video-container', function(element) {
 	if(window.location.pathname.search("/episode/recently-added") >= 0)
 	{
 		//console.log("Enhanced RT: Recently Added Page Detected");
@@ -528,7 +528,7 @@ function recentlyAdded()
 	showWrapperDiv.className = "show-main__wrapper";
 	
 	// Start by appending parent element to page. The other elements will be added to it.
-	document.getElementsByClassName("episode-main")[0].appendChild(showWrapperDiv);
+	document.getElementsByClassName("episode-content")[0].insertBefore(showWrapperDiv, document.getElementsByClassName("episode-content")[0].childNodes[0]);
 	
 	// ***Filters Setup Start***
 	
