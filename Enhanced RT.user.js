@@ -102,7 +102,7 @@ ready('.side-nav-menu', function(element) {
 	recentlyAddedItem.className = "side-nav-menu__item";
 	var recentlyAddedLink = document.createElement("a");
 	recentlyAddedLink.className = "side-nav-menu__link waves-effect waves-brand";
-	recentlyAddedLink.href = "/episode/recently-added";
+	recentlyAddedLink.href = "/watch/recently-added";
 	recentlyAddedLink.appendChild(document.createTextNode("Recently Added"));
 	recentlyAddedItem.appendChild(recentlyAddedLink);
 
@@ -117,7 +117,7 @@ ready('.carousel-title', function(element) {
 	{
 		var recentLink = document.createElement("a");
 		recentLink.className = "carousel-title link";
-		recentLink.href = "/episode/recently-added";
+		recentLink.href = "/watch/recently-added";
 		recentLink.appendChild(document.createTextNode("recent episodes "));
 		var recentArrow = document.createElement("i");
 		recentArrow.className = "show-more icon-keyboard_arrow_right";
@@ -314,7 +314,7 @@ ready('.vjs-upnext', function(element) {
 });
 
 ready('.video-container', function(element) {
-	if(window.location.pathname.search("/episode/recently-added") >= 0)
+	if(window.location.pathname.search("/watch/recently-added") >= 0)
 	{
 		//console.log("Enhanced RT: Recently Added Page Detected");
 		//console.log(element);
@@ -349,7 +349,7 @@ ready('.video-container', function(element) {
 });
 
 ready('.percent-bar', function(element) {
-	if(window.location.pathname.search("/episode/recently-added") == -1 && window.location.pathname.search("/my-watchlist") == -1)
+	if(window.location.pathname.search("/watch/recently-added") == -1 && window.location.pathname.search("/my-watchlist") == -1)
 	{
 		//console.log("Enhanced RT: Watched Video Detected");
 		//console.log(element);
