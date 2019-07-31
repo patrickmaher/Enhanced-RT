@@ -8,7 +8,7 @@
 // @exclude      *://store.roosterteeth.com/*
 // @run-at       document-end
 // @noframes
-// @version      3.8.1
+// @version      3.8.2
 // ==/UserScript==
 
 
@@ -32,12 +32,12 @@ var observer = new MutationObserver(function(mutations) {
   console.log("Page Change Detected");
   console.log(window.location.pathname);
 });
- 
+
 // configuration of the observer:
 //var config = { attributeFilter: ["style"] };
 var config = { childList:true, subtree:true };
 
- 
+
 // pass in the target node, as well as the observer options
 observer.observe(target, config);
 */
@@ -46,12 +46,12 @@ var watchedThreshold = 35;
 
 (function(win) {
 	'use strict';
-	
-	var listeners = [], 
-	doc = win.document, 
+
+	var listeners = [],
+	doc = win.document,
 	MutationObserver = win.MutationObserver || win.WebKitMutationObserver,
 	observer;
-	
+
 	function ready(selector, fn) {
 		// Store the selector and callback to be monitored
 		listeners.push({
@@ -69,7 +69,7 @@ var watchedThreshold = 35;
 		// Check if the element is currently in the DOM
 		check();
 	}
-		
+
 	function check() {
 		// Check the DOM for elements matching a stored selector
 		for (var i = 0, len = listeners.length, listener, elements; i < len; i++) {
@@ -78,7 +78,7 @@ var watchedThreshold = 35;
 			elements = doc.querySelectorAll(listener.selector);
 			for (var j = 0, jLen = elements.length, element; j < jLen; j++) {
 				element = elements[j];
-				// Make sure the callback isn't invoked with the 
+				// Make sure the callback isn't invoked with the
 				// same element more than once
 				if (!element.ready) {
 					element.ready = true;
@@ -91,7 +91,7 @@ var watchedThreshold = 35;
 
 	// Expose `ready`
 	win.ready = ready;
-			
+
 })(this);
 
 ready('.side-nav-menu', function(element) {
@@ -102,7 +102,7 @@ ready('.side-nav-menu', function(element) {
 	recentlyAddedItem.className = "side-nav-menu__item";
 	var recentlyAddedLink = document.createElement("a");
 	recentlyAddedLink.className = "side-nav-menu__link waves-effect waves-brand";
-	recentlyAddedLink.href = "/episode/recently-added";
+	recentlyAddedLink.href = "/watch/recently-added";
 	recentlyAddedLink.appendChild(document.createTextNode("Recently Added"));
 	recentlyAddedItem.appendChild(recentlyAddedLink);
 
@@ -112,12 +112,12 @@ ready('.side-nav-menu', function(element) {
 ready('.carousel-title', function(element) {
 	//console.log("Enhanced RT: Carousel Detected");
 	//console.log(element.childNodes[0].nodeValue);
-	
+
 	if(element.childNodes[0] != undefined && element.childNodes[0].nodeValue == "recent episodes")
 	{
 		var recentLink = document.createElement("a");
 		recentLink.className = "carousel-title link";
-		recentLink.href = "/episode/recently-added";
+		recentLink.href = "/watch/recently-added";
 		recentLink.appendChild(document.createTextNode("recent episodes "));
 		var recentArrow = document.createElement("i");
 		recentArrow.className = "show-more icon-keyboard_arrow_right";
@@ -125,12 +125,12 @@ ready('.carousel-title', function(element) {
 		element.parentNode.insertBefore(recentLink, element);
 		element.parentNode.removeChild(element);
 	}
-	
+
 });
 
 
 ready('.vjs-fullscreen-control', function(element) {
-	
+
 	// Create Full Window video player button
 	var fullWindowButton = document.createElement("button");
 	fullWindowButton.className = "icon-expand-alt";
@@ -139,7 +139,7 @@ ready('.vjs-fullscreen-control', function(element) {
 	fullWindowButton.style = "font-size: medium;width: 2em;";
 	fullWindowButton.dataset.fullWindow = "false";
 	element.parentNode.insertBefore(fullWindowButton, element);
-	
+
 	// Toggle between Full Window and Non-Full Window video player
 	fullWindowButton.onclick = function (event)
 	{
@@ -147,12 +147,12 @@ ready('.vjs-fullscreen-control', function(element) {
 		{
 			event.target.className = "icon-compress-alt";
 			event.target.title = "Non-Full Window";
-			
+
 			// Disable scroll while in full window
 			document.getElementsByTagName("body")[0].style.overflow = "hidden";
-			
+
 			var videoElement = document.getElementsByTagName("video")[0];
-			
+
 			videoElement.parentNode.parentNode.style.width = "100vw";
 			videoElement.parentNode.parentNode.style.height = "56.25vw";
 			videoElement.parentNode.parentNode.style.maxHeight = "100vh";
@@ -163,7 +163,7 @@ ready('.vjs-fullscreen-control', function(element) {
 			videoElement.parentNode.parentNode.style.bottom = "0";
 			videoElement.parentNode.parentNode.style.left = "0";
 			videoElement.parentNode.parentNode.style.right = "0";
-			
+
 			videoElement.parentNode.parentNode.parentNode.style.position = "fixed";
 			videoElement.parentNode.parentNode.parentNode.style.top = "0";
 			videoElement.parentNode.parentNode.parentNode.style.left = "0";
@@ -177,12 +177,12 @@ ready('.vjs-fullscreen-control', function(element) {
 		{
 			event.target.className = "icon-expand-alt";
 			event.target.title = "Full Window";
-			
+
 			// Re-enable scroll
 			document.getElementsByTagName("body")[0].style.overflow = "visible";
-			
+
 			var videoElement = document.getElementsByTagName("video")[0];
-			
+
 			videoElement.parentNode.parentNode.style.width = "";
 			videoElement.parentNode.parentNode.style.height = "";
 			videoElement.parentNode.parentNode.style.maxHeight = "";
@@ -193,21 +193,21 @@ ready('.vjs-fullscreen-control', function(element) {
 			videoElement.parentNode.parentNode.style.bottom = "";
 			videoElement.parentNode.parentNode.style.left = "";
 			videoElement.parentNode.parentNode.style.right = "";
-			
+
 			videoElement.parentNode.parentNode.parentNode.style.position = "";
 			videoElement.parentNode.parentNode.parentNode.style.top = "";
 			videoElement.parentNode.parentNode.parentNode.style.left = "";
 			videoElement.parentNode.parentNode.parentNode.style.width = "";
 			videoElement.parentNode.parentNode.parentNode.style.height = "";
 			videoElement.parentNode.parentNode.parentNode.style.zIndex = "";
-			
+
 			event.target.dataset.fullWindow = "false";
 		}
 	};
-	
-	
+
+
 	stickyPlayer = new MutationObserver(function () {
-		
+
 		// Check if full screen button is hidden and hide full window button accordingly
 		if(window.getComputedStyle(document.getElementsByClassName("vjs-fullscreen-control")[0], null).getPropertyValue("display") == "none")
 		{
@@ -217,20 +217,20 @@ ready('.vjs-fullscreen-control', function(element) {
 		{
 			fullWindowButton.style.display = "";
 		}
-		
+
 	});
-	
+
 	// Watch for video player transform to small sticky player
 	stickyPlayer.observe(document.getElementsByTagName("video")[0].parentNode, {
 		attributes: true,
 		attributeFilter: ['style']
 	});
-	
+
 });
 
 ready('.vjs-upnext', function(element) {
 	//console.log("Enhanced RT: Up Next Div Detected");
-	
+
 	// Ignore if it is the Up Next template Div
 	if(element.childNodes[0].childNodes[1].childNodes[0].href != "https://roosterteeth.com/")
 	{
@@ -239,9 +239,9 @@ ready('.vjs-upnext', function(element) {
 		{
 			// Get users Auto Play Next Video preference from server
 			var meXMLHttp = new XMLHttpRequest();
-			
+
 			meXMLHttp.onreadystatechange = function() {
-				
+
 				if (this.readyState == 4 && this.status == 200) // Successfully downloaded user preference
 				{
 					var meObj = JSON.parse(this.responseText);
@@ -251,7 +251,7 @@ ready('.vjs-upnext', function(element) {
 					autoPlayNextVideo = meObj.attributes.preferences.autoplay.toString();
 					// Store users Auto Play Next Video preference locally
 					localStorage.setItem("enhancedRT_autoPlayNextVideo", autoPlayNextVideo);
-					
+
 					if(autoPlayNextVideo == "false")
 					{
 						// Stop next video auto play
@@ -259,7 +259,7 @@ ready('.vjs-upnext', function(element) {
 
 						// Delete next up div so it does not display
 						element.parentNode.removeChild(element);
-						
+
 						//console.log("Auto Play Next Video has been killed");
 						//alert("Auto Play Next Video has been killed");
 					}
@@ -272,7 +272,7 @@ ready('.vjs-upnext', function(element) {
 					autoPlayNextVideo = ((localStorage.getItem("enhancedRT_autoPlayNextVideo") == null) ? "true" : localStorage.getItem("enhancedRT_autoPlayNextVideo"));
 					//console.log("Could not connect, get preference from local storage");
 					//console.log("Auto Play Next Video is " + autoPlayNextVideo);
-					
+
 					if(autoPlayNextVideo == "false")
 					{
 						// Stop next video auto play
@@ -280,7 +280,7 @@ ready('.vjs-upnext', function(element) {
 
 						// Delete next up div so it does not display
 						element.parentNode.removeChild(element);
-						
+
 						//console.log("Auto Play Next Video has been killed");
 						//alert("Auto Play Next Video has been killed");
 					}
@@ -298,7 +298,7 @@ ready('.vjs-upnext', function(element) {
 			autoPlayNextVideo = ((localStorage.getItem("enhancedRT_autoPlayNextVideo") == null) ? "true" : localStorage.getItem("enhancedRT_autoPlayNextVideo"));
 			//console.log("Not logged in, get preference from local storage");
 			//console.log("Auto Play Next Video is " + autoPlayNextVideo);
-			
+
 			if(autoPlayNextVideo == "false")
 			{
 				// Stop next video auto play
@@ -314,21 +314,21 @@ ready('.vjs-upnext', function(element) {
 });
 
 ready('.video-container', function(element) {
-	if(window.location.pathname.search("/episode/recently-added") >= 0)
+	if(window.location.pathname.search("/watch/recently-added") >= 0)
 	{
 		//console.log("Enhanced RT: Recently Added Page Detected");
 		//console.log(element);
-		
+
 		// Remove 404 error
 		element.remove();
-		
-		
+
+
 		// Only check Auto Play Next Video preference if user is logged in
 		if(document.cookie.indexOf("rt_access_token=") != -1)
 		{
 			// Update users Auto Play Next Video preference and store locally
 			var meXMLHttp = new XMLHttpRequest();
-			
+
 			meXMLHttp.onreadystatechange = function() {
 				if (this.readyState == 4 && this.status == 200) // Successfully downloaded user preference
 				{
@@ -342,14 +342,14 @@ ready('.video-container', function(element) {
 			meXMLHttp.open("GET", "https://business-service.roosterteeth.com/api/v1/me", true);
 			meXMLHttp.send();
 		}
-		
+
 		// Create Recently Added page
 		recentlyAdded();
 	}
 });
 
 ready('.percent-bar', function(element) {
-	if(window.location.pathname.search("/episode/recently-added") == -1 && window.location.pathname.search("/my-watchlist") == -1)
+	if(window.location.pathname.search("/watch/recently-added") == -1 && window.location.pathname.search("/my-watchlist") == -1)
 	{
 		//console.log("Enhanced RT: Watched Video Detected");
 		//console.log(element);
@@ -366,7 +366,7 @@ ready('.percent-bar', function(element) {
 		{
 			var episodeLength = (parseInt(episodeLengthTimestamp[0]) * 60) + parseInt(episodeLengthTimestamp[1]);
 		}
-		
+
 		if(episodeLength - (episodeLength * (parseFloat(element.childNodes[0].childNodes[0].style.width) / 100)) < watchedThreshold)
 		{
 			// Create Watched/Resume label
@@ -377,10 +377,10 @@ ready('.percent-bar', function(element) {
 			WatchedDiv.style.right = "auto";
 			WatchedDiv.style.bottom = "auto";
 			WatchedDiv.style.fontSize = "1rem";
-			
+
 			// Set Watched label text
 			WatchedDiv.appendChild(document.createTextNode("Watched"));
-			
+
 			// Append Watched/Resume label
 			element.parentNode.childNodes[0].appendChild(WatchedDiv);
 		}
@@ -424,36 +424,36 @@ function displaySettings()
 	var settingsDiv = document.createElement("div");
 	settingsDiv.className = "settings-app__page";
 	settingsDiv.style = "margin-top: 50px;";
-	
+
 	var settingsSection = document.createElement("section");
 	settingsSection.className = "settings-app__section";
-	
+
 	var settingsHeader = document.createElement("h2");
 	settingsHeader.className = "settings-app__subheading";
 	settingsHeader.appendChild(document.createTextNode("Enhanced RT"));
-	
+
 	var settingsList = document.createElement("ul");
 	settingsList.className = "form-list";
-	
+
 	var settingsItem = document.createElement("li");
 	settingsItem.className = "form-list__row qa-username-form";
-	
+
 	var settingsLabel = document.createElement("span");
 	settingsLabel.className = "form-list__label";
 	settingsLabel.appendChild(document.createTextNode("Binge Mode"));
-	
+
 	var settingsCell = document.createElement("div");
 	settingsCell.className = "form-list__cell";
-	
+
 	var settingsCheckbox = document.createElement("input");
 	settingsCheckbox.type = "checkbox";
 	settingsCheckbox.id = "video-binge";
 	settingsCheckbox.defaultChecked = ((videoBinge == "true") ? true : false);
 	//console.log(videoBinge);
 	//console.log(settingsCheckbox.defaultChecked);
-	
+
 	settingsCheckbox.style="position: static; opacity: 100; pointer-events:auto; margin:0 0 0 1em; width: 17px; height: 17px;";
-	
+
 	settingsDiv.appendChild(settingsSection);
 	settingsSection.appendChild(settingsHeader);
 	settingsSection.appendChild(settingsList);
@@ -461,10 +461,10 @@ function displaySettings()
 	settingsItem.appendChild(settingsLabel);
 	settingsItem.appendChild(settingsCell);
 	settingsCell.appendChild(settingsCheckbox);
-	
+
 	document.getElementsByClassName("simplebar-content")[1].appendChild(settingsDiv);
-	
-	
+
+
 	document.getElementById("video-binge").onclick = function (event)
 	{
 		if(videoBinge == "true")
@@ -479,7 +479,7 @@ function displaySettings()
 		}
 	};
 
-	
+
 	//console.log(document.getElementsByClassName("simplebar-content")[1]);
 	*/
 }
@@ -504,11 +504,11 @@ seriesFilter = ((seriesFilterString == null) ? [] : JSON.parse(seriesFilterStrin
 // Recently Added Page
 // *******************
 function recentlyAdded()
-{	
+{
 
 	var episodePage = 1;
 	var episodesPerPage = 100;
-	
+
 	// Channel colors and logo URLs
 	var channelData = new Array;
 	channelData.push({id: "92b6bb21-91d2-4b1b-bf95-3268fa0d9939", color: "C9373F", logo: "https://assets.roosterteeth.com/img/RT_Cockbite_White.png"});
@@ -520,18 +520,18 @@ function recentlyAdded()
 	channelData.push({id: "528e5605-502e-499b-a3a3-2652498607ac", color: "8B54DC", logo: "https://assets.roosterteeth.com/img/GA_Logo_White.png"});
 	channelData.push({id: "d7882a89-da75-4ee3-a02a-f49dc5889214", color: "D8262F", logo: "https://assets.roosterteeth.com/static/media/IG_Logo_White.f699b6b7.png"});
 	channelData.push({id: "23g6dajk-76dc-27y3-6531-h5902rh48941", color: "FC1334", logo: "https://assets.roosterteeth.com/img/JT_Logo_White.png"});
-	
+
 	// ***Initial Setup Start***
 
 	// Create elements for episode grid
 	var showWrapperDiv = document.createElement("div");
 	showWrapperDiv.className = "show-main__wrapper";
-	
+
 	// Start by appending parent element to page. The other elements will be added to it.
 	document.getElementsByClassName("episode-content")[0].insertBefore(showWrapperDiv, document.getElementsByClassName("episode-content")[0].childNodes[0]);
-	
+
 	// ***Filters Setup Start***
-	
+
 	// Filters
 	var CenterHeader = document.createElement("center");
 	var headerDiv = document.createElement("div");
@@ -556,7 +556,7 @@ function recentlyAdded()
 		watchedLogoDiv.style.opacity = ((watchedFilter == "false") ? 1 : 0.5);
 		watchedLogoDiv.style.verticalAlign = "top";
 		headerDiv.appendChild(watchedLogoDiv);
-		
+
 		watchedLogoDiv.onclick = function (event)
 		{
 			if(event.target.className == "icon-eye-slash")
@@ -577,7 +577,7 @@ function recentlyAdded()
 				watchedFilter = "true";
 				localStorage.setItem("enhancedRT_watchedFilter", watchedFilter);
 			}
-			
+
 			hideVideos();
 			checkForEndlessTrigger();
 		};
@@ -596,9 +596,9 @@ function recentlyAdded()
 		watchedCheckbox.style.cursor = "pointer";
 		watchedLabel.appendChild(watchedCheckbox);
 		watchedLabel.appendChild(document.createTextNode("Watched"));
-		
+
 		headerDiv.appendChild(watchedLabel);
-		
+
 		watchedCheckbox.onclick = function (event)
 		{
 			if(event.target.checked == true)
@@ -613,7 +613,7 @@ function recentlyAdded()
 				localStorage.setItem("enhancedRT_watchedFilter", watchedFilter);
 				event.target.parentNode.title = "Show Watched Episodes";
 			}
-			
+
 			hideVideos();
 			checkForEndlessTrigger();
 		};
@@ -621,24 +621,24 @@ function recentlyAdded()
 
 	// Get List of Channels
 	var channelsXMLHttp = new XMLHttpRequest();
-	
+
 	channelsXMLHttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			var channelsObj = JSON.parse(this.responseText);
-			
-			
+
+
 			for (var i = 0, len = channelsObj.data.length; i < len; i++)
 			{
 				//console.log("Name: " + channelsObj.data[i].attributes.name + " ID: " + channelsObj.data[i].uuid);
 				//channelArray[channelsObj.data[i].uuid] = "true";
 
 				logoFound = false;
-				
+
 				// Create channel and series filter elements
 				var channelSettingDiv = document.createElement("div");
 				channelSettingDiv.style.display = "inline-block";
 				channelSettingDiv.style.verticalAlign = "top";
-				
+
 				var channelFilterDiv = document.createElement("div");
 				channelFilterDiv.classList.add("js-enhancedrt-channel-logo");
 				channelFilterDiv.dataset.channelId = channelsObj.data[i].uuid;
@@ -647,20 +647,20 @@ function recentlyAdded()
 				var showSeriesDiv = document.createElement("div");
 				showSeriesDiv.style.marginRight = "20px";
 				showSeriesDiv.style.cursor = "pointer";
-				showSeriesDiv.title = "Show Series Filters";	
+				showSeriesDiv.title = "Show Series Filters";
 
 				var arrowDownIcon = document.createElement("i");
 				arrowDownIcon.classList.add("icon-keyboard_arrow_down");
 				arrowDownIcon.style.fontSize = "x-large";
-				
+
 				showSeriesDiv.appendChild(arrowDownIcon);
-				
-				
+
+
 				//Connect channel and series filter elements
 				channelSettingDiv.appendChild(channelFilterDiv);
 				channelSettingDiv.appendChild(showSeriesDiv);
 				headerDiv.appendChild(channelSettingDiv);
-				
+
 				// Display series filters
 				showSeriesDiv.onclick = function (event)
 				{
@@ -691,9 +691,9 @@ function recentlyAdded()
 						}
 					}
 				};
-				
-				
-				
+
+
+
 				// Determine if channel logos can be used instead of channel checkboxes. Logos should work on all browsers except Microsoft Edge.
 				if(CSS.supports("-webkit-mask-image", "url()"))
 				{
@@ -701,14 +701,14 @@ function recentlyAdded()
 					channelData.forEach(function(element) {
 						if(element.id == channelsObj.data[i].uuid)
 						{
-							
+
 							logoFound = true;
 
 
 							channelFilterDiv.dataset.channelColor = element.color;
 							channelFilterDiv.dataset.channelLogo = element.logo;
 							arrowDownIcon.style.color = "#" + channelFilterDiv.dataset.channelColor;
-							
+
 							channelFilterDiv.title = ((channelFilter.indexOf(channelsObj.data[i].uuid) == -1) ? "Hide " : "Show ") + channelFilterDiv.dataset.channelName;
 							channelFilterDiv.style = "display:inline-block; cursor: pointer; width: 40px; height: 40px; margin-right: 20px; -webkit-mask-image: url('" + channelFilterDiv.dataset.channelLogo + "'); -webkit-mask-size: 100% 100%;"
 							if(channelFilter.indexOf(channelsObj.data[i].uuid) == -1)
@@ -724,7 +724,7 @@ function recentlyAdded()
 								channelFilterDiv.style.opacity = 0.5;
 							}
 
-							
+
 							channelFilterDiv.onclick = function (event)
 							{
 								if(event.target.style.backgroundColor == "gray")
@@ -747,23 +747,23 @@ function recentlyAdded()
 									}
 									localStorage.setItem("enhancedRT_channelFilter", JSON.stringify(channelFilter));
 								}
-								
+
 								hideVideos();
 								checkForEndlessTrigger();
 							};
 
 						}
 					});
-					
-					
+
+
 				}
-				
+
 				// Default to checkbox if no logo found or logo image mask not supported
 				if(!logoFound)
 				{
-					
+
 					channelFilterDiv.style.height = "46px";
-					
+
 					var channelLabel = document.createElement("label");
 					channelLabel.style = "font-size: 1.64rem; margin-right: 10px;";
 					channelLabel.style.cursor = "pointer";
@@ -776,10 +776,10 @@ function recentlyAdded()
 					channelCheckbox.style.cursor = "pointer";
 					channelLabel.appendChild(channelCheckbox);
 					channelLabel.appendChild(document.createTextNode(channelsObj.data[i].attributes.name));
-					
+
 					channelFilterDiv.appendChild(channelLabel);
 
-					
+
 					channelCheckbox.onclick = function (event)
 					{
 						if(event.target.checked == true)
@@ -800,26 +800,26 @@ function recentlyAdded()
 							localStorage.setItem("enhancedRT_channelFilter", JSON.stringify(channelFilter));
 							event.target.parentNode.title = "Show " + event.target.parentNode.textContent;
 						}
-						
+
 						hideVideos();
 						checkForEndlessTrigger();
 					};
-					
-				}
-				
-				
-				
 
-				
+				}
+
+
+
+
+
 				// Get series that belong to this channel
 				var seriesXMLHttp = new XMLHttpRequest();
-				
+
 				seriesXMLHttp.onreadystatechange = function()
 				{
 					if (this.readyState == 4 && this.status == 200)
 					{
 						var seriesObj = JSON.parse(this.responseText);
-						
+
 						var seriesDiv = document.createElement("div");
 						seriesDiv.className = "js-enhancedrt-series-list";
 						seriesDiv.style.display = "none";
@@ -827,7 +827,7 @@ function recentlyAdded()
 
 						seriesDiv.style.textAlign = "left";
 						seriesDiv.style.margin = "20px 4%";
-						
+
 						for (var i = 0, len = seriesObj.data.length; i < len; i++)
 						{
 							//console.log("Series name: " + seriesObj.data[i].attributes.title + " ID: " + seriesObj.data[i].uuid);
@@ -851,9 +851,9 @@ function recentlyAdded()
 							seriesCheckbox.style.cursor = "pointer";
 							seriesLabel.appendChild(seriesCheckbox);
 							seriesLabel.appendChild(document.createTextNode(seriesObj.data[i].attributes.title));
-							
+
 							seriesDiv.appendChild(seriesLabel);
-							
+
 							seriesCheckbox.onclick = function (event)
 							{
 								if(event.target.checked == true)
@@ -874,13 +874,13 @@ function recentlyAdded()
 									localStorage.setItem("enhancedRT_seriesFilter", JSON.stringify(seriesFilter));
 									event.target.parentNode.title = "Show " + event.target.parentNode.textContent;
 								}
-								
+
 								hideVideos();
 								checkForEndlessTrigger();
 							};
-							
+
 						}
-						
+
 						headerDiv.appendChild(seriesDiv);
 
 					}
@@ -901,31 +901,31 @@ function recentlyAdded()
 
 	// ***Filters Setup End***
 
-	
-	
+
+
 	// ***Episode Grid Setup Start***
 
-	
+
 	var showContainerSection = document.createElement("section");
 	showContainerSection.className = "show-container";
-	
+
 	var showContentDiv = document.createElement("div");
 	showContentDiv.className = "show-content";
-	
+
 	var carouselContainerSection = document.createElement("section");
 	carouselContainerSection.className = "carousel-container";
-	
+
 	var episodeGridContainerDiv = document.createElement("div");
 	episodeGridContainerDiv.className = "episode-grid-container row";
 	episodeGridContainerDiv.style = "display: flex; flex-wrap: wrap;";
-	
+
 	var showMoreDiv = document.createElement("div");
 	showMoreDiv.className = "col s12 show-more";
 	showMoreDiv.appendChild(document.createTextNode("show more"));
-	
+
 	var arrowDownIcon = document.createElement("i");
 	arrowDownIcon.className = "icon-keyboard_arrow_down";
-	
+
 	// Connect elements for episode grid
 	showWrapperDiv.appendChild(showContainerSection);
 	showContainerSection.appendChild(showContentDiv);
@@ -933,7 +933,7 @@ function recentlyAdded()
 	carouselContainerSection.appendChild(episodeGridContainerDiv);
 	episodeGridContainerDiv.appendChild(showMoreDiv);
 	showMoreDiv.appendChild(arrowDownIcon);
-	
+
 	showMoreDiv.onclick = function (event)
 	{
 		getEpisodes(xmlhttp, episodePage, episodesPerPage);
@@ -947,64 +947,64 @@ function recentlyAdded()
 
 	// Delete episodes div that will not be used
 	//document.getElementsByClassName("episode-content")[0].remove();
-	
-	
-	
+
+
+
 	// ***Episode Grid Setup End***
 
 
-	
+
 	// ***Episode Clone Setup Start***
 
-	
-	
-	// Create elements used to display individual episode 
+
+
+	// Create elements used to display individual episode
 	var episodeDiv = document.createElement("div");
 	episodeDiv.className = "col s12 m4 l3";
 	episodeDiv.style = "margin-left: 0;";
-	
+
 	var episodeCardDiv = document.createElement("div");
 	episodeCardDiv.className = "episode-card";
-	
+
 	var cardContentDiv = document.createElement("div");
 	cardContentDiv.className = "card-content";
-	
+
 	var cardImageDiv = document.createElement("div");
 	cardImageDiv.className = "card-image-wrapper";
-	
+
 	var imageLink = document.createElement("a");
 	imageLink.href = "***Episode URL***";
-	
+
 	var imageDiv = document.createElement("div");
 	imageDiv.className = "image";
 	imageDiv.style = "background-image: url(\"***Thumbnail URL***\");";
-	
+
 	var timestampDiv = document.createElement("div");
 	timestampDiv.className = "timestamp";
 	timestampDiv.style.fontSize = "1rem";
 	timestampDiv.appendChild(document.createTextNode("***Timestamp Text***"));
-	
+
 	var infoDiv = document.createElement("div");
 	infoDiv.className = "info-line";
-	
+
 	var infoLeftDiv = document.createElement("div");
 	infoLeftDiv.className = "info-left";
-	
+
 	var titleLink = document.createElement("a");
 	titleLink.className = "episode-title";
 	titleLink.href = "***Episode URL***";
 	titleLink.appendChild(document.createTextNode("***Episode Title Text***"));
-	
+
 	var episodeExtraDiv = document.createElement("div");
 	episodeExtraDiv.className = "episode-extra";
 	var dateText = document.createTextNode("***Episode Date***");
-	
+
 	var seriesLink = document.createElement("a");
 	seriesLink.className = "episode-extra__link";
 	seriesLink.href = "***Series URL***";
 	seriesLink.appendChild(document.createTextNode("***Series Name Text***"));
-	
-	
+
+
 	// Connect elements for individual episode
 	episodeDiv.appendChild(episodeCardDiv);
 		episodeCardDiv.appendChild(cardContentDiv);
@@ -1025,23 +1025,23 @@ function recentlyAdded()
 	// ***Episode Clone Setup Start***
 
 
-	
+
 	// ***Initial Setup End***
-	
-	
+
+
 	//
 	var episodeBatch = "";
 	var episodeData = new Object();
-	
+
 	// Get List of Episodes
 	var xmlhttp = new XMLHttpRequest();
 	/*
 	xmlhttp.status = function() {
 		console.log();
-		
+
 	}
 	*/
-	
+
 
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
@@ -1056,7 +1056,7 @@ function recentlyAdded()
 
 				// Comma separated list of episodes in current batch.
 				episodeBatch += (episodeBatch == "")?myObj.data[i].uuid:("," + myObj.data[i].uuid);
-				
+
 				// Make sure that display text actually starts with season and episode information by detecting an episode number
 				if(myObj.data[i].attributes.display_title.split(" -", 1)[0].search(":E\\d") >= 0)
 				{
@@ -1086,8 +1086,8 @@ function recentlyAdded()
 				cloneEpisodeDiv.getElementsByClassName("episode-extra__link")[0].href = "/series/" + myObj.data[i].attributes.show_slug;
 				cloneEpisodeDiv.getElementsByClassName("episode-extra__link")[0].childNodes[0].nodeValue = myObj.data[i].attributes.show_title + seasonInfoText;
 				cloneEpisodeDiv.getElementsByClassName("info-line")[0].title = myObj.data[i].attributes.title + "\n" + myObj.data[i].attributes.show_title + seasonInfoText + "\n\n" + myObj.data[i].attributes.description;
-				
-				
+
+
 				// Show channel color for each video
 				channelData.forEach(function(element) {
 					if(element.id == myObj.data[i].attributes.channel_id)
@@ -1101,7 +1101,7 @@ function recentlyAdded()
 				//<div class="timestamp" style="top: 74%;left: 0%;right: 84%;bottom: 0%;/* display: none; */background: #1d1d1d;"><img src="https://roosterteeth.com/img/AH_Logo_White.png" style="height: 100%;width: 100%;"></div>
 
 				var episodeLength = seconds2Timestamp(myObj.data[i].attributes.length);
-				
+
 				cloneEpisodeDiv.getElementsByClassName("timestamp")[0].childNodes[0].nodeValue = ((episodeLength.hours == 0) ? episodeLength.minutes : episodeLength.hours + ":" + ('0'+episodeLength.minutes).slice(-2)) +':'+ ('0'+episodeLength.seconds).slice(-2);
 
 				// Format episode date to human readable
@@ -1109,11 +1109,11 @@ function recentlyAdded()
 				var episodeDateFormatted = ('0' + (episodeDate.getMonth()+1)).slice(-2) + '/' + ('0' + episodeDate.getDate()).slice(-2) + '/' + episodeDate.getFullYear();
 				cloneEpisodeDiv.getElementsByClassName("episode-extra")[0].childNodes[1].nodeValue = " | " + episodeDateFormatted;
 
-				
+
 				// Determine if episode is First only or First for a limited time and show appropriate star icon
 				var premiumDiv = document.createElement("div");
 				premiumDiv.className = "premium__badge__wrapper";
-				
+
 				// First only
 				if(myObj.data[i].attributes.is_sponsors_only == true)
 				{
@@ -1135,7 +1135,7 @@ function recentlyAdded()
 						cloneEpisodeDiv.getElementsByClassName("card-image-wrapper")[0].appendChild(premiumDiv);
 					}
 				}
-				
+
 				// Add episode to page
 				document.getElementsByClassName("episode-grid-container")[0].insertBefore(cloneEpisodeDiv, document.getElementsByClassName("show-more")[0]);
 			}
@@ -1146,19 +1146,19 @@ function recentlyAdded()
 			episodeBatch = "";
 
 			hideVideos();
-			
+
 		}
 	};
-	
+
 	// Get initial set of episodes
 	getEpisodes(xmlhttp, episodePage, episodesPerPage);
 	episodePage++;
-	
-	
-	
+
+
+
 	// Request episode watch times from Watch Time Collector (wtc) server.
 	var watchTimeXMLHttp = new XMLHttpRequest();
-	
+
 	watchTimeXMLHttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			var watchTimeObj = JSON.parse(this.responseText);
@@ -1177,14 +1177,14 @@ function recentlyAdded()
 						WatchedDiv.style.right = "auto";
 						WatchedDiv.style.bottom = "auto";
 						WatchedDiv.style.fontSize = "1rem";
-						
+
 						if(watchTimeObj[i].value > episodeData.data[j].attributes.length - watchedThreshold)
 						{
 							// Set Watched label text
 							WatchedDiv.appendChild(document.createTextNode("Watched"));
-							
+
 							document.querySelector("[data-episode-id='"+watchTimeObj[i].uuid+"']").dataset.watched = "true";
-							
+
 							//console.log("Episode " + episodeData.data[j].attributes.display_title + " is watched. It is " + episodeData.data[j].attributes.length + " seconds long and watch time is " + watchTimeObj[i].value + " seconds.");
 						}
 						else // There is a watch time but it is not within the watched threshold
@@ -1192,7 +1192,7 @@ function recentlyAdded()
 							// Set Resume label text
 							var watchedLength = seconds2Timestamp(watchTimeObj[i].value);
 							WatchedDiv.appendChild(document.createTextNode("Resume from " + ((watchedLength.hours == 0) ? watchedLength.minutes : watchedLength.hours + ":" + ('0'+watchedLength.minutes).slice(-2)) +':'+ ('0'+watchedLength.seconds).slice(-2)));
-							
+
 							var PercentDiv = document.createElement("div");
 							PercentDiv.className = "percent-bar";
 							var ProgressDiv = document.createElement("div");
@@ -1200,10 +1200,10 @@ function recentlyAdded()
 							var DeterminateDiv = document.createElement("div");
 							DeterminateDiv.className = "determinate";
 							DeterminateDiv.style.width = "" + (Math.round((Math.trunc(watchTimeObj[i].value) / episodeData.data[j].attributes.length) * 1000000) / 10000) + "%";
-							
+
 							ProgressDiv.appendChild(DeterminateDiv);
 							PercentDiv.appendChild(ProgressDiv);
-							
+
 							document.querySelector("[data-episode-id='"+watchTimeObj[i].uuid+"']").childNodes[0].childNodes[0].childNodes[0].appendChild(PercentDiv);
 						}
 
@@ -1216,13 +1216,13 @@ function recentlyAdded()
 
 			// Reset in preparation for next batch
 			episodeData = {};
-			
+
 			// Need to do hideVideos again after watched status is determined
 			hideVideos();
 		}
 	};
-	
-	
+
+
 	function getWatchTimes(watchTimeXMLHttp, episodeBatch)
 	{
 		// Only get watch times if access token exists
@@ -1231,46 +1231,46 @@ function recentlyAdded()
 			// Retrieve rt_access_token from document.cookie
 			var tokenLocation = document.cookie.indexOf("rt_access_token=") + 16;
 			var accessToken = document.cookie.substring(tokenLocation, document.cookie.indexOf(";", tokenLocation));
-			
+
 			// Request watch times for current episode batch
 			watchTimeXMLHttp.open("GET", "https://wtcg.roosterteeth.com/api/v1/my/played_positions/mget/" + episodeBatch, true);
 			watchTimeXMLHttp.setRequestHeader('Authorization', 'Bearer ' + accessToken);
 			watchTimeXMLHttp.send();
 		}
 	}
-	
-	
-	
+
+
+
 	// *********************
 	// Endless Video Loading
 	// *********************
-	
-	
+
+
 	// Setup scroll listener
-	
-	
+
+
 	/*document.addEventListener("scroll", function (event)
 	{
 		console.log("Scrolling");
 
 		checkForEndlessTrigger();
 	});
-	
+
 	window.onscroll=window.onresize= check;
 	document.addEventListener("wheel", function (e) {
 
 		check();
-		
+
 	}, true);
-	
+
 	function check()
 	{
 		console.log("Scrolling");
 
 	}
 	*/
-	
-	
+
+
 	/*
 	var observer = new IntersectionObserver((entries, observer) => {
 		entries.forEach(entry => {
@@ -1282,17 +1282,17 @@ function recentlyAdded()
 	  var options = {root: document.documentElement}
 	  observer.observe(showMoreDiv);
 
-	
+
 	// Don't load a new page if already loading one.
 	var endlessLoadingInProgress = 0;
-	
+
 	// Number of pages loaded without a break
 	var endlessPagesLoaded = 1;
-	
+
 	// Is loading paused?
 	var loadingPaused = 0;
 	*/
-	
+
 	checkForEndlessTrigger = function()
 	{
 		/*
@@ -1302,16 +1302,16 @@ function recentlyAdded()
 		//var endlessOffset = endlessFrameHTML.offsetTop + endlessFrameHTML.clientHeight;
 		var endlessOffset = showMoreDiv.offsetTop + showMoreDiv.clientHeight;
 		var pageOffset = window.pageYOffset + window.innerHeight;
-		
+
 		// Check if scrolled low enough to load more videos
 		if(pageOffset > (endlessOffset - 100) && endlessVideos == 1)
 		{
 			//console.log("EndlessTriggered");
-			
+
 		}
 		*/
 	};
-	
+
 	//checkForEndlessTrigger();
 }
 
@@ -1324,7 +1324,7 @@ function getEpisodes(xmlhttp, episodePage, episodesPerPage)
 	//Make sure you can't keep loading past the last page of videos available.
 	//Make Loading Animation, possibly the orange loading circle used on the Beta site.
 	// Stop loading every 10 pages and show button to load more
-	
+
 	// Request episodes list from server
 	xmlhttp.open("GET", "https://svod-be.roosterteeth.com/api/v1/episodes?page=" + episodePage + "&per_page=" + episodesPerPage, true);
 	xmlhttp.send();
@@ -1338,17 +1338,17 @@ function getEpisodes(xmlhttp, episodePage, episodesPerPage)
 // *******************************
 function hideVideos()
 {
-	
+
 	var episode = document.getElementsByClassName("col s12 m4 l3");
 	for ( i = 0; i < episode.length; i++)
 	{
 		var hideEpisode = false;
-		
+
 		if(channelFilter.indexOf(episode[i].dataset.channelId) != -1)
 		{
 			hideEpisode = true;
 		}
-		
+
 		if(seriesFilter.indexOf(episode[i].dataset.seriesId) != -1)
 		{
 			hideEpisode = true;
@@ -1368,7 +1368,7 @@ function hideVideos()
 			episode[i].style.display = "";
 		}
 	}
-	
+
 
 		/*
 		// Hide Streams
@@ -1388,11 +1388,11 @@ function hideVideos()
 
 // **************
 // Any Video Page
-// **************	
+// **************
 function detectVideoTimestamps(comment)
 {
 	//console.log(comment);
-					
+
 	for ( var i = 0; i < comment.childNodes.length; i++)
 	{
 		//comment.childNodes[i].nodeValue = comment[i].childNodes[i].nodeValue.replace(/(?!<a[^>]*?>)(-)?((\d|\d\d)(:))?(\d|\d\d)(:)(\d\d)(?![^<]*?<\/a>)/g, "<a title=\"Go to video timestamp $1$3$4$5$6$7\" href=\"javascript:undefined\" onclick=\"var heroBlock = document.getElementById('hero-block');var scrollPos = (heroBlock.offsetTop + heroBlock.clientHeight) - window.innerHeight;window.scrollTo(0,  parseInt(scrollPos));if('$1' == '-'){document.getElementById('"+videoID+"').currentTime=(Math.floor(document.getElementById('"+videoID+"').duration))-((0$3*3600)+($5*60)+$7);}else{document.getElementById('"+videoID+"').currentTime=(0$3*3600)+($5*60)+$7;}document.getElementById('"+videoID+"').play();\">$1$3$4$5$6$7</a>");
@@ -1415,7 +1415,7 @@ function detectVideoTimestamps(comment)
 				contiguousTextCount++;
 				i++;
 			}
-			
+
 			//console.log("contiguousTextCount: " + contiguousTextCount + " Text: " + contiguousText);
 			//splitTimestamp = comment.childNodes[i].nodeValue.split(/([\d]{0,2}:?[\d]{1,2}:[\d]{2})/g);
 			//splitTimestamp = comment.childNodes[i].nodeValue.split(/((?:(?:2[0-3]|[01]?[0-9]):)?[0-5]?[0-9]:[0-5][0-9])/g);
@@ -1426,16 +1426,16 @@ function detectVideoTimestamps(comment)
 		if(splitTimestamp != null && splitTimestamp.length > 1) // If array size is 1 we know that there were no matches.
 		{
 			//console.log("splitTimestamp checked");
-			
-			
-			
+
+
+
 			for ( var j = 0; j < splitTimestamp.length; j++)
 			{
 				//console.log("j: " + j);
 				//console.log(splitTimestamp[j]);
 				if(splitTimestamp[j] != "") // Split produces empty arrary elements if match is at the end or begining of string. Ignore them.
 				{
-					
+
 					//var matchTimestamp = splitTimestamp[j].match(/([\d]{0,2}:)?([\d]{1,2}):([\d]{2})/);
 					var matchTimestamp = splitTimestamp[j].match(/(?:(2[0-3]|[01]?[0-9]):)?([0-5]?[0-9]):([0-5][0-9])/);
 					if(matchTimestamp != null)
@@ -1445,15 +1445,15 @@ function detectVideoTimestamps(comment)
 						commentNode.href = "javascript:undefined";
 						commentNode.title = "Go to video timestamp " + matchTimestamp[0];
 						commentNode.appendChild(document.createTextNode(matchTimestamp[0]));
-						
-						
-						
+
+
+
 					}
 					else
 					{
 						var commentNode = document.createTextNode(splitTimestamp[j]);
 					}
-					
+
 					if(comment.childNodes[i+1] != undefined)
 					{
 						comment.insertBefore(commentNode, comment.childNodes[i+1]);
@@ -1462,11 +1462,11 @@ function detectVideoTimestamps(comment)
 					{
 						comment.appendChild(commentNode);
 					}
-					
+
 					i++; // We inserted a new child so we need to increment i so it still points at the next child.
 				}
 			}
-			
+
 			while(contiguousTextCount > 0)
 			{
 				comment.removeChild(comment.childNodes[currentNode]); // Remove the node we replaced with timestamp link
@@ -1475,9 +1475,9 @@ function detectVideoTimestamps(comment)
 			}
 		}
 	}
-	
+
 }
-		
+
 /*
 function linkVideoTimestamps()
 {
@@ -1506,16 +1506,16 @@ function linkVideoTimestamps()
 			{
 				console.log("splitTimestamp checked");
 				console.log(splitTimestamp[0]);
-				
+
 				var insertCount = 0;
 				var currentNode = j;
-				
+
 				for ( var k = 0; k < splitTimestamp.length; k++)
 				{
 					console.log("k: " + k);
 					if(splitTimestamp[k] != "") // Split produces empty arrary elements if match is at the end or begining of string. Ignore them.
 					{
-						
+
 						var matchTimestamp = splitTimestamp[k].match(/([\d]{0,2}:)?([\d]{1,2}):([\d]{2})/);
 						if(matchTimestamp != null)
 						{
@@ -1524,15 +1524,15 @@ function linkVideoTimestamps()
 							commentNode.href = "javascript:undefined";
 							commentNode.title = "Go to video timestamp " + matchTimestamp[0];
 							commentNode.appendChild(document.createTextNode(matchTimestamp[0]));
-							
-							
-							
+
+
+
 						}
 						else
 						{
 							var commentNode = document.createTextNode(splitTimestamp[k]);
 						}
-						
+
 						if(commentElement[i].childNodes[j+1] != undefined)
 						{
 							commentElement[i].insertBefore(commentNode, commentElement[i].childNodes[j+1]);
@@ -1544,30 +1544,30 @@ function linkVideoTimestamps()
 						j++; // We inserted a new child so we need to increment j so it still points at the next child.
 					}
 				}
-				
+
 				commentElement[i].removeChild(commentElement[i].childNodes[currentNode]); // Remove the node we replaced with timestamp link
 				j--; // We removed a node so we need to decrement j so it still points at the next child.
-				
+
 			}
-			
+
 
 			//.replace(/[\d]{0,2}:?[\d]{1,2}:[\d]{2}/g, "timestamp.");
 			//commentElement[i].childNodes[j].nodeValue
 			// Add anchor element instead of altering text
 		}
-		
+
 		/*
 		while(commentElement[i].children[1].children[j].tagName != "DIV")
 		{
 			//console.log("Comment: "+i+", Line: "+j)
 			//commentElement[i].children[1].children[j].innerHTML = commentElement[i].children[1].children[j].innerHTML.replace(/(?!<a[^>]*?>)((\d|\d\d)(:))?(\d|\d\d)(:)(\d\d)(?![^<]*?<\/a>)/g, "<a title=\"Go to video timestamp $2$3$4$5$6\" href=\"#\" onclick=\"var heroBlock = document.getElementById('hero-block');var scrollPos = (heroBlock.offsetTop + heroBlock.clientHeight) - window.innerHeight;window.scrollTo(0, scrollPos);if(jwplayer('"+episodeID+"').getState()!=='playing' && jwplayer('"+episodeID+"').getState()!=='paused'){jwplayer('"+episodeID+"').play(true);setTimeout(function() {jwplayer('"+episodeID+"').seek((0$2*3600)+($4*60)+$6);}, 1000);}else{jwplayer('"+episodeID+"').seek((0$2*3600)+($4*60)+$6);}return false;\">$2$3$4$5$6</a>");
-			
-			commentElement[i].children[1].children[j].innerHTML = commentElement[i].children[1].children[j].innerHTML.replace(/(?!<a[^>]*?>)(-)?((\d|\d\d)(:))?(\d|\d\d)(:)(\d\d)(?![^<]*?<\/a>)/g, "<a title=\"Go to video timestamp $1$3$4$5$6$7\" href=\"javascript:undefined\" onclick=\"var heroBlock = document.getElementById('hero-block');var scrollPos = (heroBlock.offsetTop + heroBlock.clientHeight) - window.innerHeight;window.scrollTo(0,  parseInt(scrollPos));if('$1' == '-'){document.getElementById('"+videoID+"').currentTime=(Math.floor(document.getElementById('"+videoID+"').duration))-((0$3*3600)+($5*60)+$7);}else{document.getElementById('"+videoID+"').currentTime=(0$3*3600)+($5*60)+$7;}document.getElementById('"+videoID+"').play();\">$1$3$4$5$6$7</a>"); 
+
+			commentElement[i].children[1].children[j].innerHTML = commentElement[i].children[1].children[j].innerHTML.replace(/(?!<a[^>]*?>)(-)?((\d|\d\d)(:))?(\d|\d\d)(:)(\d\d)(?![^<]*?<\/a>)/g, "<a title=\"Go to video timestamp $1$3$4$5$6$7\" href=\"javascript:undefined\" onclick=\"var heroBlock = document.getElementById('hero-block');var scrollPos = (heroBlock.offsetTop + heroBlock.clientHeight) - window.innerHeight;window.scrollTo(0,  parseInt(scrollPos));if('$1' == '-'){document.getElementById('"+videoID+"').currentTime=(Math.floor(document.getElementById('"+videoID+"').duration))-((0$3*3600)+($5*60)+$7);}else{document.getElementById('"+videoID+"').currentTime=(0$3*3600)+($5*60)+$7;}document.getElementById('"+videoID+"').play();\">$1$3$4$5$6$7</a>");
 			j++;
-			
+
 			//1 is $1, 2 is $2, 3 is $3, 4 is $4, 5 is $5, 6 is $6, 7 is $7, //regex parts for testing
 		}
-		
+
 		// Check for comment replies
 		j++;
 		//console.log(commentElement[i].children[1].children[j]);
@@ -1578,7 +1578,7 @@ function linkVideoTimestamps()
 			{
 				j++;
 			}
-			
+
 			if(commentElement[i].children[1].children[j].children[0] != undefined)
 			{
 				//console.log(commentElement[i].children[1].children[j].children.length+" comment Replies Detected");
@@ -1586,11 +1586,11 @@ function linkVideoTimestamps()
 				linkVideoTimestamps(commentReplies);
 			}
 		}
-		
-		
+
+
 	}
-	
-	
+
+
 }
 */
 
@@ -1606,3 +1606,4 @@ function getTimestampLink (matchTimestamp)
 	}
 
 }
+
