@@ -8,7 +8,7 @@
 // @exclude      *://store.roosterteeth.com/*
 // @run-at       document-end
 // @noframes
-// @version      3.8.3
+// @version      3.8.4
 // ==/UserScript==
 
 
