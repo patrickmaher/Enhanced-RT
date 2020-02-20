@@ -322,6 +322,8 @@ ready('.error-page-wrapper', function(element) {
 		// Remove 404 error
 		element.remove();
 		
+		// Remove video player error
+		document.getElementsByClassName("persistent-player")[0].remove();
 		
 		// Only check Auto Play Next Video preference if user is logged in
 		if(document.cookie.indexOf("rt_access_token=") != -1)
