@@ -1228,6 +1228,19 @@ function recentlyAdded()
 	function getWatchTimes(watchTimeXMLHttp, episodeBatch)
 	{
 		// Only get watch times if access token exists
+		if(localStorage.getItem("rt_access_token") != null)
+		{
+			// Retrieve rt_access_token from local storage
+			var accessToken = localStorage.getItem("rt_access_token");
+			
+			// Request watch times for current episode batch
+			watchTimeXMLHttp.open("GET", "https://wtcg.roosterteeth.com/api/v1/my/played_positions/mget/" + episodeBatch, true);
+			watchTimeXMLHttp.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+			watchTimeXMLHttp.send();
+		}
+		
+		// Old code used to retrieve rt_access_token when it was stored in a cookie.
+		/*
 		if(document.cookie.indexOf("rt_access_token=") != -1)
 		{
 			// Retrieve rt_access_token from document.cookie
@@ -1239,6 +1252,7 @@ function recentlyAdded()
 			watchTimeXMLHttp.setRequestHeader('Authorization', 'Bearer ' + accessToken);
 			watchTimeXMLHttp.send();
 		}
+		*/
 	}
 	
 	
