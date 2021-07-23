@@ -313,7 +313,7 @@ ready('.vjs-upnext', function(element) {
 	}
 });
 
-ready('.error-page-wrapper', function(element) {
+ready('.persistent-player', function(element) {
 	if(window.location.pathname.search("/watch/recently-added") >= 0)
 	{
 		//console.log("Enhanced RT: Recently Added Page Detected");
@@ -323,7 +323,7 @@ ready('.error-page-wrapper', function(element) {
 		element.remove();
 		
 		// Remove video player error
-		document.getElementsByClassName("persistent-player")[0].remove();
+		document.getElementsByClassName("episode-content")[0].remove();
 		
 		// Only check Auto Play Next Video preference if user is logged in
 		if(document.cookie.indexOf("rt_access_token=") != -1)
