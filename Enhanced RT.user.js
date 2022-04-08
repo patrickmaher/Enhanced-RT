@@ -1107,7 +1107,7 @@ function recentlyAdded()
 				cloneEpisodeDiv.getElementsByClassName("timestamp")[0].childNodes[0].nodeValue = ((episodeLength.hours == 0) ? episodeLength.minutes : episodeLength.hours + ":" + ('0'+episodeLength.minutes).slice(-2)) +':'+ ('0'+episodeLength.seconds).slice(-2);
 
 				// Format episode date to human readable
-				var episodeDate = new Date(myObj.data[i].sort["0"]);
+				var episodeDate = new Date(myObj.data[i].attributes.original_air_date);
 				var episodeDateFormatted = ('0' + (episodeDate.getMonth()+1)).slice(-2) + '/' + ('0' + episodeDate.getDate()).slice(-2) + '/' + episodeDate.getFullYear();
 				cloneEpisodeDiv.getElementsByClassName("episode-extra")[0].childNodes[1].nodeValue = " | " + episodeDateFormatted;
 
